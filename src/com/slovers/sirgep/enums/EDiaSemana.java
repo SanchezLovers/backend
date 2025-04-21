@@ -1,0 +1,3 @@
+public enum EDiaSemana{
+    LUNES, MARTES, MIERCOLES, JUEVES, VIERNES, SABADO, DOMINGO
+}

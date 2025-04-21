@@ -1,0 +1,3 @@
+db.url=jdbc:mysql://mydatabase.crc6cw28o0kr.us-east-1.rds.amazonaws.com:3306/TA_ACADEMICA
+db.user=admin
+db.password=#ana_12345_#ana
