@@ -1,10 +1,10 @@
-package models.ventas;
+package com.slovers.sirgep.models.ventas;
 
 import java.time.LocalTime;
 
-import models.gestion.Espacio;
-import models.gestion.Persona;
-import interfaces.IConsultar;
+import com.slovers.sirgep.models.gestion.Espacio;
+import com.slovers.sirgep.models.gestion.Persona;
+import com.slovers.sirgep.interfaces.IConsultar;
 
 public class Reserva extends Constancia implements IConsultar{
     //Atributos
@@ -67,10 +67,10 @@ public class Reserva extends Constancia implements IConsultar{
     }
 
     @Override
-    public String ToString(){
+    public String toString(){
         String cadena="Numero de reserva: "+this.numReserva+"\n";
-        cadena+=persona.ToString()+"\n";
-        cadena+=espacio.ToString()+"\n";
+        cadena+=persona.toString()+"\n";
+        cadena+=espacio.toString()+"\n";
         return cadena;
     }
 }

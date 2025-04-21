@@ -1,4 +1,4 @@
-package models.gestion;
+package com.slovers.sirgep.models.gestion;
 
 import java.util.ArrayList;
 

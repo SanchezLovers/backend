@@ -1,11 +1,11 @@
-package models.gestion;
+package com.slovers.sirgep.models.gestion;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import models.ventas.Reserva;
-import enums.EDiaSemana;
-import enums.ETipoEspacio;
-import interfaces.IConsultar;
+import com.slovers.sirgep.models.ventas.Reserva;
+import com.slovers.sirgep.enums.ETipoEspacio;
+import com.slovers.sirgep.enums.EDiaSemana;
+import com.slovers.sirgep.interfaces.IConsultar;
 
 public class Espacio implements IConsultar{
     //Atributos
@@ -47,11 +47,11 @@ public class Espacio implements IConsultar{
     }
 
     // Getter y Setter para tipoEspacio
-    public TipoEspacio getTipoEspacio() {
+    public ETipoEspacio getTipoEspacio() {
         return this.tipoEspacio;
     }
 
-    public void setTipoEspacio(TipoEspacio tipoEspacio) {
+    public void setTipoEspacio(ETipoEspacio tipoEspacio) {
         this.tipoEspacio = tipoEspacio;
     }
 
@@ -128,14 +128,13 @@ public class Espacio implements IConsultar{
     }
 	
     //Metodos
-    @Override
     public String ToString() {
         String cadena="Nombre: "+this.nombre+" Tipo: "+this.tipoEspacio
 		+" Hora de inicio de atencion: "+this.horarioInicioAtencion+" Hora de fin de atencion: "
 		+this.horarioFinAtencion+"\n"+"Precio de reserva: "+this.precioReserva+"Ubicacion: "
 		+this.ubicacion+" Superficie: "+this.superficie+"\n"+"Dias de atencion: ";
 	for(EDiaSemana dia : listaDiasAtencion){
-		cadena+=((String)dia)+" ";
+		cadena+=(dia.name())+" ";
 	}
 	cadena+="\n";
         return cadena;

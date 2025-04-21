@@ -1,8 +1,8 @@
-package models.gestion;
+package com.slovers.sirgep.models.gestion;
 
-import enums.ETipoDocumento;
-import models.ventas.Entrada;
-import models.ventas.Reserva;
+import com.slovers.sirgep.enums.ETipoDocumento;
+import com.slovers.sirgep.models.ventas.Entrada;
+import com.slovers.sirgep.models.ventas.Reserva;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ public abstract class Persona{
 	private ArrayList<Reserva> reservas;
 
 	//Constructor
-	Persona(){
+	public Persona(){
 		this.idPersona = correlativo++;
 		this.entradas = new ArrayList<Entrada>();
 		this.reservas = new ArrayList<Reserva>();
@@ -130,9 +130,9 @@ public abstract class Persona{
 	}
 
 	//Metodos
-	@Override
-	public String ToString(){
-		//¿Validar si contiene un valor el string como en el Lab2?
+        @Override
+	public String toString(){
+		//¿Validar si contiene un valor el string como en el Lab2? -> ño :D (Benny)
 		String cadena="Nombre completo: "+this.nombres+" "+this.primerApellido+" "+this.segundoApellido+"\n";
 		cadena+="Documento: "+this.tipoDocumento+" "+this.numDocumento+" "+this.correo;
 		return cadena;

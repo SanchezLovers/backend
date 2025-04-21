@@ -1,5 +1,7 @@
-package models.gestion;
-import enums.ETipoAdministrador;
+package com.slovers.sirgep.models.gestion;
+
+import com.slovers.sirgep.enums.ETipoAdministrador;
+import com.slovers.sirgep.interfaces.IConsultar;
 
 public class Administrador extends Persona implements IConsultar{
 	//Atributos
@@ -19,8 +21,8 @@ public class Administrador extends Persona implements IConsultar{
 	}
 	//Metodo
 	@Override
-    public String ToString() {
-        String cadena = super.ToString() + "\n";
+    public String toString() {
+        String cadena = super.toString() + "\n";
         cadena += "Tipo de administrador: " + this.tipoAdministrador;
         return cadena;
     }

@@ -1,13 +1,13 @@
-package models.ventas;
+package com.slovers.sirgep.models.ventas;
 
-import models.gestion.Persona;
+import com.slovers.sirgep.models.gestion.Persona;
 
 public class Comprador extends Persona{
-	//Atributos
-	private boolean esRegistrado;
+    //Atributos
+    private boolean esRegistrado;
 
-	public Comprador(){
-		esRegistrado = false;
+    public Comprador(){
+        esRegistrado = false;
     }
 
 	// Getter y Setter para esRegistrado
@@ -19,8 +19,8 @@ public class Comprador extends Persona{
     }
     // Metodos
     @Override
-    public String ToString() {
-        String cadena = super.ToString() + "\n";
+    public String toString() {
+        String cadena = super.toString() + "\n";
         cadena += "Registrado: " + (this.esRegistrado ? "Sí" : "No");
         return cadena;
     }

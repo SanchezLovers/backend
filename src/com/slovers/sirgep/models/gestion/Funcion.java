@@ -1,6 +1,6 @@
-package models.gestion;
+package com.slovers.sirgep.models.gestion;
 
-import models.ventas.Entrada;
+import com.slovers.sirgep.models.ventas.Entrada;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
@@ -65,7 +65,6 @@ public class Funcion{
 	}
 
 	//Metodos
-	@Override
 	public String ToString(){
 		String cadena="Hora de Inicio: "+this.horaInicio+" Hora de fin: "+this.horaFin;
 		return cadena;

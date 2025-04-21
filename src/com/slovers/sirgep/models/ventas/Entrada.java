@@ -1,7 +1,8 @@
-package models.ventas;
+package com.slovers.sirgep.models.ventas;
 
-import models.gestion.Funcion;
-import models.gestion.Persona;
+import com.slovers.sirgep.models.gestion.Funcion;
+import com.slovers.sirgep.models.gestion.Persona;
+import com.slovers.sirgep.interfaces.IConsultar;
 
 public class Entrada extends Constancia implements IConsultar{
 	//Atributos
@@ -44,7 +45,6 @@ public class Entrada extends Constancia implements IConsultar{
 	}
 
 	//Metodos
-	@Override
 	public String ToString(){
 		String cadena="Numero de entrada: "+this.numEntrada+"\n";
 		cadena+="Comprador: "+this.persona+"\n";

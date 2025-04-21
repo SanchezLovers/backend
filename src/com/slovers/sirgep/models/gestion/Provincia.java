@@ -1,7 +1,7 @@
-package models.gestion;
+package com.slovers.sirgep.models.gestion;
 
 import java.util.ArrayList;
-import models.gestion.Departamento;
+import com.slovers.sirgep.models.gestion.Departamento;
 
 public class Provincia{
     //Atributos
@@ -53,7 +53,6 @@ public class Provincia{
         this.distritos = new ArrayList<Distrito>(distritos);
     }
     //Metodo
-    @Override
     public String ToString() {
         String cadena = "Provincia: " + this.nombre;
         return cadena;

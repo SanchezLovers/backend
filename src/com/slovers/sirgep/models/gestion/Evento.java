@@ -1,4 +1,4 @@
-package models.gestion;
+package com.slovers.sirgep.models.gestion;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -114,7 +114,6 @@ public class Evento {
     }
 
     //Metodo
-    @Override
     public String ToString() {
         String cadena = "Evento: " + this.nombre + "\n";
         cadena += "Fecha: " + this.fecha + "\n";

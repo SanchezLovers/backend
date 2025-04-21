@@ -12,9 +12,9 @@ import java.util.logging.Logger;
 
 public class DBManager {
     private static DBManager instance;
-    private static final String URL;
-    private static final String USER;
-    private static final String PASSWORD;
+    private static String URL;
+    private static String USER;
+    private static String PASSWORD;
     
     static {
         String pathFile = "com/slovers/sirgep/config/config.properties";
@@ -23,11 +23,11 @@ public class DBManager {
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             String linea;        
             linea = reader.readLine();        
-            url = linea.split("=")[1];
+            URL = linea.split("=")[1];
             linea = reader.readLine();        
-            user = linea.split("=")[1];
+            USER = linea.split("=")[1];
             linea = reader.readLine();        
-            password = linea.split("=")[1];  
+            PASSWORD = linea.split("=")[1];  
             // cargar driver de mysql
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (Exception ex) {
@@ -36,6 +36,6 @@ public class DBManager {
     }
     
    public static Connection getConnection() throws SQLException {
-       return DriverManager.getConnection(url, user, password);
+       return DriverManager.getConnection(URL, USER, PASSWORD);
    } 
 }
