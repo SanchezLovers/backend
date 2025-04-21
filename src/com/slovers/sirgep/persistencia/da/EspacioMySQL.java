@@ -1,4 +1,4 @@
-//package com.slovers.sirgep.da;
+//package com.slovers.sirgep.persistencia.da;
 //
 //import com.slovers.sirgep.models.ventas.Entrada;
 //

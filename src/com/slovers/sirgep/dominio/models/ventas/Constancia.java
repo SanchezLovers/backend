@@ -1,6 +1,6 @@
-package com.slovers.sirgep.models.ventas;
+package com.slovers.sirgep.dominio.models.ventas;
 
-import com.slovers.sirgep.enums.EMetodoPago;
+import com.slovers.sirgep.dominio.enums.EMetodoPago;
 
 public class Constancia{
     //Atributos

@@ -1,7 +1,7 @@
-package com.slovers.sirgep.models.gestion;
+package com.slovers.sirgep.dominio.models.gestion;
 
-import com.slovers.sirgep.enums.ETipoAdministrador;
-import com.slovers.sirgep.interfaces.IConsultar;
+import com.slovers.sirgep.dominio.enums.ETipoAdministrador;
+import com.slovers.sirgep.dominio.interfaces.IConsultar;
 
 public class Administrador extends Persona implements IConsultar{
 	//Atributos

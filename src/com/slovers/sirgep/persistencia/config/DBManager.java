@@ -1,4 +1,4 @@
-package com.slovers.sirgep.config;
+package com.slovers.sirgep.persistencia.config;
 
 import java.io.BufferedReader;
 import java.io.IOException;

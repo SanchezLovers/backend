@@ -1,7 +1,6 @@
-package com.slovers.sirgep.models.gestion;
+package com.slovers.sirgep.dominio.models.gestion;
 
 import java.util.ArrayList;
-import com.slovers.sirgep.models.gestion.Departamento;
 
 public class Provincia{
     //Atributos

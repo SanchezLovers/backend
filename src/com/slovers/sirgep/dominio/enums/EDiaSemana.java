@@ -1,4 +1,4 @@
-package com.slovers.sirgep.enums;
+package com.slovers.sirgep.dominio.enums;
 
 public enum EDiaSemana{
     LUNES, MARTES, MIERCOLES, JUEVES, VIERNES, SABADO, DOMINGO

@@ -1,6 +1,6 @@
-package com.slovers.sirgep.models.ventas;
+package com.slovers.sirgep.dominio.models.ventas;
 
-import com.slovers.sirgep.models.gestion.Persona;
+import com.slovers.sirgep.dominio.models.gestion.Persona;
 
 public class Comprador extends Persona{
     //Atributos

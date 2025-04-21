@@ -1,7 +1,7 @@
-package com.slovers.sirgep.app;
+package com.slovers.sirgep.persistencia.app;
 
-import com.slovers.sirgep.models.gestion.Persona;
-import com.slovers.sirgep.models.ventas.Comprador;
+import com.slovers.sirgep.dominio.models.gestion.Persona;
+import com.slovers.sirgep.dominio.models.ventas.Comprador;
 
 public class Principal{
     public static void main(String[] args){

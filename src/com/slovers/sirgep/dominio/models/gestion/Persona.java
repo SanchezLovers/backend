@@ -1,8 +1,8 @@
-package com.slovers.sirgep.models.gestion;
+package com.slovers.sirgep.dominio.models.gestion;
 
-import com.slovers.sirgep.enums.ETipoDocumento;
-import com.slovers.sirgep.models.ventas.Entrada;
-import com.slovers.sirgep.models.ventas.Reserva;
+import com.slovers.sirgep.dominio.enums.ETipoDocumento;
+import com.slovers.sirgep.dominio.models.ventas.Entrada;
+import com.slovers.sirgep.dominio.models.ventas.Reserva;
 
 import java.util.ArrayList;
 

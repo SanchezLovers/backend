@@ -1,4 +1,4 @@
-package com.slovers.sirgep.models.gestion;
+package com.slovers.sirgep.dominio.models.gestion;
 
 import java.util.ArrayList;
 

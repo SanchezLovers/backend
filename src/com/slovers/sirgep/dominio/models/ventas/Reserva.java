@@ -1,10 +1,10 @@
-package com.slovers.sirgep.models.ventas;
+package com.slovers.sirgep.dominio.models.ventas;
 
 import java.time.LocalTime;
 
-import com.slovers.sirgep.models.gestion.Espacio;
-import com.slovers.sirgep.models.gestion.Persona;
-import com.slovers.sirgep.interfaces.IConsultar;
+import com.slovers.sirgep.dominio.models.gestion.Espacio;
+import com.slovers.sirgep.dominio.models.gestion.Persona;
+import com.slovers.sirgep.dominio.interfaces.IConsultar;
 
 public class Reserva extends Constancia implements IConsultar{
     //Atributos

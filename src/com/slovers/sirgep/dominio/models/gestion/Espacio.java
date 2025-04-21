@@ -1,11 +1,11 @@
-package com.slovers.sirgep.models.gestion;
+package com.slovers.sirgep.dominio.models.gestion;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import com.slovers.sirgep.models.ventas.Reserva;
-import com.slovers.sirgep.enums.ETipoEspacio;
-import com.slovers.sirgep.enums.EDiaSemana;
-import com.slovers.sirgep.interfaces.IConsultar;
+import com.slovers.sirgep.dominio.models.ventas.Reserva;
+import com.slovers.sirgep.dominio.enums.ETipoEspacio;
+import com.slovers.sirgep.dominio.enums.EDiaSemana;
+import com.slovers.sirgep.dominio.interfaces.IConsultar;
 
 public class Espacio implements IConsultar{
     //Atributos
