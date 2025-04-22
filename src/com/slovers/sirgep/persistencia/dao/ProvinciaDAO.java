@@ -9,6 +9,7 @@ import java.util.ArrayList;
  *
  * @author ana c
  */
+
 public interface ProvinciaDAO {
     void insertar(Provincia provincia) throws SQLException, IOException;
     void actualizar(Provincia provincia) throws SQLException, IOException;
