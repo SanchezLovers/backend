@@ -9,7 +9,6 @@ import com.slovers.sirgep.persistencia.dao.AdministradorDAO;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AdministradorMySQL implements AdministradorDAO {
 
@@ -82,8 +81,8 @@ public class AdministradorMySQL implements AdministradorDAO {
     }
 
     @Override
-    public List<Administrador> obtenerTodos() throws SQLException, IOException {
-        List<Administrador> administradores = new ArrayList<>();
+    public ArrayList<Administrador> obtenerTodos() throws SQLException, IOException {
+        ArrayList<Administrador> administradores = new ArrayList<>();
         String sql = "SELECT * FROM Persona p JOIN Administrador a ON p.id_persona = a.id_persona_admin WHERE p.activo=1";
 
         try (Connection con = DBManager.getInstance().getConnection();

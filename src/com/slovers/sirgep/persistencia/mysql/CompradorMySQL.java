@@ -1,14 +1,13 @@
 package com.slovers.sirgep.persistencia.mysql;
 
 import com.slovers.sirgep.dominio.enums.ETipoDocumento;
-import com.slovers.sirgep.dominio.models.gestion.Comprador;
+import com.slovers.sirgep.dominio.models.ventas.Comprador;
 import com.slovers.sirgep.persistencia.config.DBManager;
 import com.slovers.sirgep.persistencia.dao.CompradorDAO;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CompradorMySQL implements CompradorDAO {
 
@@ -30,7 +29,7 @@ public class CompradorMySQL implements CompradorDAO {
 
             try (PreparedStatement psComprador = con.prepareStatement(compradorSql)) {
                 psComprador.setInt(1, comprador.getIdPersona());
-                psComprador.setBoolean(2, comprador.isEsRegistrado());
+                psComprador.setBoolean(2, comprador.isRegistrado());
                 psComprador.executeUpdate();
             }
         }
@@ -49,7 +48,7 @@ public class CompradorMySQL implements CompradorDAO {
             }
 
             try (PreparedStatement psComprador = con.prepareStatement(compradorSql)) {
-                psComprador.setBoolean(1, comprador.isEsRegistrado());
+                psComprador.setBoolean(1, comprador.isRegistrado());
                 psComprador.setInt(2, comprador.getIdPersona());
                 psComprador.executeUpdate();
             }
@@ -81,8 +80,8 @@ public class CompradorMySQL implements CompradorDAO {
     }
 
     @Override
-    public List<Comprador> obtenerTodos() throws SQLException, IOException {
-        List<Comprador> compradores = new ArrayList<>();
+    public ArrayList<Comprador> obtenerTodos() throws SQLException, IOException {
+        ArrayList<Comprador> compradores = new ArrayList<>();
         String sql = "SELECT * FROM Persona p JOIN Comprador c ON p.id_persona = c.id_persona_comprador WHERE p.activo=1";
 
         try (Connection con = DBManager.getInstance().getConnection();
