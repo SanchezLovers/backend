@@ -1,10 +1,12 @@
 package com.slovers.sirgep.persistencia.mysql;
 
-import com.slovers.sirgep.dominio.models.gestion.Persona;
-import com.slovers.sirgep.persistencia.config.DBManager;
 import com.slovers.sirgep.dominio.models.ventas.Comprador;
+import com.slovers.sirgep.persistencia.config.DBManager;
 import com.slovers.sirgep.persistencia.dao.CompradorDAO;
-import java.sql.SQLException;
+
+import java.io.IOException;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class CompradorMySQL implements CompradorDAO {
     @Override
@@ -83,8 +85,8 @@ public class CompradorMySQL implements CompradorDAO {
     }
 
     @Override
-    public List<Comprador> obtenerTodos() throws SQLException{
-        List<Comprador> lista = new ArrayList<>();
+    public ArrayList<Comprador> obtenerTodos() throws SQLException{
+        ArrayList<Comprador> lista = new ArrayList<>();
         try {
             con = MySQLConexion.getConexion();
             String sql = "SELECT * FROM comprador";
