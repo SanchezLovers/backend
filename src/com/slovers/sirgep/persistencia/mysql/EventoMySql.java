@@ -3,7 +3,6 @@ package com.slovers.sirgep.persistencia.mysql;
 import com.slovers.sirgep.persistencia.config.DBManager;
 import com.slovers.sirgep.persistencia.dao.EventoDAO;
 import com.slovers.sirgep.dominio.models.gestion.Evento;
-import com.slovers.sirgep.dominio.models.gestion.Distrito;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
@@ -38,7 +37,7 @@ public class EventoMySql implements EventoDAO{
 
     @Override
     public void actualizar(Evento evento) throws SQLException, IOException{
-        String query = "UPDATE Funcion SET nombre=?, fecha=?, ubicacion=?, "
+        String query = "UPDATE Evento SET nombre=?, fecha=?, ubicacion=?, "
                 + "referencia=?, cant_entradas_dispo=?, can_entradas_vendidas=?, "
                 + "precio_entradas=?, Distrito_id_distrito=? WHERE id_evento=?";
         try(Connection con = DBManager.getInstance().getConnection()){
@@ -52,7 +51,7 @@ public class EventoMySql implements EventoDAO{
 
     @Override
     public void eliminar(int idEvento) throws SQLException, IOException{
-        String query = "UPDATE Funcion SET activo='I' WHERE id_evento=?";
+        String query = "UPDATE Evento SET activo='E' WHERE id_evento=?";
         try(Connection con = DBManager.getInstance().getConnection()){
             try(PreparedStatement ps=con.prepareStatement(query)){
                 ps.setInt(1, idEvento);
@@ -84,7 +83,7 @@ public class EventoMySql implements EventoDAO{
         String query = "SELECT e.*, d.id_distrito, d.nombre as nombre_distrito, "
                 + "d.Provincia_id_provincia, d.activo FROM Evento e JOIN Distrito d "
                 + "ON e.Distrito_id_distrito=d.id_distrito "
-                + "WHERE e.activo!='E' and d.activo!='E'";
+                + "WHERE e.activo!='E'";
         try(Connection con = DBManager.getInstance().getConnection()){
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);
@@ -110,7 +109,6 @@ public class EventoMySql implements EventoDAO{
     
     public Evento mapEvento(ResultSet rs) throws SQLException{
         Evento evento = new Evento();
-        Distrito distrito = new Distrito();
         evento.setIdEvento(rs.getInt("id_evento"));
         evento.setNombre(rs.getString("nombre"));
         evento.setFecha(rs.getDate("fecha"));
@@ -119,11 +117,6 @@ public class EventoMySql implements EventoDAO{
         evento.setCantEntradasDispo(rs.getInt("cant_entradas_dispo"));
         evento.setCantEntradasVendidas(rs.getInt("cant_entradas_vendidas"));
         evento.setPrecioEntrada(rs.getDouble("precio_entradas"));
-        //Aquí colocamos los datos del distrito obtenido del join realizado
-        distrito.setIdDistrito(rs.getInt("id_distrito"));
-        distrito.setNombre(rs.getString("nombre_distrito"));
-        distrito.setIdDistrito(rs.getInt("Provincia_id_provincia"));
-        evento.setDistrito(distrito);
         return evento;
     }
 }
