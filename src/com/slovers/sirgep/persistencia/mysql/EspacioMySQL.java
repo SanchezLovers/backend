@@ -3,6 +3,7 @@ package com.slovers.sirgep.persistencia.mysql;
 import com.slovers.sirgep.dominio.enums.ETipoEspacio;
 import com.slovers.sirgep.dominio.models.gestion.Espacio;
 import com.slovers.sirgep.persistencia.config.DBManager;
+import com.slovers.sirgep.persistencia.dao.EspacioDAO;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Connection;
@@ -12,8 +13,9 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class EspacioMySQL{
+public class EspacioMySQL implements EspacioDAO {
     
+    @Override
     public void insertar(Espacio espacio) throws SQLException, IOException {
         String query = "INSERT INTO Espacio(nombre, tipo_espacio, horario_incio_atencion"
                 + ", horario_fin_atencion, ubicacion, superficie, precio_reserva) "
@@ -36,6 +38,7 @@ public class EspacioMySQL{
         } 
     }
     
+    @Override
     public ArrayList<Espacio> obtenerTodos() throws SQLException, IOException {
         ArrayList<Espacio> alumnos = new ArrayList<>();
         String query = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno WHERE activo = 1";
@@ -50,6 +53,7 @@ public class EspacioMySQL{
         return alumnos;
     }
     
+    @Override
     public Espacio obtenerPorId(int id) throws SQLException, IOException {
         String sql = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno WHERE id=?";
         try (Connection conn = DBManager.getInstance().getConnection(); 
@@ -64,6 +68,7 @@ public class EspacioMySQL{
         return null;
     }
     
+    @Override
     public void actualizar(Espacio espacio) throws SQLException, IOException {
         String query = "UPDATE Alumno SET nombre=?, tipo_espacio=?, horario_incio_atencion=?,"
                 + " horario_fin_atencion=?, ubicacion=?, superficie=?, precio_reserva=? WHERE id=?";
@@ -77,6 +82,7 @@ public class EspacioMySQL{
         }
     }
     
+    @Override
     public void eliminar(int id) throws SQLException, IOException {
         //Eliminación logica
         String query = "UPDATE Alumno SET activo=0 WHERE id=?";
