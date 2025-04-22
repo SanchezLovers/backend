@@ -38,7 +38,7 @@ public class PersonaMySQL implements PersonaDAO {
         try (Connection con = DBManager.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             setPersonaParameters(ps, persona);
-            ps.setInt(1, persona.getIdPersona());
+            ps.setInt(10, persona.getIdPersona());
             ps.executeUpdate();
         }
     }
