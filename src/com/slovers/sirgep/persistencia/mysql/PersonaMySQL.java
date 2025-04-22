@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author italo
+ */
 public class PersonaMySQL implements PersonaDAO {
 
     @Override

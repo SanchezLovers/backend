@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * 
+ * @author italo
+ */
 public interface AdministradorDAO {
     void insertar(Administrador admin) throws SQLException, IOException;
     void actualizar(Administrador admin) throws SQLException, IOException;
