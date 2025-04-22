@@ -2,6 +2,7 @@ package com.slovers.sirgep.persistencia.mysql;
 
 import com.slovers.sirgep.dominio.enums.ETipoEspacio;
 import com.slovers.sirgep.dominio.models.gestion.Espacio;
+import com.slovers.sirgep.dominio.models.gestion.Distrito;
 import com.slovers.sirgep.persistencia.config.DBManager;
 import com.slovers.sirgep.persistencia.dao.EspacioDAO;
 import java.io.IOException;
@@ -12,14 +13,17 @@ import java.sql.Time;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 public class EspacioMySQL implements EspacioDAO {
-    
-    @Override
+    //Ana: estoy agrengando el tipo activo, le agregue i a incio
+    //      estoy agregando el idDistrito
+    @Override 
     public void insertar(Espacio espacio) throws SQLException, IOException {
-        String query = "INSERT INTO Espacio(nombre, tipo_espacio, horario_incio_atencion"
-                + ", horario_fin_atencion, ubicacion, superficie, precio_reserva) "
-                + " values(?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Espacio(nombre, tipo_espacio, horario_inicio_atencion"
+                + ", horario_fin_atencion, ubicacion, superficie, precio_reserva, activo,"
+                + "Distrito_id_distrito) "
+                + " values(?, ?, ?, ?, ?, ?, ?, 1, ?)";
         
         try(Connection con = DBManager.getInstance().getConnection();
             PreparedStatement ps = con.prepareStatement(query);) {
@@ -102,15 +106,23 @@ public class EspacioMySQL implements EspacioDAO {
         }
     }
     
+    //Ana: estoy editanto los parametros 3 y 4 para que funcionen con 
+    //  Time para mySQL 
     private void setEspacioParameters(PreparedStatement ps, Espacio e) throws SQLException {
         ps.setString(1, e.getNombre());
         ps.setString(2, e.getTipoEspacio().name());
         //ps.setDate(2, new java.sql.Date(a.getFechaNacimiento().getTime()));// Asumiendo fecha_nacimiento como java.util.Date
-        ps.setTime(3, Time.valueOf(e.getHorarioInicioAtencion()));
-        ps.setTime(4, Time.valueOf(e.getHorarioFinAtencion()));
+        // e.horarios to string antes de convertilos a time y encadeno segundos
+        ps.setTime(3,
+                Time.valueOf(e.getHorarioInicioAtencion().toString()+":00"));
+        ps.setTime(4,
+                Time.valueOf(e.getHorarioFinAtencion().toString() + ":00"));
         ps.setString(5, e.getUbicacion());
         ps.setDouble(6, e.getSuperficie());
         ps.setDouble(7, e.getPrecioReserva());
+//        int = e.getDistrito().getIdDistrito();
+        Distrito dis = e.getDistrito();
+        ps.setDouble(8, dis.getIdDistrito());
     }
     
     private Espacio mapEspacio(ResultSet rs) throws SQLException {

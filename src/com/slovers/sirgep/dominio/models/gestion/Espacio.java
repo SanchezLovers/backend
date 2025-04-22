@@ -81,7 +81,7 @@ public class Espacio implements IConsultar{
     public void setHorarioFinAtencion(LocalTime horarioFinAtencion) {
         this.horarioFinAtencion = horarioFinAtencion;
     }
-
+  
     // Getter y Setter para ubicacion
     public String getUbicacion() {
         return this.ubicacion;
