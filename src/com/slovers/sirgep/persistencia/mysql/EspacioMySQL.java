@@ -23,7 +23,7 @@ public class EspacioMySQL implements EspacioDAO {
         String query = "INSERT INTO Espacio(nombre, tipo_espacio, horario_inicio_atencion"
                 + ", horario_fin_atencion, ubicacion, superficie, precio_reserva, activo,"
                 + "Distrito_id_distrito) "
-                + " values(?, ?, ?, ?, ?, ?, ?, 1, ?)";
+                + " values(?, ?, ?, ?, ?, ?, ?, 'A', ?)";
         
         try(Connection con = DBManager.getInstance().getConnection();
             PreparedStatement ps = con.prepareStatement(query);) {
@@ -42,24 +42,30 @@ public class EspacioMySQL implements EspacioDAO {
         } 
     }
     
+    //Modificado para que consulte datos de la tabla Espacio
     @Override
     public ArrayList<Espacio> obtenerTodos() throws SQLException, IOException {
-        ArrayList<Espacio> alumnos = new ArrayList<>();
-        String query = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno WHERE activo = 1";
+        ArrayList<Espacio> espacios = new ArrayList<>();
+        String query = "SELECT id_espacio, nombre, tipo_espacio,"
+                + " horario_inicio_atencion, horario_fin_atencion, ubicacion, superficie, precio_reserva "
+                + " FROM Espacio ";
         try(Connection con = DBManager.getInstance().getConnection();
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);) {        
             while(rs.next()){
-                Espacio alumno = mapEspacio(rs);
-                alumnos.add(alumno);
+                Espacio espacio = mapEspacio(rs);
+                espacios.add(espacio);
             }
         } 
-        return alumnos;
+        return espacios;
     }
     
+    //Ana: Modifiqué los nombres para que funcionen con la tabla de la bd
     @Override
     public Espacio obtenerPorId(int id) throws SQLException, IOException {
-        String sql = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno WHERE id=?";
+        String sql = "SELECT id_espacio, nombre, tipo_espacio,"
+                + " horario_inicio_atencion, horario_fin_atencion, ubicacion, superficie, precio_reserva "
+                + " FROM Espacio WHERE id_espacio=?";
         try (Connection conn = DBManager.getInstance().getConnection(); 
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -72,16 +78,17 @@ public class EspacioMySQL implements EspacioDAO {
         return null;
     }
     
+    //Modificado - nombres de variables
     @Override
     public void actualizar(Espacio espacio) throws SQLException, IOException {
-        String query = "UPDATE Alumno SET nombre=?, tipo_espacio=?, horario_incio_atencion=?,"
-                + " horario_fin_atencion=?, ubicacion=?, superficie=?, precio_reserva=? WHERE id=?";
+        String query = "UPDATE Espacio SET nombre=?, tipo_espacio=?, horario_inicio_atencion=?,"
+                + " horario_fin_atencion=?, ubicacion=?, superficie=?, precio_reserva=? WHERE id_espacio=?";
         
         try (Connection conn = DBManager.getInstance().getConnection(); 
                 PreparedStatement ps = conn.prepareStatement(query)) {
             
             setEspacioParameters(ps, espacio);
-            ps.setInt(6, espacio.getIdEspacio());
+            ps.setInt(8, espacio.getIdEspacio());
             ps.executeUpdate();
         }
     }
@@ -89,7 +96,7 @@ public class EspacioMySQL implements EspacioDAO {
     @Override
     public void eliminar(int id) throws SQLException, IOException {
         //Eliminación logica
-        String query = "UPDATE Alumno SET activo=0 WHERE id=?";
+        String query = "UPDATE Espacio SET activo='E' WHERE id_espacio=?";
         try (Connection conn = DBManager.getInstance().getConnection(); 
              PreparedStatement ps = conn.prepareStatement(query)) {            
              ps.setInt(1, id);
@@ -98,7 +105,7 @@ public class EspacioMySQL implements EspacioDAO {
     }
     
     public void eliminarFisico(int id) throws SQLException, IOException{
-        String query = "DELETE FROM Espacio WHERE id=?";
+        String query = "DELETE FROM Espacio WHERE id_espacio=?";
         try(Connection con = DBManager.getInstance().getConnection();
             PreparedStatement ps = con.prepareStatement(query)){
             ps.setInt(1, id);
@@ -127,7 +134,7 @@ public class EspacioMySQL implements EspacioDAO {
     
     private Espacio mapEspacio(ResultSet rs) throws SQLException {
         Espacio e = new Espacio();
-        e.setIdEspacio(rs.getInt("id"));
+        e.setIdEspacio(rs.getInt("id_espacio")); //modifiqué el id
         e.setNombre(rs.getString("nombre"));
         e.setTipoEspacio(ETipoEspacio.valueOf(rs.getString("tipo_espacio")));
         e.setHorarioInicioAtencion(rs.getTime("horario_inicio_atencion").toLocalTime());
