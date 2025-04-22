@@ -16,26 +16,35 @@ public class DBManager {
     private static String USER;
     private static String PASSWORD;
     
-    static {
-        String pathFile = "com/slovers/sirgep/config/config.properties";
-        try {
+    private DBManager() throws IOException {
+        String pathFile = "com/slovers/sirgep/persistencia/config/config.properties";
+        try{
             InputStream input = DBManager.class.getClassLoader().getResourceAsStream(pathFile);
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            String linea;        
-            linea = reader.readLine();        
+            String linea;
+            linea = reader.readLine();
             URL = linea.split("=")[1];
-            linea = reader.readLine();        
+            linea = reader.readLine();
             USER = linea.split("=")[1];
-            linea = reader.readLine();        
-            PASSWORD = linea.split("=")[1];  
-            // cargar driver de mysql
+            linea = reader.readLine();
+            PASSWORD = linea.split("=")[1]; 
             Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (Exception ex) {
-            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+            
+            System.out.println("Se conectó a la BD correctamente.");
+        } catch (ClassNotFoundException e){
+            System.out.println("Error al cargar el driver de MySQL: " + e.getMessage());
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, e);
+        }
     }
     
-   public static Connection getConnection() throws SQLException {
+    public synchronized static DBManager getInstance() throws IOException {
+        if(instance==null){
+            instance = new DBManager();
+        }
+        return instance;
+    }
+    
+   public Connection getConnection() throws SQLException {
        return DriverManager.getConnection(URL, USER, PASSWORD);
    } 
 }

@@ -1,92 +1,131 @@
-//package com.slovers.sirgep.persistencia.da;
-//
-//import com.slovers.sirgep.models.ventas.Entrada;
-//
-//public class EspacioCRUD{
-//	public void insertar(Entrada entrada) throws SQLException {
-//        String query = "INSERT INTO Entrada() "
-//                + " values(?, ?, ?, ?, ?)";
-//        try(Connection con = DBManager.getConnection();
-//            PreparedStatement ps = con.prepareStatement(query);) {        
-//            alumno.setActivo(true);//todo registro insertado siempre esta activado
-//            setAlumnoParameters(ps, alumno);
-//            ps.executeUpdate(); 
-//            //Traer el ultimo ID autogenerado
-//            try(Statement st = con.createStatement();
-//                ResultSet rskeys = st.executeQuery("select @@last_insert_id");){            
-//                if(rskeys.next()){
-//                    alumno.setId(rskeys.getInt(1));
-//                }
-//            }
-//        } 
-//    }
-//    
-//    public ArrayList<Alumno> obtenerTodos() throws SQLException {
-//        ArrayList<Alumno> alumnos = new ArrayList<>();
-//        String query = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno WHERE activo = 1";
-//        try(Connection con = DBManager.getConnection();
-//            Statement st = con.createStatement();
-//            ResultSet rs = st.executeQuery(query);) {        
-//            while(rs.next()){
-//                Alumno alumno = mapAlumno(rs);
-//                alumnos.add(alumno);
-//            }
-//        } 
-//        return alumnos;
-//    }
-//    
-//    public Alumno obtenerPorId(int id) throws Exception {
-//        String sql = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno WHERE id=?";
-//        try (Connection conn = DBManager.getConnection(); 
-//             PreparedStatement ps = conn.prepareStatement(sql)) {
-//            ps.setInt(1, id);
-//            try (ResultSet rs = ps.executeQuery()) {
-//                if (rs.next()) {
-//                    return mapAlumno(rs);
-//                }
-//            }
-//        }
-//        return null;
-//    }
-//    
-//    public void actualizar(Alumno alumno) throws Exception {
-//        String query = "UPDATE Alumno SET nombre=?, fecha_nacimiento=?, CRAEST=?, activo=?, tipo_alumno=? WHERE id=?";
-//        try (Connection conn = DBManager.getConnection(); 
-//                PreparedStatement ps = conn.prepareStatement(query)) {
-//            setAlumnoParameters(ps, alumno);
-//            ps.setInt(6, alumno.getId());
-//            ps.executeUpdate();
-//        }
-//    }
-//    
-//    public void eliminar(int id) throws Exception {
-//        //Eliminación logica
-//        String query = "UPDATE Alumno SET activo=0 WHERE id=?";
-//        try (Connection conn = DBManager.getConnection(); 
-//             PreparedStatement ps = conn.prepareStatement(query)) {            
-//             ps.setInt(1, id);
-//             ps.executeUpdate();
-//        }
-//    }
-//    
-//    private void setAlumnoParameters(PreparedStatement ps, Alumno a) throws SQLException {
-//        ps.setString(1, a.getNombre());
-//        ps.setDate(2, a.getFechaNacimiento());
-//        //ps.setDate(2, new java.sql.Date(a.getFechaNacimiento().getTime()));// Asumiendo fecha_nacimiento como java.util.Date
-//        ps.setDouble(3, a.getCraest());
-//        ps.setBoolean(4, a.isActivo());
-//        ps.setString(5, a.getTipoAlumno().name());
-//    }
-//    
-//    private Alumno mapAlumno(ResultSet rs) throws SQLException {
-//        Alumno a = new Alumno();
-//        a.setId(rs.getInt("id"));
-//        a.setNombre(rs.getString("nombre"));
-//        a.setFechaNacimiento(rs.getDate("fecha_nacimiento"));
-//        //a.setFechaNacimiento(new java.util.Date(rs.getDate("fecha_nacimiento").getTime()));// Asumiendo fecha_nacimiento como java.util.Date
-//        a.setCraest(rs.getDouble("CRAEST"));
-//        a.setActivo(rs.getBoolean("activo"));
-//        a.setTipoAlumno(TIPO_ALUMNO.valueOf(rs.getString("tipo_alumno")));
-//        return a;
-//    }
-//}
+package com.slovers.sirgep.persistencia.mysql;
+
+import com.slovers.sirgep.dominio.enums.ETipoEspacio;
+import com.slovers.sirgep.dominio.models.gestion.Espacio;
+import com.slovers.sirgep.persistencia.config.DBManager;
+import com.slovers.sirgep.persistencia.dao.EspacioDAO;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Time;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+public class EspacioMySQL implements EspacioDAO {
+    
+    @Override
+    public void insertar(Espacio espacio) throws SQLException, IOException {
+        String query = "INSERT INTO Espacio(nombre, tipo_espacio, horario_incio_atencion"
+                + ", horario_fin_atencion, ubicacion, superficie, precio_reserva) "
+                + " values(?, ?, ?, ?, ?, ?, ?)";
+        
+        try(Connection con = DBManager.getInstance().getConnection();
+            PreparedStatement ps = con.prepareStatement(query);) {
+            
+            setEspacioParameters(ps, espacio); //Preparamos el ps con los atributos del objeto
+            ps.executeUpdate(); 
+            
+            //Traer el último ID autogenerado
+            try(Statement st = con.createStatement();
+                ResultSet rskeys = st.executeQuery("select @@last_insert_id");){
+                
+                if(rskeys.next()){
+                    espacio.setIdEspacio(rskeys.getInt(1));
+                }
+            }
+        } 
+    }
+    
+    @Override
+    public ArrayList<Espacio> obtenerTodos() throws SQLException, IOException {
+        ArrayList<Espacio> alumnos = new ArrayList<>();
+        String query = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno WHERE activo = 1";
+        try(Connection con = DBManager.getInstance().getConnection();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query);) {        
+            while(rs.next()){
+                Espacio alumno = mapEspacio(rs);
+                alumnos.add(alumno);
+            }
+        } 
+        return alumnos;
+    }
+    
+    @Override
+    public Espacio obtenerPorId(int id) throws SQLException, IOException {
+        String sql = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno WHERE id=?";
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapEspacio(rs);
+                }
+            }
+        }
+        return null;
+    }
+    
+    @Override
+    public void actualizar(Espacio espacio) throws SQLException, IOException {
+        String query = "UPDATE Alumno SET nombre=?, tipo_espacio=?, horario_incio_atencion=?,"
+                + " horario_fin_atencion=?, ubicacion=?, superficie=?, precio_reserva=? WHERE id=?";
+        
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+                PreparedStatement ps = conn.prepareStatement(query)) {
+            
+            setEspacioParameters(ps, espacio);
+            ps.setInt(6, espacio.getIdEspacio());
+            ps.executeUpdate();
+        }
+    }
+    
+    @Override
+    public void eliminar(int id) throws SQLException, IOException {
+        //Eliminación logica
+        String query = "UPDATE Alumno SET activo=0 WHERE id=?";
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(query)) {            
+             ps.setInt(1, id);
+             ps.executeUpdate();
+        }
+    }
+    
+    public void eliminarFisico(int id) throws SQLException, IOException{
+        String query = "DELETE FROM Espacio WHERE id=?";
+        try(Connection con = DBManager.getInstance().getConnection();
+            PreparedStatement ps = con.prepareStatement(query)){
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
+    
+    private void setEspacioParameters(PreparedStatement ps, Espacio e) throws SQLException {
+        ps.setString(1, e.getNombre());
+        ps.setString(2, e.getTipoEspacio().name());
+        //ps.setDate(2, new java.sql.Date(a.getFechaNacimiento().getTime()));// Asumiendo fecha_nacimiento como java.util.Date
+        ps.setTime(3, Time.valueOf(e.getHorarioInicioAtencion()));
+        ps.setTime(4, Time.valueOf(e.getHorarioFinAtencion()));
+        ps.setString(5, e.getUbicacion());
+        ps.setDouble(6, e.getSuperficie());
+        ps.setDouble(7, e.getPrecioReserva());
+    }
+    
+    private Espacio mapEspacio(ResultSet rs) throws SQLException {
+        Espacio e = new Espacio();
+        e.setIdEspacio(rs.getInt("id"));
+        e.setNombre(rs.getString("nombre"));
+        e.setTipoEspacio(ETipoEspacio.valueOf(rs.getString("tipo_espacio")));
+        e.setHorarioInicioAtencion(rs.getTime("horario_inicio_atencion").toLocalTime());
+        e.setHorarioFinAtencion(rs.getTime("horario_fin_atencion").toLocalTime());
+        e.setUbicacion(rs.getString("ubicacion"));
+        e.setSuperficie(rs.getDouble("superficie"));
+        e.setPrecioReserva(rs.getDouble("precio_reserva"));
+        
+        //e.setFechaNacimiento(new java.util.Date(rs.getDate("fecha_nacimiento").getTime()));// Asumiendo fecha_nacimiento como java.util.Date
+        //e.setTipoAlumno(TIPO_ALUMNO.valueOf(rs.getString("tipo_alumno")));
+        return e;
+    }
+}
