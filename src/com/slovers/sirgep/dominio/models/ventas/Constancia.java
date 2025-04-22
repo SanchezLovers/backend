@@ -2,10 +2,12 @@ package com.slovers.sirgep.dominio.models.ventas;
 
 import com.slovers.sirgep.dominio.enums.EMetodoPago;
 
+import java.util.Date;
+
 public class Constancia{
     //Atributos
-    private String correo;
-    private String numero;
+    private int idConstancia;
+    private Date fecha;
     private EMetodoPago metodoPago;
     private String detallePago;
     private double igv = 0.18;
@@ -19,21 +21,21 @@ public class Constancia{
     }
 
     // Getter y Setter para correo
-    public String getCorreo() {
-        return this.correo;
+    public int getIdConstancia() {
+        return this.idConstancia;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setIdConstancia(int idConstancia) {
+        this.idConstancia = idConstancia;
     }
 
     // Getter y Setter para numero
-    public String getNumero() {
-        return this.numero;
+    public Date getFecha() {
+        return this.fecha;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
     // Getter y Setter para metodoPago
