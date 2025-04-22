@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-
+/**
+ * 
+ * @author italo
+ */
 public interface CompradorDAO {
     void insertar(Comprador comprador) throws SQLException,IOException;
     void actualizar(Comprador comprador) throws SQLException,IOException;

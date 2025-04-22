@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author italo
+ */
 public interface PersonaDAO {
     void insertar(Persona persona) throws SQLException,IOException;
     void actualizar(Persona persona) throws SQLException,IOException;

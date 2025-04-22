@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author italo
+ */
 public class AdministradorMySQL implements AdministradorDAO {
 
     @Override
