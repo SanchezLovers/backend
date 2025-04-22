@@ -6,10 +6,9 @@ import com.slovers.sirgep.dominio.models.ventas.Reserva;
 
 import java.util.ArrayList;
 
-public abstract class Persona{
+public class Persona{
 	//Atributos
 	private int idPersona;
-	private static int correlativo=1;
 	private String nombres="Invitado";
 	private String primerApellido="Invitado";
 	private String segundoApellido="Invitado";
@@ -25,7 +24,6 @@ public abstract class Persona{
 
 	//Constructor
 	public Persona(){
-		this.idPersona = correlativo++;
 		this.entradas = new ArrayList<Entrada>();
 		this.reservas = new ArrayList<Reserva>();
 	}
