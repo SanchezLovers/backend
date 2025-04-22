@@ -1,19 +1,16 @@
 package com.slovers.sirgep.persistencia.mysql;
 
+import com.slovers.sirgep.dominio.models.gestion.Persona;
 import com.slovers.sirgep.persistencia.config.DBManager;
-import com.slovers.sirgep.dominio.models.gestion.Comprador;
-import com.slovers.sirgep.persistencia.mysql.personaDAO;
+import com.slovers.sirgep.dominio.models.ventas.Comprador;
+import com.slovers.sirgep.persistencia.dao.CompradorDAO;
+import java.sql.SQLException;
 
 public class CompradorMySQL implements CompradorDAO {
-    private Connection con;
-    private PreparedStatement ps;
-    private ResultSet rs;
-
-    private PersonaDAO personaDAO = new PersonaMySQL();
-
     @Override
-    public void insertar(Comprador comprador) {
-        personaDAO.insertar(comprador); // Inserta en persona
+    public void insertar(Comprador comprador) throws SQLException{
+        PersonaMySQL persona = new PersonaMySQL();
+        persona.insertar(comprador); // Inserta en persona
         try {
             con = MySQLConexion.getConexion();
             String sql = "INSERT INTO comprador(id_persona, es_registrado) VALUES (?, ?)";
@@ -29,7 +26,7 @@ public class CompradorMySQL implements CompradorDAO {
     }
 
     @Override
-    public void actualizar(Comprador comprador) {
+    public void actualizar(Comprador comprador) throws SQLException{
         personaDAO.actualizar(comprador);
         try {
             con = MySQLConexion.getConexion();
@@ -46,7 +43,7 @@ public class CompradorMySQL implements CompradorDAO {
     }
 
     @Override
-    public void eliminar(int idPersona) {
+    public void eliminar(int idPersona) throws SQLException{
         try {
             con = MySQLConexion.getConexion();
             String sql = "DELETE FROM comprador WHERE id_persona=?";
@@ -62,7 +59,7 @@ public class CompradorMySQL implements CompradorDAO {
     }
 
     @Override
-    public Comprador obtenerPorId(int idPersona) {
+    public Comprador obtenerPorId(int idPersona) throws SQLException{
         Comprador comprador = null;
         Persona p = personaDAO.obtenerPorId(idPersona);
         if (p != null) {
@@ -86,7 +83,7 @@ public class CompradorMySQL implements CompradorDAO {
     }
 
     @Override
-    public List<Comprador> obtenerTodos() {
+    public List<Comprador> obtenerTodos() throws SQLException{
         List<Comprador> lista = new ArrayList<>();
         try {
             con = MySQLConexion.getConexion();
