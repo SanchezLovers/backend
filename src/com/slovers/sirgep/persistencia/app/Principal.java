@@ -14,5 +14,8 @@ public class Principal{
         
         System.out.println(per);
         
+        
+        //Implementación de pruebas DAO y MySQL
+        
     }
 }
