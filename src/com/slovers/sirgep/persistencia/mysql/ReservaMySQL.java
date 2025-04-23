@@ -24,8 +24,8 @@ public class ReservaMySQL implements ReservaDAO {
     public void insertar(Reserva reserva) throws SQLException, IOException {
         //Anteriormente debí insertar la Constancia que es la clase padre
         String sql = "INSERT INTO Reserva"
-                + "(num_reserva, horario_ini, horario_fin, estado, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'A')";
+                + "(horario_ini, horario_fin, estado, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, 'A')";
         try (Connection con = DBManager.getInstance().getConnection()) {
             try (PreparedStatement pst = con.prepareStatement(sql)) {
                 this.setPreparedStatement(pst,reserva);
@@ -95,16 +95,15 @@ public class ReservaMySQL implements ReservaDAO {
     }
 */
     private void setPreparedStatement(PreparedStatement pst, Reserva reserva) throws SQLException {
-        pst.setInt(1, reserva.getIdConstancia());
-        pst.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
-        pst.setTimestamp(3, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
-        pst.setString(4, reserva.getEstado().name());
-        pst.setDate(5, new Date(reserva.getFechaReserva().getTime()));
+        pst.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
+        pst.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
+        pst.setString(3, reserva.getEstado().name());
+        pst.setDate(4, new Date(reserva.getFechaReserva().getTime()));
         Espacio espacio=reserva.getEspacio();
-        pst.setInt(6, espacio.getIdEspacio());
+        pst.setInt(5, espacio.getIdEspacio());
         Persona persona=reserva.getPersona();
-        pst.setInt(7, persona.getIdPersona());
-        pst.setInt(8, reserva.getIdConstancia());
+        pst.setInt(6, persona.getIdPersona());
+        pst.setInt(7, reserva.getIdConstancia());
     }
 /*
     private Reserva mapReserva(ResultSet rs) throws SQLException {

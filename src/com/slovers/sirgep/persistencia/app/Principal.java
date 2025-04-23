@@ -55,7 +55,7 @@ public class Principal{
         }
 */
         //Prueba de Reserva
-        /*
+        
         Constancia constancia=new Reserva();
         SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
         constancia.setFecha(fechaConstancia.parse("2022-12-13"));//Necesita throws Exception
@@ -77,17 +77,6 @@ public class Principal{
         Persona persona=new Persona();
         persona.setIdPersona(1);
         reserva.setPersona(persona);
-*/
-        Reserva reserva=new Reserva();
-        reserva.setIdConstancia(2);
-        reserva.setHorarioIni(LocalTime.of(17, 0));
-        reserva.setHorarioFin(LocalTime.of(18, 0));
-        reserva.setEstado(EEstadoReserva.INACTIVO);
-        reserva.setFechaReserva(new SimpleDateFormat("yyyy-MM-dd").parse("2024-11-24"));
-        reserva.setEspacio(new Espacio().setIdEspacio(2));
-        reserva.setPersona(new Persona().setIdPersona(2));
-        ReservaMySQL reservaMySQL = new ReservaMySQL();
         reservaMySQL.insertar(reserva);
-        
     }
 }

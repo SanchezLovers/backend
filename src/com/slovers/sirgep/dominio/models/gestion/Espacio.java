@@ -33,9 +33,8 @@ public class Espacio implements IConsultar{
         return this.idEspacio;
     }
 
-    public Espacio setIdEspacio(int idEspacio) {
+    public void setIdEspacio(int idEspacio) {
         this.idEspacio = idEspacio;
-        return this;
     }
 
     // Getter y Setter para nombre
@@ -43,9 +42,8 @@ public class Espacio implements IConsultar{
         return this.nombre;
     }
 
-    public Espacio setNombre(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
-        return this;
     }
 
     // Getter y Setter para tipoEspacio
@@ -53,9 +51,8 @@ public class Espacio implements IConsultar{
         return this.tipoEspacio;
     }
 
-    public Espacio setTipoEspacio(ETipoEspacio tipoEspacio) {
+    public void setTipoEspacio(ETipoEspacio tipoEspacio) {
         this.tipoEspacio = tipoEspacio;
-        return this;
     }
 
     // Getter y Setter para listaDiasAtencion
@@ -63,9 +60,8 @@ public class Espacio implements IConsultar{
         return new ArrayList<EDiaSemana>(this.listaDiasAtencion);
     }
 
-    public Espacio setListaDiasAtencion(ArrayList<EDiaSemana> listaDiasAtencion) {
+    public void setListaDiasAtencion(ArrayList<EDiaSemana> listaDiasAtencion) {
         this.listaDiasAtencion = new ArrayList<EDiaSemana>(listaDiasAtencion);
-        return this;
     }
 
     // Getter y Setter para horarioInicioAtencion
@@ -73,9 +69,8 @@ public class Espacio implements IConsultar{
         return this.horarioInicioAtencion;
     }
 
-    public Espacio setHorarioInicioAtencion(LocalTime horarioInicioAtencion) {
+    public void setHorarioInicioAtencion(LocalTime horarioInicioAtencion) {
         this.horarioInicioAtencion = horarioInicioAtencion;
-        return this;
     }
 
     // Getter y Setter para horarioFinAtencion
@@ -83,9 +78,8 @@ public class Espacio implements IConsultar{
         return this.horarioFinAtencion;
     }
 
-    public Espacio setHorarioFinAtencion(LocalTime horarioFinAtencion) {
+    public void setHorarioFinAtencion(LocalTime horarioFinAtencion) {
         this.horarioFinAtencion = horarioFinAtencion;
-        return this;
     }
   
     // Getter y Setter para ubicacion
@@ -93,9 +87,8 @@ public class Espacio implements IConsultar{
         return this.ubicacion;
     }
 
-    public Espacio setUbicacion(String ubicacion) {
+    public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
-        return this;
     }
 
     // Getter y Setter para superficie
@@ -103,9 +96,8 @@ public class Espacio implements IConsultar{
         return this.superficie;
     }
 
-    public Espacio setSuperficie(double superficie) {
+    public void setSuperficie(double superficie) {
         this.superficie = superficie;
-        return this;
     }
 
     // Getter y Setter para precioReserva
@@ -113,9 +105,8 @@ public class Espacio implements IConsultar{
         return this.precioReserva;
     }
 
-    public Espacio setPrecioReserva(double precioReserva) {
+    public void setPrecioReserva(double precioReserva) {
         this.precioReserva = precioReserva;
-        return this;
     }
 
     // Getter y Setter para reservas
@@ -123,9 +114,8 @@ public class Espacio implements IConsultar{
         return new ArrayList<Reserva>(this.reservas);
     }
 
-    public Espacio setReservas(ArrayList<Reserva> reservas) {
+    public void setReservas(ArrayList<Reserva> reservas) {
         this.reservas = new ArrayList<Reserva>(reservas);
-        return this;
     }
 
     // Getter y Setter para distrito
@@ -133,9 +123,8 @@ public class Espacio implements IConsultar{
         return this.distrito;
     }
 
-    public Espacio setDistrito(Distrito distrito) {
+    public void setDistrito(Distrito distrito) {
         this.distrito = distrito;
-        return this;
     }
 	
     //Metodos
