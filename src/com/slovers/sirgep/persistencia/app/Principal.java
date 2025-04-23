@@ -1,6 +1,9 @@
 package com.slovers.sirgep.persistencia.app;
 
 import com.slovers.sirgep.dominio.enums.EDiaSemana;
+import com.slovers.sirgep.dominio.enums.EEstadoReserva;
+import com.slovers.sirgep.dominio.enums.EMetodoPago;
+
 import com.slovers.sirgep.dominio.models.gestion.Persona;
 import com.slovers.sirgep.dominio.models.gestion.Administrador;
 import com.slovers.sirgep.dominio.models.gestion.Espacio;
@@ -15,11 +18,14 @@ import com.slovers.sirgep.dominio.enums.EMetodoPago;
 import com.slovers.sirgep.dominio.enums.ETipoDocumento;
 import com.slovers.sirgep.dominio.enums.ETipoEspacio;
 
+import com.slovers.sirgep.dominio.models.ventas.Reserva;
+
 import com.slovers.sirgep.persistencia.mysql.EspacioMySQL;
 import com.slovers.sirgep.persistencia.mysql.AdministradorMySQL;
 import com.slovers.sirgep.persistencia.mysql.EventoMySql;
 import com.slovers.sirgep.persistencia.mysql.ConstanciaMySQL;
 import com.slovers.sirgep.persistencia.mysql.DepartamentoMySQL;
+import com.slovers.sirgep.persistencia.mysql.ReservaMySQL;
 
 import com.slovers.sirgep.persistencia.config.DBManager;
 
@@ -312,10 +318,6 @@ public class Principal{
     
     static void probarConstancia(){
         
-        AdministradorMySQL aSql = new AdministradorMySQL();
-//        aSql.insertar(admin);
-        
-        
         //Prueba de Constancia
         Constancia constancia= new Constancia();
         SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
@@ -325,7 +327,7 @@ public class Principal{
         }catch(ParseException p){}
         constancia.setMetodoPago(EMetodoPago.TARJETA);
         constancia.setTotal(90);
-        constancia.setDetallePago("Actualizar");
+        constancia.setDetallePago("PAGO PRUEBA");
         ConstanciaMySQL constanciaMySQL = new ConstanciaMySQL();
         
         //Insertar 
