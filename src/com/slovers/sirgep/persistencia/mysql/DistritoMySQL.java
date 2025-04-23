@@ -12,16 +12,13 @@ public class DistritoMySQL implements DistritoDAO {
 
     @Override
     public void insertar(Distrito distrito) throws SQLException, IOException {
-        String sql = "INSERT INTO Distrito(nombre, activo) VALUES (?, 'A')";
+        String sql = "INSERT INTO Distrito(id_distrito, nombre, Provincia_id_provincia, activo) VALUES (?, ?, ?, 'A')";
         try (Connection con = DBManager.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, distrito.getNombre());
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, distrito.getIdDistrito());
+            ps.setString(2, distrito.getNombre());
+            ps.setInt(3, distrito.getProvincia().getIdProvincia());
             ps.executeUpdate();
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    distrito.setIdDistrito(rs.getInt(1));
-                }
-            }
         }
     }
 
@@ -48,7 +45,7 @@ public class DistritoMySQL implements DistritoDAO {
 
     @Override
     public Distrito obtenerPorId(int id) throws SQLException, IOException {
-        String sql = "SELECT * FROM Distrito WHERE id_distrito=? AND activo='A'";
+        String sql = "SELECT * FROM Distrito WHERE id_distrito=?";
         try (Connection con = DBManager.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
