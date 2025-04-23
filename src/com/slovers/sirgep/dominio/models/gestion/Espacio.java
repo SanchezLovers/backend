@@ -128,7 +128,7 @@ public class Espacio implements IConsultar{
     }
 	
     //Metodos
-    public String ToString() {
+    public String toString() {
         String cadena="Nombre: "+this.nombre+" Tipo: "+this.tipoEspacio
 		+" Hora de inicio de atencion: "+this.horarioInicioAtencion+" Hora de fin de atencion: "
 		+this.horarioFinAtencion+"\n"+"Precio de reserva: "+this.precioReserva+"Ubicacion: "

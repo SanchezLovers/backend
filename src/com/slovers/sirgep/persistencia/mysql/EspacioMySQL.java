@@ -45,7 +45,7 @@ public class EspacioMySQL implements EspacioDAO {
     @Override
     public ArrayList<Espacio> obtenerTodos() throws SQLException, IOException {
         ArrayList<Espacio> alumnos = new ArrayList<>();
-        String query = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno WHERE activo = 1";
+        String query = "SELECT id, nombre, fecha_nacimiento, CRAEST, activo, tipo_alumno FROM Alumno";
         try(Connection con = DBManager.getInstance().getConnection();
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);) {        
