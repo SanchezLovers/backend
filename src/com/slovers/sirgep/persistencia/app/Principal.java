@@ -42,7 +42,6 @@ public class Principal{
     public static void main(String[] args) throws Exception,SQLException, IOException{
         Connection con = DBManager.getInstance().getConnection();
         
-        
         //Implementación de pruebas DAO y MySQL
 //        probarEspacio();
         
@@ -312,10 +311,6 @@ public class Principal{
     
     static void probarConstancia(){
         
-        AdministradorMySQL aSql = new AdministradorMySQL();
-//        aSql.insertar(admin);
-        
-        
         //Prueba de Constancia
         Constancia constancia= new Constancia();
         SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
@@ -325,7 +320,7 @@ public class Principal{
         }catch(ParseException p){}
         constancia.setMetodoPago(EMetodoPago.TARJETA);
         constancia.setTotal(90);
-        constancia.setDetallePago("Actualizar");
+        constancia.setDetallePago("PAGO PRUEBA");
         ConstanciaMySQL constanciaMySQL = new ConstanciaMySQL();
         
         //Insertar 
