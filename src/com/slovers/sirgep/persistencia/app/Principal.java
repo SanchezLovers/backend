@@ -1,5 +1,6 @@
 package com.slovers.sirgep.persistencia.app;
 
+import com.slovers.sirgep.dominio.enums.EEstadoReserva;
 import com.slovers.sirgep.dominio.enums.EMetodoPago;
 import com.slovers.sirgep.dominio.models.gestion.Persona;
 import com.slovers.sirgep.dominio.models.gestion.Administrador;
@@ -14,12 +15,14 @@ import com.slovers.sirgep.dominio.models.ventas.Comprador;
 import com.slovers.sirgep.dominio.enums.ETipoEspacio;
 import com.slovers.sirgep.dominio.enums.ETipoAdministrador;
 import com.slovers.sirgep.dominio.enums.ETipoDocumento;
+import com.slovers.sirgep.dominio.models.ventas.Reserva;
 
 import com.slovers.sirgep.persistencia.mysql.EspacioMySQL;
 import com.slovers.sirgep.persistencia.mysql.AdministradorMySQL;
 import com.slovers.sirgep.persistencia.mysql.ConstanciaMySQL;
 
 import com.slovers.sirgep.persistencia.config.DBManager;
+import com.slovers.sirgep.persistencia.mysql.ReservaMySQL;
 
 import java.util.ArrayList;
 import java.time.LocalTime;
@@ -30,69 +33,8 @@ import java.text.SimpleDateFormat;
 
 public class Principal{
     public static void main(String[] args) throws Exception,SQLException, IOException{
+        
         /*
-//        
-
-        Connection con = DBManager.getInstance().getConnection();
-        
-        
-        //Implementación de pruebas DAO y MySQL
-        
-        //Clase Espacio
-        EspacioMySQL esp = new EspacioMySQL();
-        Espacio espacio =  new Espacio();
-        
-        Departamento departamento = new Departamento();
-        departamento.setIdDepartamento(1);
-        departamento.setNombre("Lima");
-        
-        Provincia provincia = new Provincia();
-        provincia.setDepartamento(departamento);
-        provincia.setIdProvincia(1);
-        provincia.setNombre("Lima");
-        
-        Distrito distrito = new Distrito();
-        distrito.setNombre("San Miguel");
-        distrito.setIdDistrito(1);
-        distrito.setProvincia(provincia);
-        
-        espacio.setDistrito(distrito);
-        espacio.setHorarioInicioAtencion(LocalTime.NOON);
-        espacio.setHorarioFinAtencion(LocalTime.MIDNIGHT);
-        espacio.setIdEspacio(1);
-        espacio.setNombre("Cancha de Futbol Universitaria");
-        espacio.setPrecioReserva(6);
-        espacio.setSuperficie(400);
-        espacio.setTipoEspacio(ETipoEspacio.CANCHA);
-        espacio.setUbicacion("Avenida Unviersitaria 1023");
-        //Insertar el espacio
-        System.out.println(espacio.getHorarioFinAtencion());
-        //esp.insertar(espacio);
-        //System.out.println("Insertado con ID: " + espacio.getIdEspacio());
-
-        // Obtener todos
-        //ArrayList<Espacio> espacios = esp.obtenerTodos();
-        //for (Espacio e : espacios) {
-        //    System.out.println(e.getNombre() + " - " + e.getUbicacion());
-        //}
-        
-        
-        //PERSONA 
-        //ADMINISTRADOR
-        Administrador admin = new Administrador();
-//        
-        admin.setNombres("Benny");
-        admin.setContrasenia("benz123");
-        admin.setPrimerApellido("Blanco");
-        admin.setSegundoApellido("Baca");
-        admin.setCorreo("Beny@admin.com");
-        admin.setNumDocumento("123456");
-        admin.setTipoDocumento(ETipoDocumento.DNI);
-        admin.setTipoAdministrador(ETipoAdministrador.REGIONAL);
-        
-        AdministradorMySQL aSql = new AdministradorMySQL();
-//        aSql.insertar(admin);
-
         //Prueba de Constancia
         Constancia constancia= new Constancia();
         SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
@@ -112,7 +54,40 @@ public class Principal{
             System.out.println(c);
         }
 */
-        //Prueba de Entrada
+        //Prueba de Reserva
+        /*
+        Constancia constancia=new Reserva();
+        SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
+        constancia.setFecha(fechaConstancia.parse("2022-12-13"));//Necesita throws Exception
+        constancia.setMetodoPago(EMetodoPago.TARJETA);
+        constancia.setTotal(90);
+        constancia.setDetallePago("Pago via TARJETA – codigo de operacion 83638793402.");
+        ConstanciaMySQL constanciaMySQL = new ConstanciaMySQL();
+        constanciaMySQL.insertar(constancia);
+        ReservaMySQL reservaMySQL = new ReservaMySQL();
+        Reserva reserva=(Reserva)constancia;
+        reserva.setHorarioIni(LocalTime.of(14, 0));
+        reserva.setHorarioFin(LocalTime.of(15, 0));
+        reserva.setEstado(EEstadoReserva.ACTIVO);
+        SimpleDateFormat fechaReserva = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
+        reserva.setFechaReserva(fechaReserva.parse("2024-11-23"));
+        Espacio espacio=new Espacio();
+        espacio.setIdEspacio(1);
+        reserva.setEspacio(espacio);
+        Persona persona=new Persona();
+        persona.setIdPersona(1);
+        reserva.setPersona(persona);
+*/
+        Reserva reserva=new Reserva();
+        reserva.setIdConstancia(2);
+        reserva.setHorarioIni(LocalTime.of(17, 0));
+        reserva.setHorarioFin(LocalTime.of(18, 0));
+        reserva.setEstado(EEstadoReserva.INACTIVO);
+        reserva.setFechaReserva(new SimpleDateFormat("yyyy-MM-dd").parse("2024-11-24"));
+        reserva.setEspacio(new Espacio().setIdEspacio(2));
+        reserva.setPersona(new Persona().setIdPersona(2));
+        ReservaMySQL reservaMySQL = new ReservaMySQL();
+        reservaMySQL.insertar(reserva);
         
     }
 }

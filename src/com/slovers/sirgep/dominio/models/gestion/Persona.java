@@ -33,8 +33,9 @@ public class Persona{
 		return this.idPersona;
 	}
 
-	public void setIdPersona(int idPersona) {
+	public Persona setIdPersona(int idPersona) {
 		this.idPersona = idPersona;
+                                        return this;
 	}
 
 	// Getter y Setter para nombres
