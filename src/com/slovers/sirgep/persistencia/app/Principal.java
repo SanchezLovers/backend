@@ -34,6 +34,7 @@ public class Principal{
 
         //Probando Distrito
         
+        
         Distrito distrito = new Distrito();
         Provincia provincia = new Provincia();
         
@@ -62,7 +63,7 @@ public class Principal{
 //        System.out.println("Select por ID: ");
 //        System.out.println(distSelect);
 //        
-        ArrayList<Distrito> distritos = dmysql.obtenerTodos();
+//        ArrayList<Distrito> distritos = dmysql.obtenerTodos();
 //        for(Distrito d : distritos){
 //            System.out.println(d);
 //        }
