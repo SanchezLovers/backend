@@ -127,7 +127,7 @@ public class ConstanciaMySQL implements ConstanciaDAO {
     }
 
     @Override
-    public ArrayList<Constancia> obtenerTodos(){
+    public ArrayList<Constancia> obtenerTodosActivos(){
         ArrayList<Constancia> constancias = new ArrayList<>();
         try{
             con = DBManager.getInstance().getConnection();

@@ -11,5 +11,5 @@ public interface ConstanciaDAO {
     int actualizar(Constancia constancia);
     int eliminar(int idConstancia);
     Constancia obtenerPorId(int idConstancia);
-    ArrayList<Constancia> obtenerTodos();
+    ArrayList<Constancia> obtenerTodosActivos();
 }

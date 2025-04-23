@@ -97,18 +97,18 @@ public class Principal{
         //Prueba de Constancia
         Constancia constancia= new Constancia();
         SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
-        constancia.setIdConstancia(7);//Comentar, si se va a usar el insert
-        constancia.setFecha(fechaConstancia.parse("2021-09-04"));//Necesita throws Exception
-        constancia.setMetodoPago(EMetodoPago.YAPE);
-        constancia.setTotal(10);
-        constancia.setDetallePago("Pago via YAPE – codigo de operacion 836302.");
+        //constancia.setIdConstancia(7);//Comentar, si se va a usar el insert
+        constancia.setFecha(fechaConstancia.parse("2022-12-13"));//Necesita throws Exception
+        constancia.setMetodoPago(EMetodoPago.TARJETA);
+        constancia.setTotal(90);
+        constancia.setDetallePago("Pago via TARJETA – codigo de operacion 83638793402.");
         ConstanciaMySQL constanciaMySQL = new ConstanciaMySQL();
        //constanciaMySQL.insertar(constancia);
         //constanciaMySQL.actualizar(constancia);
         //constanciaMySQL.eliminar(7);
         //constancia=constanciaMySQL.obtenerPorId(6);
         //System.out.println(constancia);
-        ArrayList<Constancia> constancias=constanciaMySQL.obtenerTodos();
+        ArrayList<Constancia> constancias=constanciaMySQL.obtenerTodosActivos();
         for(Constancia c : constancias){
             System.out.println(c);
         }
