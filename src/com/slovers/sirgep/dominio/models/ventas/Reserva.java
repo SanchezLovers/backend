@@ -1,16 +1,19 @@
 package com.slovers.sirgep.dominio.models.ventas;
 
 import java.time.LocalTime;
+import java.util.Date;
 
 import com.slovers.sirgep.dominio.models.gestion.Espacio;
 import com.slovers.sirgep.dominio.models.gestion.Persona;
-import com.slovers.sirgep.dominio.interfaces.IConsultar;
+import com.slovers.sirgep.dominio.enums.EEstadoReserva;
 
-public class Reserva extends Constancia implements IConsultar{
+public class Reserva extends Constancia{
     //Atributos
     private int numReserva;
     private LocalTime horarioIni;
     private LocalTime horarioFin;
+    private EEstadoReserva estado;
+    private Date fechaReserva;
 
     //Relaciones
     private Espacio espacio;
@@ -26,8 +29,9 @@ public class Reserva extends Constancia implements IConsultar{
         return this.numReserva;
     }
   
-    public void setNumReserva(int numReserva) {
+    public Reserva setNumReserva(int numReserva) {
         this.numReserva = numReserva;
+        return this;
     }
 
     //Getter y Setter para horarioIni
@@ -35,8 +39,9 @@ public class Reserva extends Constancia implements IConsultar{
         return this.horarioIni;
     }
 
-    public void setHorarioIni(LocalTime horarioIni) {
+    public Reserva setHorarioIni(LocalTime horarioIni) {
         this.horarioIni = horarioIni;
+        return this;
     }
 
     //Getter y Setter para horarioFin
@@ -44,8 +49,28 @@ public class Reserva extends Constancia implements IConsultar{
         return this.horarioFin;
     }
 
-    public void setHorarioFin(LocalTime horarioFin) {
+    public Reserva setHorarioFin(LocalTime horarioFin) {
         this.horarioFin = horarioFin;
+        return this;
+    }
+    //Getter y Setter para estado
+    public EEstadoReserva getEstado() {
+        return this.estado;
+    }
+    
+    public Reserva setEstado(EEstadoReserva estado) {
+        this.estado = estado;
+        return this;
+    }
+    
+    //Getter y Setter para fechaReserva
+    public Date getFechaReserva() {
+        return this.fechaReserva;
+    }
+    
+    public Reserva setFechaReserva(Date fechaReserva) {
+        this.fechaReserva = fechaReserva;
+        return this;
     }
 
     //Getter y Setter para espacio
@@ -53,8 +78,9 @@ public class Reserva extends Constancia implements IConsultar{
         return this.espacio;
     }
 
-    public void setEspacio(Espacio espacio) {
+    public Reserva setEspacio(Espacio espacio) {
         this.espacio = espacio;
+        return this;
     }
 
     //Getter y Setter para persona
@@ -62,13 +88,14 @@ public class Reserva extends Constancia implements IConsultar{
         return this.persona;
     }
 
-    public void setPersona(Persona persona) {
+    public Reserva setPersona(Persona persona) {
         this.persona = persona;
+        return this;
     }
 
     @Override
     public String toString(){
-        String cadena="Numero de reserva: "+this.numReserva+"\n";
+        String cadena="";
         cadena+=persona.toString()+"\n";
         cadena+=espacio.toString()+"\n";
         return cadena;

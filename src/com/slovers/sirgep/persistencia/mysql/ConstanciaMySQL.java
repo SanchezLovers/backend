@@ -35,6 +35,7 @@ public class ConstanciaMySQL implements ConstanciaDAO {
             pst = con.prepareStatement(sql);
             this.setPreparedStatement(constancia);
             resultado=pst.executeUpdate();
+            constancia.setIdConstancia(resultado);
             System.out.println("Se ha registrado la constancia...");
         }catch(IOException | SQLException ex){
             System.out.println("Error al insertar la constancia: "+ex.getMessage());

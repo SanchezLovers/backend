@@ -13,7 +13,6 @@ import com.slovers.sirgep.dominio.models.ventas.Comprador;
 import com.slovers.sirgep.dominio.enums.ETipoAdministrador;
 import com.slovers.sirgep.dominio.enums.ETipoDocumento;
 import com.slovers.sirgep.dominio.enums.ETipoEspacio;
-
 import com.slovers.sirgep.persistencia.mysql.EspacioMySQL;
 import com.slovers.sirgep.persistencia.mysql.AdministradorMySQL;
 import com.slovers.sirgep.persistencia.mysql.ConstanciaMySQL;
@@ -30,6 +29,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 public class Principal{
+
     public static void main(String[] args) throws Exception, SQLException, IOException{
 
         //Probando Distrito
@@ -66,5 +66,6 @@ public class Principal{
 //        for(Distrito d : distritos){
 //            System.out.println(d);
 //        }
+
     }
 }
