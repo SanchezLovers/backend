@@ -1,6 +1,7 @@
 package com.slovers.sirgep.persistencia.app;
 
 import com.slovers.sirgep.dominio.enums.EDiaSemana;
+import com.slovers.sirgep.dominio.enums.EMetodoPago;
 import com.slovers.sirgep.dominio.models.gestion.Persona;
 import com.slovers.sirgep.dominio.models.gestion.Administrador;
 import com.slovers.sirgep.dominio.models.gestion.Espacio;
@@ -52,7 +53,6 @@ public class Principal{
 //        probarEvento();
 //        probarDepartamento();
 //        probarConstancia();
-
           //probando reserva:
           //select *
           ReservaMySQL resmysql = new ReservaMySQL();
@@ -76,6 +76,17 @@ public class Principal{
           r.setHorarioIni(LocalTime.now());
           r.setFecha(java.sql.Date.valueOf("2023-04-23"));
           resmysql.actualizar(r);
+//        
+//        ReservaMySQL reservaMySQL = new ReservaMySQL();
+//        try{
+//            Reserva res = reservaMySQL.obtenerPorId(1);
+//            System.out.println("Reserva obtenida por id:");
+//            System.out.println(res);
+//        }catch (SQLException|IOException ex){
+//            ex.printStackTrace();
+//        }
+        
+        
     }
     
     static Distrito devuelveDistrito(){

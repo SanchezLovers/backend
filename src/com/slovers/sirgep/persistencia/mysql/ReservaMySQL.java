@@ -17,65 +17,42 @@ import java.util.ArrayList;
  * 
  * @author italo
  */
-public class ReservaMySQL implements ReservaDAO {
+public class ReservaMySQL implements ReservaDAO{
 
-//    @Override
-//    public void insertar(Reserva reserva) throws SQLException, IOException {
-//        //Anteriormente debí insertar la Constancia que es la clase padre
-//        String sql = "INSERT INTO Reserva"
-//                + "(horario_ini, horario_fin, estado, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo) "
-//                + "VALUES (?, ?, ?, ?, ?, ?, ?, 'A')";
-//        try (Connection con = DBManager.getInstance().getConnection()) {
-//            try (PreparedStatement pst = con.prepareStatement(sql)) {
-//                this.setPreparedStatement(pst,reserva);
-//                pst.executeUpdate();
-//                System.out.println("Se ha registrado la reserva...");
-//            }
-//        }
-//    }
 
-@Override
-public void actualizar(Reserva reserva) throws SQLException, IOException {
-    String sql = "UPDATE Reserva SET horario_ini=?, horario_fin=?, fecha_reserva=?, Espacio_id_espacio=?, Persona_id_persona=?, id_constancia_reserva=? WHERE id_constancia_reserva=?";
+    @Override
+    public void actualizar(Reserva reserva) throws SQLException, IOException {
+        String sql = "UPDATE Reserva SET horario_ini=?, horario_fin=?, fecha_reserva=?, Espacio_id_espacio=?, Persona_id_persona=?, id_constancia_reserva=? WHERE id_constancia_reserva=?";
 
-    try (Connection con = DBManager.getInstance().getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = DBManager.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
-        ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
-        ps.setDate(3, new Date(reserva.getFechaReserva().getTime()));
-        ps.setInt(4, reserva.getEspacio().getIdEspacio());
-        ps.setInt(5, reserva.getPersona().getIdPersona());
-        ps.setInt(6, reserva.getIdConstancia());
-        ps.setInt(7, reserva.getIdConstancia());
+            ps.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
+            ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
+            ps.setDate(3, new Date(reserva.getFechaReserva().getTime()));
+            ps.setInt(4, reserva.getEspacio().getIdEspacio());
+            ps.setInt(5, reserva.getPersona().getIdPersona());
+            ps.setInt(6, reserva.getIdConstancia());
+            ps.setInt(7, reserva.getIdConstancia());
 
-        ps.executeUpdate();
+            ps.executeUpdate();
+        }
     }
-}
 
-//    @Override
-//    public void eliminar(int id) throws SQLException, IOException {
-//        String sql = "UPDATE Persona SET activo=0 WHERE id_persona=?";
-//        try (Connection con = DBManager.getInstance().getConnection();
-//             PreparedStatement ps = con.prepareStatement(sql)) {
-//            ps.setInt(1, id);
-//            ps.executeUpdate();
-//        }
-//    }
-
-//    @Override
-//    public Reserva obtenerPorId(int id) throws SQLException, IOException {
-//        String sql = "SELECT * FROM Persona p JOIN Reserva a ON p.id_persona = a.id_persona_reserva WHERE p.id_persona=?";
-//
-//        try (Connection con = DBManager.getInstance().getConnection();
-//             PreparedStatement ps = con.prepareStatement(sql)) {
-//            ps.setInt(1, id);
-//            try (ResultSet rs = ps.executeQuery()) {
-//                if (rs.next()) return mapReserva(rs);
-//            }
-//        }
-//        return null;
-//    }
+    @Override //funciona, se le quitó el eTipoEstado
+    public void insertar(Reserva reserva) throws SQLException, IOException {
+        //Anteriormente debí insertar la Constancia que es la clase padre
+        String sql = "INSERT INTO Reserva"
+                + "(horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, 'A')";
+        try (Connection con = DBManager.getInstance().getConnection()) {
+            try (PreparedStatement pst = con.prepareStatement(sql)) {
+                this.setPreparedStatement(pst,reserva);
+                pst.executeUpdate();
+                System.out.println("Se ha registrado la reserva...");
+            }
+        }
+    }
 
     @Override
     public ArrayList<Reserva> obtenerTodos() throws SQLException, IOException {
@@ -93,16 +70,6 @@ public void actualizar(Reserva reserva) throws SQLException, IOException {
         return reservas;
     }
 
-//    private void setPreparedStatement(PreparedStatement pst, Reserva reserva) throws SQLException {
-//        pst.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
-//        pst.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
-//        pst.setDate(4, new Date(reserva.getFechaReserva().getTime()));
-//        Espacio espacio=reserva.getEspacio();
-//        pst.setInt(5, espacio.getIdEspacio());
-//        pst.setInt(6, reserva.getPersona().getIdPersona());
-//        pst.setInt(7, reserva.getIdConstancia());
-//    }
-
     private Reserva mapReserva(ResultSet rs) throws SQLException {
         Reserva reserva = new Reserva();
         reserva.setIdConstancia(rs.getInt("id_constancia_reserva"));
@@ -116,4 +83,53 @@ public void actualizar(Reserva reserva) throws SQLException, IOException {
         return reserva;
     }
 
+//            try (PreparedStatement pstReserva = con.prepareStatement(reservaSql)) {
+//                pstReserva.setString(1, reserva.getTipoReserva().name());
+//                pstReserva.setInt(2, reserva.getIdPersona());
+//                pstReserva.executeUpdate();
+//            }
+//        }
+//    }
+
+    @Override
+    public void eliminar(int id) throws SQLException, IOException {
+        String sql = "DELETE from Reserva WHERE num_reserva=?";
+        try (Connection con = DBManager.getInstance().getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            
+            System.out.println("Se ha eliminado la reserva " + id);
+        }
+    }
+
+    @Override
+    public Reserva obtenerPorId(int id) throws SQLException, IOException {
+        String sql = "SELECT * FROM Reserva r "
+            + "JOIN Espacio e ON r.Espacio_id_espacio=e.id_espacio "
+            + "JOIN Persona p ON r.Persona_id_persona=p.id_persona "
+            + "JOIN Constancia c ON c.id_constancia=r.id_constancia_reserva "
+            + "WHERE num_reserva=?";
+        try(Connection con = DBManager.getInstance().getConnection()){
+            try(PreparedStatement ps = con.prepareStatement(sql)){
+                ps.setInt(1, id);
+                try(ResultSet rs = ps.executeQuery()){
+                    if(rs.next()) return mapReserva(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    
+
+    private void setPreparedStatement(PreparedStatement pst, Reserva reserva) throws SQLException {
+        pst.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
+        pst.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
+        pst.setDate(3, new Date(reserva.getFechaReserva().getTime()));
+        Espacio espacio=reserva.getEspacio();
+        pst.setInt(4, espacio.getIdEspacio());
+        pst.setInt(5, reserva.getPersona().getIdPersona());
+        pst.setInt(6, reserva.getIdConstancia());
+    }
 }
