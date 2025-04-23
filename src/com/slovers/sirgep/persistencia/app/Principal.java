@@ -28,6 +28,9 @@ import com.slovers.sirgep.persistencia.mysql.ReservaMySQL;
 
 import com.slovers.sirgep.persistencia.config.DBManager;
 
+import com.slovers.sirgep.persistencia.mysql.DepartamentoMySQL;
+import com.slovers.sirgep.persistencia.mysql.DistritoMySQL;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.time.LocalTime;
@@ -55,16 +58,8 @@ public class Principal{
         
 //        probarEvento();
 //        probarDepartamento();
-//        probarConstancia();
+        probarConstancia();
 //        
-        ReservaMySQL reservaMySQL = new ReservaMySQL();
-        try{
-            Reserva res = reservaMySQL.obtenerPorId(1);
-            System.out.println("Reserva obtenida por id:");
-            System.out.println(res);
-        }catch (SQLException|IOException ex){
-            ex.printStackTrace();
-        }
         
     }
     
@@ -165,7 +160,7 @@ public class Principal{
         espacio.setDistrito(distrito);
         espacio.setHorarioInicioAtencion(LocalTime.NOON);
         espacio.setHorarioFinAtencion(LocalTime.MIDNIGHT);
-        espacio.setNombre("PRUEBA Cancha de Futbol Universitaria");
+        espacio.setNombre("PRUEBA 2 Cancha de Futbol Universitaria");
         espacio.setPrecioReserva(6);
         espacio.setSuperficie(400);
         espacio.setTipoEspacio(ETipoEspacio.CANCHA);
@@ -181,28 +176,27 @@ public class Principal{
             ex.printStackTrace();
         }
 
-        //System.out.println("Insertado con ID: " + espacio.getIdEspacio());
 
         //----------------------------------------------------------------------
         //UPDATE
-        //esp.actualizar funciona
+//        esp.actualizar funciona
         Espacio espacioModificar =  espacio;
 
         espacioModificar.setIdEspacio(4);
     //        espacioModificar.setNombre("ELIMINAR");
         espacioModificar.setPrecioReserva(8);
         espacioModificar.setSuperficie(4100);
-        /*
+        
         try {
             esp.actualizar(espacioModificar);
             System.out.println("Espacio " + espacioModificar.getNombre()+ " ha sido modificado."); 
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
-        */
+        
         //----------------------------------------------------------------------
         //Obtener todos
-        /*
+        
         try {
             ArrayList<Espacio> espacios = esp.obtenerTodos();
             System.out.println("Lista de Todos los espacios independiente al estado:");
@@ -212,10 +206,10 @@ public class Principal{
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
-        */
+        
         //----------------------------------------------------------------------
         //obtener por id
-        /*
+        
         try {
             Espacio espacioId1 = esp.obtenerPorId(2);
             System.out.println("Se ha obtenido : " + espacioId1.getNombre() +
@@ -223,7 +217,7 @@ public class Principal{
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
-        */
+        
 
         //----------------------------------------------------------------------
         //Eliminado lógico 
@@ -283,16 +277,16 @@ public class Principal{
         admin.setNumDocumento("123456");
         admin.setTipoAdministrador(ETipoAdministrador.MUNICIPAL);
         
-        /*
+        
         try {
             adminSql.actualizar(admin);
             System.out.println("Administrador "+ admin.getNombres()+" actualizado correctamente.");
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
-        */
+        
         //CONSULTAR POR ID
-        /*
+        
         try {
             Administrador adminConsulta = adminSql.obtenerPorId(admin.getIdPersona());
             System.out.println("Persona "+ adminConsulta.getNombres()+ 
@@ -300,9 +294,9 @@ public class Principal{
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
-        */
+        
         //CONSULTAR TODOS
-        /*
+        
         try {
             ArrayList<Administrador> admins = adminSql.obtenerTodos();
             System.out.println("Lista de Todos los adminsitradores independiente al estado:");
@@ -313,7 +307,7 @@ public class Principal{
             ex.printStackTrace();
         }
         //ELIMINAR
-        */
+        
         try {
             adminSql.eliminar(admin.getIdPersona());
             System.out.println("Estado de actividad de Adminsitrador " + admin.getNombres() + 
@@ -339,18 +333,18 @@ public class Principal{
         ConstanciaMySQL constanciaMySQL = new ConstanciaMySQL();
         
         //Insertar 
-        //constanciaMySQL.insertar(constancia);
+        constanciaMySQL.insertar(constancia);
         
         constancia.setDetallePago("Fallido (F)");
         //Actualizar
-        //constanciaMySQL.actualizar(constancia);
+        constanciaMySQL.actualizar(constancia);
         
         //Eliminar
         constanciaMySQL.eliminar(7);
         
         //Obtener por ID
-        //constancia=constanciaMySQL.obtenerPorId(6);
-        //System.out.println(constancia);
+        constancia=constanciaMySQL.obtenerPorId(6);
+        System.out.println(constancia);
         
         //Obtener TODOS
         ArrayList<Constancia> constancias=constanciaMySQL.obtenerTodosActivos();
@@ -371,7 +365,7 @@ public class Principal{
         //inserts
 
         departamento.setNombre("TestDepa2");
-        departamento.setIdDepartamento(50);
+        departamento.setIdDepartamento(19);
         try {
             depaMySQL.insertar(departamento);
             System.out.println("Departamento "+ departamento.getNombre() +" insertado."); 
