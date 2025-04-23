@@ -18,7 +18,7 @@ public class EntradaMySQL implements EntradaDAO{
     @Override
     public void insertar(Entrada entrada) throws SQLException, IOException{
         String query="INSERT INTO Entrada(num_entrada, Persona_id_persona, "
-                + "id_constancia_entrada, Funcion_id_funcion) VALUES(?, ?, ?, ?)";
+                + "id_constancia_entrada, Funcion_id_funcion, activo) VALUES(?, ?, ?, ?, ?)";
         try(Connection con = DBManager.getInstance().getConnection()){
             try(PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
                 setEntradaParameters(ps, entrada);

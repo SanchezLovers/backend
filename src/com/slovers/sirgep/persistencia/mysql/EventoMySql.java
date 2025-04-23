@@ -3,6 +3,7 @@ package com.slovers.sirgep.persistencia.mysql;
 import com.slovers.sirgep.persistencia.config.DBManager;
 import com.slovers.sirgep.persistencia.dao.EventoDAO;
 import com.slovers.sirgep.dominio.models.gestion.Evento;
+import com.slovers.sirgep.dominio.models.ventas.Constancia;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
@@ -14,13 +15,13 @@ import java.util.ArrayList;
  *
  * @author willi
  */
-public class EventoMySql implements EventoDAO{
+public class EventoMySql extends Constancia implements EventoDAO{
     
     @Override
     public void insertar(Evento evento) throws SQLException, IOException{
         String query = "INSERT INTO Evento(id_evento, nombre, fecha, "
                 + "ubicacion, referencia, cant_entradas_dispo, cant_entradas_vendidas, "
-                + "precio_entradas, Distrito_id_distrito) VALUES (?, ?, ?, ?, ?, ?, "
+                + "precio_entradas, Distrito_id_distrito, activo) VALUES (?, ?, ?, ?, ?, ?, "
                 + "?, ?, ?)";
         try(Connection con = DBManager.getInstance().getConnection()){
             try(PreparedStatement ps=con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
@@ -39,11 +40,11 @@ public class EventoMySql implements EventoDAO{
     public void actualizar(Evento evento) throws SQLException, IOException{
         String query = "UPDATE Evento SET nombre=?, fecha=?, ubicacion=?, "
                 + "referencia=?, cant_entradas_dispo=?, can_entradas_vendidas=?, "
-                + "precio_entradas=?, Distrito_id_distrito=? WHERE id_evento=?";
+                + "precio_entradas=?, Distrito_id_distrito=?, activo=? WHERE id_evento=?";
         try(Connection con = DBManager.getInstance().getConnection()){
             try(PreparedStatement ps=con.prepareStatement(query)){
                 setEventoParameters(ps, evento);
-                ps.setInt(9, evento.getIdEvento());
+                ps.setInt(10, evento.getIdEvento());
                 ps.executeUpdate();
             }
         }
@@ -99,11 +100,11 @@ public class EventoMySql implements EventoDAO{
         ps.setDate(3, new java.sql.Date(evento.getFecha().getTime())); //Se convierte el java.util.Date a java.sql.Date
         ps.setString(4, evento.getUbicacion());
         ps.setString(5, evento.getReferencia());
-        ps.setInt(5, evento.getCantEntradasDispo());
-        ps.setInt(6, evento.getCantEntradasVendidas());
-        ps.setDouble(7, evento.getPrecioEntrada());
-        ps.setInt(8, evento.getDistrito().getIdDistrito());
-        ps.setString(9, "A");
+        ps.setInt(6, evento.getCantEntradasDispo());
+        ps.setInt(7, evento.getCantEntradasVendidas());
+        ps.setDouble(8, evento.getPrecioEntrada());
+        ps.setInt(9, evento.getDistrito().getIdDistrito());
+        ps.setString(10, "A");
     }
     
     public Evento mapEvento(ResultSet rs) throws SQLException{

@@ -18,7 +18,7 @@ public class FuncionMySQL implements FuncionDAO{
     @Override
     public void insertar(Funcion funcion) throws SQLException, IOException{
         String query = "INSERT INTO Funcion(id_funcion, hora_inicio, hora_fin, "
-                + "Evento_idEvento) VALUES(?, ?, ?, ?)";
+                + "Evento_idEvento, activo) VALUES(?, ?, ?, ?, ?)";
         try(Connection con = DBManager.getInstance().getConnection()){
             try(PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
                 setFuncionParameters(ps,funcion);
@@ -35,11 +35,11 @@ public class FuncionMySQL implements FuncionDAO{
     @Override
     public void actualizar(Funcion funcion) throws SQLException, IOException{
         String query = "UPDATE Funcion SET id_funcion=?, hora_inicio=?, hora_fin=?, "
-                + "Evento_idEvento=? WHERE id_funcion=?";
+                + "Evento_idEvento=?, activo=? WHERE id_funcion=?";
         try(Connection con = DBManager.getInstance().getConnection()){
             try(PreparedStatement ps = con.prepareStatement(query)){
                 setFuncionParameters(ps, funcion);
-                ps.setInt(9, funcion.getIdFuncion());
+                ps.setInt(6, funcion.getIdFuncion());
                 ps.executeUpdate();
             }
         }
