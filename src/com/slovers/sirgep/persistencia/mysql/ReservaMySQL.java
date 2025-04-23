@@ -101,8 +101,7 @@ public class ReservaMySQL implements ReservaDAO {
         pst.setDate(4, new Date(reserva.getFechaReserva().getTime()));
         Espacio espacio=reserva.getEspacio();
         pst.setInt(5, espacio.getIdEspacio());
-        Persona persona=reserva.getPersona();
-        pst.setInt(6, persona.getIdPersona());
+        pst.setInt(6, reserva.getPersona().getIdPersona());
         pst.setInt(7, reserva.getIdConstancia());
     }
 /*

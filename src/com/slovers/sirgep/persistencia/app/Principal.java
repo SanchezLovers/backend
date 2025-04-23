@@ -55,7 +55,7 @@ public class Principal{
         }
 */
         //Prueba de Reserva
-        
+        //Debe haber una constancia existente
         Constancia constancia=new Reserva();
         SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
         constancia.setFecha(fechaConstancia.parse("2022-12-13"));//Necesita throws Exception
@@ -64,6 +64,7 @@ public class Principal{
         constancia.setDetallePago("Pago via TARJETA – codigo de operacion 83638793402.");
         ConstanciaMySQL constanciaMySQL = new ConstanciaMySQL();
         constanciaMySQL.insertar(constancia);
+        
         ReservaMySQL reservaMySQL = new ReservaMySQL();
         Reserva reserva=(Reserva)constancia;
         reserva.setHorarioIni(LocalTime.of(14, 0));
