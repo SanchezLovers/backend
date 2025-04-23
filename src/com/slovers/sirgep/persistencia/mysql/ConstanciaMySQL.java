@@ -80,7 +80,7 @@ public class ConstanciaMySQL implements ConstanciaDAO {
             //Establecer una conexion con la BD
             con = DBManager.getInstance().getConnection();
             //Ejecutamos la sentencia SQL
-            String sql = "UPDATE Constancia SET activo='I' WHERE id_constancia=?";
+            String sql = "UPDATE Constancia SET activo='E' WHERE id_constancia=?";//Se cambio de 'I' a 'E' 
             pst = con.prepareStatement(sql);
             pst.setInt(1, idConstancia);
             resultado = pst.executeUpdate();

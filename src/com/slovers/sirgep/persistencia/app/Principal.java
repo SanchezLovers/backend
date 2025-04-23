@@ -30,14 +30,14 @@ import java.text.SimpleDateFormat;
 
 public class Principal{
     public static void main(String[] args) throws Exception,SQLException, IOException{
-        /*
+        
 //        
 
         Connection con = DBManager.getInstance().getConnection();
         
         
         //Implementación de pruebas DAO y MySQL
-        
+        /*
         //Clase Espacio
         EspacioMySQL esp = new EspacioMySQL();
         Espacio espacio =  new Espacio();
@@ -75,8 +75,9 @@ public class Principal{
         //for (Espacio e : espacios) {
         //    System.out.println(e.getNombre() + " - " + e.getUbicacion());
         //}
+        */
         
-        
+        /*
         //PERSONA 
         //ADMINISTRADOR
         Administrador admin = new Administrador();
@@ -92,26 +93,27 @@ public class Principal{
         
         AdministradorMySQL aSql = new AdministradorMySQL();
 //        aSql.insertar(admin);
-
+        */
+        
         //Prueba de Constancia
         Constancia constancia= new Constancia();
         SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
-        //constancia.setIdConstancia(7);//Comentar, si se va a usar el insert
-        constancia.setFecha(fechaConstancia.parse("2022-12-13"));//Necesita throws Exception
+        constancia.setIdConstancia(1);//Comentar, si se va a usar el insert
+        constancia.setFecha(fechaConstancia.parse("2025-12-13"));//Necesita throws Exception
         constancia.setMetodoPago(EMetodoPago.TARJETA);
         constancia.setTotal(90);
-        constancia.setDetallePago("Pago via TARJETA – codigo de operacion 83638793402.");
+        constancia.setDetallePago("Fallido (F)");
         ConstanciaMySQL constanciaMySQL = new ConstanciaMySQL();
-       //constanciaMySQL.insertar(constancia);
+        //constanciaMySQL.insertar(constancia);
         //constanciaMySQL.actualizar(constancia);
-        //constanciaMySQL.eliminar(7);
+        constanciaMySQL.eliminar(7);
         //constancia=constanciaMySQL.obtenerPorId(6);
         //System.out.println(constancia);
         ArrayList<Constancia> constancias=constanciaMySQL.obtenerTodosActivos();
         for(Constancia c : constancias){
             System.out.println(c);
         }
-*/
+
         //Prueba de Entrada
         
     }
