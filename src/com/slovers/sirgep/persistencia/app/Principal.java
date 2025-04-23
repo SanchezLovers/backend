@@ -62,20 +62,20 @@ public class Principal{
 //          }
           
           //update:
-          Reserva r = new Reserva();
-          Espacio e = new Espacio();
+//          Reserva r = new Reserva();
+//          Espacio e = new Espacio();
           Persona p = new Persona();
           
           p.setIdPersona(1);
-          e.setIdEspacio(1);
+//          e.setIdEspacio(1);
           
-          r.setPersona(p);
-          r.setEspacio(e);
-          r.setIdConstancia(1);
-          r.setHorarioFin(LocalTime.now());
-          r.setHorarioIni(LocalTime.now());
-          r.setFecha(java.sql.Date.valueOf("2023-04-23"));
-          resmysql.actualizar(r);
+//          r.setPersona(p);
+//          r.setEspacio(e);
+//          r.setIdConstancia(1);
+//          r.setHorarioFin(LocalTime.now());
+//          r.setHorarioIni(LocalTime.now());
+//          r.setFecha(java.sql.Date.valueOf("2023-04-23"));
+//          resmysql.actualizar(r);
 //        
 //        ReservaMySQL reservaMySQL = new ReservaMySQL();
 //        try{

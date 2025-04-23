@@ -19,9 +19,9 @@ public class Reserva extends Constancia{
 
     //Constructor
     public Reserva() {       
-        persona = new Persona();
-        espacio = new Espacio();
-        fechaReserva = new Date();
+        this.persona = new Persona();
+        this.espacio = new Espacio();
+        this.fechaReserva = new Date();
     }
 
     //Getter y Setter para numReserva
