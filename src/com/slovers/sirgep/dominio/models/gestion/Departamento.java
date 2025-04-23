@@ -42,7 +42,8 @@ public class Departamento{
         this.provincias = new ArrayList<Provincia>(provincias);
     }
     //Metodo
-    public String ToString() {
+    @Override
+    public String toString() {
         String cadena = "Departamento: " + this.nombre;
         return cadena;
     }

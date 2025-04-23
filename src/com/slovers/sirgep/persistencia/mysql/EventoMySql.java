@@ -83,8 +83,7 @@ public class EventoMySql implements EventoDAO{
         ArrayList<Evento> eventos = new ArrayList<>();
         String query = "SELECT e.*, d.id_distrito, d.nombre as nombre_distrito, "
                 + "d.Provincia_id_provincia, d.activo FROM Evento e JOIN Distrito d "
-                + "ON e.Distrito_id_distrito=d.id_distrito "
-                + "WHERE e.activo!='E'";
+                + "ON e.Distrito_id_distrito=d.id_distrito";
         try(Connection con = DBManager.getInstance().getConnection()){
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);

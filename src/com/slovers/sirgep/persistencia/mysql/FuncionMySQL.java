@@ -75,7 +75,7 @@ public class FuncionMySQL implements FuncionDAO{
     public ArrayList<Funcion> obtenerTodos() throws SQLException, IOException{
         ArrayList<Funcion> funciones = new ArrayList<>();
         String query = "SELECT * FROM Funcion f JOIN Evento e "
-                + "ON f.Evento_idEvento=e.id_evento WHERE f.activo!='A'";
+                + "ON f.Evento_idEvento=e.id_evento";
         try(Connection con=DBManager.getInstance().getConnection()){
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);

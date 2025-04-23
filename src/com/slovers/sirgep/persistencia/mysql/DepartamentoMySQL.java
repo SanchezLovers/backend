@@ -16,18 +16,14 @@ public class DepartamentoMySQL implements DepartamentoDAO {
 
     @Override
     public void insertar(Departamento departamento) throws SQLException, IOException {
-        String sql = "INSERT INTO Departamento(nombre, activo) VALUES (?, 'A')";
+        String sql = "INSERT INTO Departamento(id_departamento, nombre, activo) VALUES (?, ?, 'A')";
         try (Connection con = DBManager.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, departamento.getNombre());
+            ps.setInt(1, departamento.getIdDepartamento());
+            ps.setString(2, departamento.getNombre());
             ps.executeUpdate();
 
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    departamento.setIdDepartamento(rs.getInt(1));
-                }
-            }
         }
     }
 
@@ -76,7 +72,7 @@ public class DepartamentoMySQL implements DepartamentoDAO {
     @Override
     public ArrayList<Departamento> obtenerTodos() throws SQLException, IOException {
         ArrayList<Departamento> lista = new ArrayList<>();
-        String sql = "SELECT * FROM Departamento WHERE activo='A'";
+        String sql = "SELECT * FROM Departamento";
         try (Connection con = DBManager.getInstance().getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {

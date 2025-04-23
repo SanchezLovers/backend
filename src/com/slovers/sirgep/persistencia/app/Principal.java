@@ -1,6 +1,6 @@
 package com.slovers.sirgep.persistencia.app;
 
-import com.slovers.sirgep.dominio.enums.EMetodoPago;
+import com.slovers.sirgep.dominio.enums.EDiaSemana;
 import com.slovers.sirgep.dominio.models.gestion.Persona;
 import com.slovers.sirgep.dominio.models.gestion.Administrador;
 import com.slovers.sirgep.dominio.models.gestion.Espacio;
@@ -10,10 +10,10 @@ import com.slovers.sirgep.dominio.models.gestion.Distrito;
 import com.slovers.sirgep.dominio.models.gestion.Evento;
 import com.slovers.sirgep.dominio.models.ventas.Constancia;
 import com.slovers.sirgep.dominio.models.ventas.Comprador;
-
-import com.slovers.sirgep.dominio.enums.ETipoEspacio;
 import com.slovers.sirgep.dominio.enums.ETipoAdministrador;
+import com.slovers.sirgep.dominio.enums.EMetodoPago;
 import com.slovers.sirgep.dominio.enums.ETipoDocumento;
+import com.slovers.sirgep.dominio.enums.ETipoEspacio;
 
 import com.slovers.sirgep.persistencia.mysql.EspacioMySQL;
 import com.slovers.sirgep.persistencia.mysql.AdministradorMySQL;
@@ -21,6 +21,7 @@ import com.slovers.sirgep.persistencia.mysql.EventoMySql;
 import com.slovers.sirgep.persistencia.mysql.ConstanciaMySQL;
 
 import com.slovers.sirgep.persistencia.config.DBManager;
+import com.slovers.sirgep.persistencia.mysql.DepartamentoMySQL;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +57,7 @@ public class Principal{
     }
     
     static Distrito devuelveDistrito(){
+
         Departamento departamento = new Departamento();
         departamento.setIdDepartamento(1);
         departamento.setNombre("Lima");
@@ -69,7 +71,6 @@ public class Principal{
         distrito.setNombre("San Miguel");
         distrito.setIdDistrito(1);
         distrito.setProvincia(provincia);
-        
         return distrito;
     }
     
@@ -351,7 +352,48 @@ public class Principal{
     }
     
     static void probarDepartamento(){
+        //Probando rama de Ana Cristina:
         
+        Departamento departamento = new Departamento();
+        
+        departamento.setIdDepartamento(17);
+        departamento.setNombre("TesteoDepa");
+        
+        DepartamentoMySQL depaMySQL = new DepartamentoMySQL();
+        //inserts
+
+        departamento.setNombre("TestDepa2");
+        departamento.setIdDepartamento(97);
+        try {
+            depaMySQL.insertar(departamento);
+            System.out.println("Departamento "+ departamento.getNombre() +" insertado."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        //actualizar
+        
+        departamento.setIdDepartamento(17);
+        departamento.setNombre("HoliJSJSJSJ");
+//        depaMySQL.actualizar(departamento);
+        
+        //eliminar
+        
+//        depaMySQL.eliminar(departamento.getIdDepartamento());
+        
+        // obtener por ID
+        
+//        Departamento dep = depaMySQL.obtenerPorId(departamento.getIdDepartamento());
+//        System.out.println(dep);
+
+        // obtener Todos
+        
+//        ArrayList<Departamento> depas = depaMySQL.obtenerTodos();
+//        
+//        for(Departamento d : depas){
+//            System.out.println(d);
+//        }
+
     }
 
 
