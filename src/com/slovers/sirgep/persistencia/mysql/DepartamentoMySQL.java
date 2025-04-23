@@ -52,7 +52,7 @@ public class DepartamentoMySQL implements DepartamentoDAO {
 
     @Override
     public Departamento obtenerPorId(int id) throws SQLException, IOException {
-        String sql = "SELECT * FROM Departamento WHERE id_departamento=? AND activo='A'";
+        String sql = "SELECT * FROM Departamento WHERE id_departamento=?";
         try (Connection con = DBManager.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
