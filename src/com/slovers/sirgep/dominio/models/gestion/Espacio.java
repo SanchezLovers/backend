@@ -25,7 +25,9 @@ public class Espacio implements IConsultar{
 
     //Constructor
     public Espacio(){
-        this.reservas = new ArrayList<Reserva>();
+        this.reservas = new ArrayList<>();
+        this.listaDiasAtencion = new ArrayList<>();
+        this.distrito = new Distrito();
     }
 
     // Getter y Setter para idEspacio
@@ -57,11 +59,11 @@ public class Espacio implements IConsultar{
 
     // Getter y Setter para listaDiasAtencion
     public ArrayList<EDiaSemana> getListaDiasAtencion() {
-        return new ArrayList<EDiaSemana>(this.listaDiasAtencion);
+        return new ArrayList<>(this.listaDiasAtencion);
     }
 
     public void setListaDiasAtencion(ArrayList<EDiaSemana> listaDiasAtencion) {
-        this.listaDiasAtencion = new ArrayList<EDiaSemana>(listaDiasAtencion);
+        this.listaDiasAtencion = new ArrayList<>(listaDiasAtencion);
     }
 
     // Getter y Setter para horarioInicioAtencion
@@ -111,11 +113,11 @@ public class Espacio implements IConsultar{
 
     // Getter y Setter para reservas
     public ArrayList<Reserva> getReservas() {
-        return new ArrayList<Reserva>(this.reservas);
+        return new ArrayList<>(this.reservas);
     }
 
     public void setReservas(ArrayList<Reserva> reservas) {
-        this.reservas = new ArrayList<Reserva>(reservas);
+        this.reservas = new ArrayList<>(reservas);
     }
 
     // Getter y Setter para distrito
@@ -128,6 +130,7 @@ public class Espacio implements IConsultar{
     }
 	
     //Metodos
+    @Override
     public String toString() {
         String cadena="Nombre: "+this.nombre+" Tipo: "+this.tipoEspacio
 		+" Hora de inicio de atencion: "+this.horarioInicioAtencion+" Hora de fin de atencion: "

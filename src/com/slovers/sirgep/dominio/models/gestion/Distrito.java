@@ -14,8 +14,9 @@ public class Distrito{
 
     //Constructor
     public Distrito(){
-        this.espacios = new ArrayList<Espacio>();
-        this.eventos = new ArrayList<Evento>();
+        this.espacios = new ArrayList<>();
+        this.eventos = new ArrayList<>();
+        provincia = new Provincia();
     }
 
     // Getter y Setter para idDistrito
@@ -63,7 +64,8 @@ public class Distrito{
         this.eventos = new ArrayList<Evento>(eventos);
     }
     //metodo
-    public String ToString() {
+    @Override
+    public String toString() {
         String cadena = "Distrito: " + this.nombre;
         return cadena;
     }
