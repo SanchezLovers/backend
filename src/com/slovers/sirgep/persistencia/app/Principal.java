@@ -19,9 +19,9 @@ import com.slovers.sirgep.persistencia.mysql.EspacioMySQL;
 import com.slovers.sirgep.persistencia.mysql.AdministradorMySQL;
 import com.slovers.sirgep.persistencia.mysql.EventoMySql;
 import com.slovers.sirgep.persistencia.mysql.ConstanciaMySQL;
+import com.slovers.sirgep.persistencia.mysql.DepartamentoMySQL;
 
 import com.slovers.sirgep.persistencia.config.DBManager;
-import com.slovers.sirgep.persistencia.mysql.DepartamentoMySQL;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,10 +38,8 @@ import java.text.SimpleDateFormat;
  */
 
 public class Principal{
+    
     public static void main(String[] args) throws Exception,SQLException, IOException{
-        
-//        
-
         Connection con = DBManager.getInstance().getConnection();
         
         
@@ -363,7 +361,7 @@ public class Principal{
         //inserts
 
         departamento.setNombre("TestDepa2");
-        departamento.setIdDepartamento(97);
+        departamento.setIdDepartamento(50);
         try {
             depaMySQL.insertar(departamento);
             System.out.println("Departamento "+ departamento.getNombre() +" insertado."); 
@@ -374,25 +372,43 @@ public class Principal{
         //actualizar
         
         departamento.setIdDepartamento(17);
-        departamento.setNombre("HoliJSJSJSJ");
-//        depaMySQL.actualizar(departamento);
-        
-        //eliminar
-        
-//        depaMySQL.eliminar(departamento.getIdDepartamento());
-        
+        departamento.setNombre("ELIMINAR");
+        try {
+            depaMySQL.actualizar(departamento);
+            System.out.println("Departamento "+ departamento.getNombre() +" actualizado."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
         // obtener por ID
+        try {
+            Departamento d = depaMySQL.obtenerPorId(departamento.getIdDepartamento());
+            System.out.println("obtenido por ID: "); 
+            System.out.println(d); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
         
-//        Departamento dep = depaMySQL.obtenerPorId(departamento.getIdDepartamento());
-//        System.out.println(dep);
-
         // obtener Todos
         
-//        ArrayList<Departamento> depas = depaMySQL.obtenerTodos();
-//        
-//        for(Departamento d : depas){
-//            System.out.println(d);
-//        }
+        try {
+            ArrayList<Departamento> depas = depaMySQL.obtenerTodos();
+            System.out.println("Lista de Departamentos idependientemente de la columna Activo:");
+            for(Departamento d : depas){
+                System.out.println(d);
+            }
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        
+        //eliminar logico
+        try {
+            depaMySQL.eliminar(departamento.getIdDepartamento());
+            System.out.println("Departamento "+ departamento.getNombre() +" con estado E (Eliminado)."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
 
     }
 
