@@ -18,9 +18,12 @@ public class AdministradorMySQL implements AdministradorDAO {
 
     @Override
     public void insertar(Administrador admin) throws SQLException, IOException {
-        String personaSql = "INSERT INTO Persona(nombres, primer_apellido, segundo_apellido, correo, usuario, contrasenia, num_documento, tipo_documento, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)";
-        String adminSql = "INSERT INTO Administrador(id_persona_admin, tipo_administrador) VALUES (?, ?)";
-
+        String personaSql = "INSERT INTO Persona(nombres, primer_apellido, "
+                + "segundo_apellido, correo, usuario, contrasenia, num_documento,"
+                + " tipo_documento, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'A')";
+        String adminSql = "INSERT INTO Administrador(id_persona_admin,"
+                + " tipo_administrador, activo) VALUES (?, ?, 'A')";
+        //se añadio parametros al insert de Adminsitrador
         try (Connection con = DBManager.getInstance().getConnection()) {
             try (PreparedStatement psPersona = con.prepareStatement(personaSql, Statement.RETURN_GENERATED_KEYS)) {
                 setPersonaParameters(psPersona, admin);
@@ -39,16 +42,22 @@ public class AdministradorMySQL implements AdministradorDAO {
             }
         }
     }
-
+    
+    //se eliminó la edición de activo ya que no se edita esa informacion en 
+        // estas funciones
     @Override
     public void actualizar(Administrador admin) throws SQLException, IOException {
-        String personaSql = "UPDATE Persona SET nombres=?, primer_apellido=?, segundo_apellido=?, correo=?, usuario=?, contrasenia=?, num_documento=?, tipo_documento=?, activo=? WHERE id_persona=?";
-        String adminSql = "UPDATE Administrador SET tipo_administrador=? WHERE id_persona_admin=?";
+        String personaSql = "UPDATE Persona SET nombres=?, primer_apellido=?,"
+                + " segundo_apellido=?, correo=?, usuario=?, contrasenia=?, "
+                + "num_documento=?, tipo_documento=? WHERE id_persona=?";
+        String adminSql = "UPDATE Administrador SET tipo_administrador=?"
+                + " WHERE id_persona_admin=?";
+        
 
         try (Connection con = DBManager.getInstance().getConnection()) {
             try (PreparedStatement psPersona = con.prepareStatement(personaSql)) {
                 setPersonaParameters(psPersona, admin);
-                psPersona.setInt(10, admin.getIdPersona());
+                psPersona.setInt(9, admin.getIdPersona());
                 psPersona.executeUpdate();
             }
 
@@ -62,7 +71,7 @@ public class AdministradorMySQL implements AdministradorDAO {
 
     @Override
     public void eliminar(int id) throws SQLException, IOException {
-        String sql = "UPDATE Persona SET activo=0 WHERE id_persona=?";
+        String sql = "UPDATE Persona SET activo='E' WHERE id_persona=?";
         try (Connection con = DBManager.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -84,10 +93,11 @@ public class AdministradorMySQL implements AdministradorDAO {
         return null;
     }
 
+    //Editado para que devuelva todos independientemente del estado.
     @Override
     public ArrayList<Administrador> obtenerTodos() throws SQLException, IOException {
         ArrayList<Administrador> administradores = new ArrayList<>();
-        String sql = "SELECT * FROM Persona p JOIN Administrador a ON p.id_persona = a.id_persona_admin WHERE p.activo=1";
+        String sql = "SELECT * FROM Persona p JOIN Administrador a ON p.id_persona = a.id_persona_admin";
 
         try (Connection con = DBManager.getInstance().getConnection();
              Statement st = con.createStatement();
@@ -108,7 +118,8 @@ public class AdministradorMySQL implements AdministradorDAO {
         ps.setString(6, admin.getContrasenia());
         ps.setString(7, admin.getNumDocumento());
         ps.setString(8, admin.getTipoDocumento().name());
-        ps.setInt(9, 1); // activo
+//        ps.setInt(9, 1); // activo
+    // Ana : Se comenta el setero del activo para que pueeda ser hardcodeado entre A, Y y E.
     }
 
     private Administrador mapAdministrador(ResultSet rs) throws SQLException {

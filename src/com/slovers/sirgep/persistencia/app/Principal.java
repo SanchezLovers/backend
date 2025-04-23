@@ -19,7 +19,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-
+/**
+ * 
+ * @author Ana Gabriela 
+ */
 
 public class Principal{
     public static void main(String[] args) throws SQLException, IOException{
@@ -29,9 +32,13 @@ public class Principal{
         
         
         //Implementación de pruebas DAO y MySQL
-        probarEspacio();
+//        probarEspacio();
         
-//        probarAdministrador();
+        probarAdministrador();
+        
+//        probarEvento();
+//        probarDepartamento();
+//        probarProvincia();
         
     }
 
@@ -119,7 +126,7 @@ public class Principal{
         
         //----------------------------------------------------------------------
         //Eliminado lógico 
-        
+        /*
         try {
             esp.eliminar(espacioModificar.getIdEspacio());
             System.out.println("Espacio "+ espacioModificar.getNombre() +" tiene Activo = E.");
@@ -134,7 +141,7 @@ public class Principal{
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
-
+        */
     }
     
     static void probarAdministrador(){
@@ -143,17 +150,76 @@ public class Principal{
         //ADMINISTRADOR
         Administrador admin = new Administrador();
 //        
+        admin.setIdPersona(1);
         admin.setNombres("Benny");
         admin.setContrasenia("benz123");
-        admin.setPrimerApellido("Blanco");
-        admin.setSegundoApellido("Baca");
-        admin.setCorreo("Beny@admin.com");
-        admin.setNumDocumento("123456");
+        admin.setPrimerApellido("Benny");
+        admin.setSegundoApellido("Blanco");
+        admin.setCorreo("benny@admin.com");
+        admin.setNumDocumento("123455");
         admin.setTipoDocumento(ETipoDocumento.DNI);
-        admin.setTipoAdministrador(ETipoAdministrador.REGIONAL);
+        admin.setTipoAdministrador(ETipoAdministrador.MUNICIPAL);
         
-        AdministradorMySQL aSql = new AdministradorMySQL();
-//        aSql.insertar(admin);
+        AdministradorMySQL adminSql = new AdministradorMySQL();
+        //INSERTAR
+        /*
+        try {
+            adminSql.insertar(admin);
+            System.out.println("Administrador " + admin.getTipoAdministrador() + " "
+                    + admin.getNombres()+" insertado correctamente.");
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        */
+        
+        //ACTUALIZAR 
+        admin.setIdPersona(3);
+        admin.setNombres("ELIMINAR");
+        admin.setContrasenia("ELIMINAR");
+        admin.setPrimerApellido("Cris");
+        admin.setSegundoApellido("tina");
+        admin.setCorreo("anaC@admin.com");
+        admin.setNumDocumento("123456");
+        admin.setTipoAdministrador(ETipoAdministrador.MUNICIPAL);
+        
+        /*
+        try {
+            adminSql.actualizar(admin);
+            System.out.println("Administrador "+ admin.getNombres()+" actualizado correctamente.");
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        */
+        //CONSULTAR POR ID
+        /*
+        try {
+            Administrador adminConsulta = adminSql.obtenerPorId(admin.getIdPersona());
+            System.out.println("Persona "+ adminConsulta.getNombres()+ 
+                    " obtenida mediante su ID: " + adminConsulta.getIdPersona());
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        */
+        //CONSULTAR TODOS
+        /*
+        try {
+            ArrayList<Administrador> admins = adminSql.obtenerTodos();
+            System.out.println("Lista de Todos los adminsitradores independiente al estado:");
+            for (Administrador a : admins) {
+            System.out.println(a.getNombres() + " - " + a.getTipoAdministrador());
+            }
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        */
+        try {
+            adminSql.eliminar(admin.getIdPersona());
+            System.out.println("Estado de actividad de Adminsitrador " + admin.getNombres() + 
+                    " marcado como 'E' (eliminado)");
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
     }
 
 }
