@@ -67,7 +67,7 @@ public class DistritoMySQL implements DistritoDAO {
     @Override
     public ArrayList<Distrito> obtenerTodos() throws SQLException, IOException {
         ArrayList<Distrito> lista = new ArrayList<>();
-        String sql = "SELECT * FROM Distrito WHERE activo='A'";
+        String sql = "SELECT * FROM Distrito";
         try (Connection con = DBManager.getInstance().getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
