@@ -12,7 +12,6 @@ public class Reserva extends Constancia{
     private int numReserva;
     private LocalTime horarioIni;
     private LocalTime horarioFin;
-    private EEstadoReserva estado;
     private Date fechaReserva;
 
     //Relaciones
@@ -21,7 +20,9 @@ public class Reserva extends Constancia{
 
     //Constructor
     public Reserva() {       
-
+        persona = new Persona();
+        espacio = new Espacio();
+        fechaReserva = new Date();
     }
 
     //Getter y Setter para numReserva
@@ -53,16 +54,7 @@ public class Reserva extends Constancia{
         this.horarioFin = horarioFin;
         return this;
     }
-    //Getter y Setter para estado
-    public EEstadoReserva getEstado() {
-        return this.estado;
-    }
-    
-    public Reserva setEstado(EEstadoReserva estado) {
-        this.estado = estado;
-        return this;
-    }
-    
+   
     //Getter y Setter para fechaReserva
     public Date getFechaReserva() {
         return this.fechaReserva;

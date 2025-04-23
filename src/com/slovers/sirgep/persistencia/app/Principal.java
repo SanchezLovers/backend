@@ -14,6 +14,7 @@ import com.slovers.sirgep.dominio.enums.ETipoAdministrador;
 import com.slovers.sirgep.dominio.enums.EMetodoPago;
 import com.slovers.sirgep.dominio.enums.ETipoDocumento;
 import com.slovers.sirgep.dominio.enums.ETipoEspacio;
+import com.slovers.sirgep.dominio.models.ventas.Reserva;
 import com.slovers.sirgep.persistencia.mysql.EspacioMySQL;
 import com.slovers.sirgep.persistencia.mysql.AdministradorMySQL;
 import com.slovers.sirgep.persistencia.mysql.EventoMySql;
@@ -22,6 +23,7 @@ import com.slovers.sirgep.persistencia.mysql.DepartamentoMySQL;
 import com.slovers.sirgep.persistencia.mysql.DistritoMySQL;
 
 import com.slovers.sirgep.persistencia.config.DBManager;
+import com.slovers.sirgep.persistencia.mysql.ReservaMySQL;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,9 +50,32 @@ public class Principal{
 //        probarAdministrador();
         
 //        probarEvento();
-        probarDepartamento();
+//        probarDepartamento();
 //        probarConstancia();
-        
+
+          //probando reserva:
+          //select *
+          ReservaMySQL resmysql = new ReservaMySQL();
+//          ArrayList<Reserva> reservas = resmysql.obtenerTodos();
+//          for(Reserva r : reservas){
+//              System.out.println(r);
+//          }
+          
+          //update:
+          Reserva r = new Reserva();
+          Espacio e = new Espacio();
+          Persona p = new Persona();
+          
+          p.setIdPersona(1);
+          e.setIdEspacio(1);
+          
+          r.setPersona(p);
+          r.setEspacio(e);
+          r.setIdConstancia(1);
+          r.setHorarioFin(LocalTime.now());
+          r.setHorarioIni(LocalTime.now());
+          r.setFecha(java.sql.Date.valueOf("2023-04-23"));
+          resmysql.actualizar(r);
     }
     
     static Distrito devuelveDistrito(){

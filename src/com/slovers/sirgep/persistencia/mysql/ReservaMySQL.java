@@ -1,6 +1,5 @@
 package com.slovers.sirgep.persistencia.mysql;
 
-import com.slovers.sirgep.dominio.enums.EEstadoReserva;
 import com.slovers.sirgep.dominio.enums.EMetodoPago;
 import com.slovers.sirgep.dominio.models.gestion.Espacio;
 import com.slovers.sirgep.dominio.models.gestion.Persona;
@@ -20,100 +19,101 @@ import java.util.ArrayList;
  */
 public class ReservaMySQL implements ReservaDAO {
 
-    @Override
-    public void insertar(Reserva reserva) throws SQLException, IOException {
-        //Anteriormente debí insertar la Constancia que es la clase padre
-        String sql = "INSERT INTO Reserva"
-                + "(horario_ini, horario_fin, estado, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, 'A')";
-        try (Connection con = DBManager.getInstance().getConnection()) {
-            try (PreparedStatement pst = con.prepareStatement(sql)) {
-                this.setPreparedStatement(pst,reserva);
-                pst.executeUpdate();
-                System.out.println("Se ha registrado la reserva...");
-            }
-        }
+//    @Override
+//    public void insertar(Reserva reserva) throws SQLException, IOException {
+//        //Anteriormente debí insertar la Constancia que es la clase padre
+//        String sql = "INSERT INTO Reserva"
+//                + "(horario_ini, horario_fin, estado, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo) "
+//                + "VALUES (?, ?, ?, ?, ?, ?, ?, 'A')";
+//        try (Connection con = DBManager.getInstance().getConnection()) {
+//            try (PreparedStatement pst = con.prepareStatement(sql)) {
+//                this.setPreparedStatement(pst,reserva);
+//                pst.executeUpdate();
+//                System.out.println("Se ha registrado la reserva...");
+//            }
+//        }
+//    }
+
+@Override
+public void actualizar(Reserva reserva) throws SQLException, IOException {
+    String sql = "UPDATE Reserva SET horario_ini=?, horario_fin=?, fecha_reserva=?, Espacio_id_espacio=?, Persona_id_persona=?, id_constancia_reserva=? WHERE id_constancia_reserva=?";
+
+    try (Connection con = DBManager.getInstance().getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
+        ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
+        ps.setDate(3, new Date(reserva.getFechaReserva().getTime()));
+        ps.setInt(4, reserva.getEspacio().getIdEspacio());
+        ps.setInt(5, reserva.getPersona().getIdPersona());
+        ps.setInt(6, reserva.getIdConstancia());
+        ps.setInt(7, reserva.getIdConstancia());
+
+        ps.executeUpdate();
     }
-/*
-    @Override
-    public void actualizar(Reserva reserva) throws SQLException, IOException {
-        String personaSql = "UPDATE Persona SET nombres=?, primer_apellido=?, segundo_apellido=?, correo=?, usuario=?, contrasenia=?, num_documento=?, tipo_documento=?, activo=? WHERE id_persona=?";
-        String reservaSql = "UPDATE Reserva SET tipo_Reserva=? WHERE id_persona_reserva=?";
+}
 
-        try (Connection con = DBManager.getInstance().getConnection()) {
-            try (PreparedStatement pstConstancia = con.prepareStatement(personaSql)) {
-                setPersonaParameters(pstConstancia, reserva);
-                pstConstancia.setInt(10, reserva.getIdPersona());
-                pstConstancia.executeUpdate();
-            }
+//    @Override
+//    public void eliminar(int id) throws SQLException, IOException {
+//        String sql = "UPDATE Persona SET activo=0 WHERE id_persona=?";
+//        try (Connection con = DBManager.getInstance().getConnection();
+//             PreparedStatement ps = con.prepareStatement(sql)) {
+//            ps.setInt(1, id);
+//            ps.executeUpdate();
+//        }
+//    }
 
-            try (PreparedStatement pstReserva = con.prepareStatement(reservaSql)) {
-                pstReserva.setString(1, reserva.getTipoReserva().name());
-                pstReserva.setInt(2, reserva.getIdPersona());
-                pstReserva.executeUpdate();
-            }
-        }
-    }
-
-    @Override
-    public void eliminar(int id) throws SQLException, IOException {
-        String sql = "UPDATE Persona SET activo=0 WHERE id_persona=?";
-        try (Connection con = DBManager.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        }
-    }
-
-    @Override
-    public Reserva obtenerPorId(int id) throws SQLException, IOException {
-        String sql = "SELECT * FROM Persona p JOIN Reserva a ON p.id_persona = a.id_persona_reserva WHERE p.id_persona=?";
-
-        try (Connection con = DBManager.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapReserva(rs);
-            }
-        }
-        return null;
-    }
+//    @Override
+//    public Reserva obtenerPorId(int id) throws SQLException, IOException {
+//        String sql = "SELECT * FROM Persona p JOIN Reserva a ON p.id_persona = a.id_persona_reserva WHERE p.id_persona=?";
+//
+//        try (Connection con = DBManager.getInstance().getConnection();
+//             PreparedStatement ps = con.prepareStatement(sql)) {
+//            ps.setInt(1, id);
+//            try (ResultSet rs = ps.executeQuery()) {
+//                if (rs.next()) return mapReserva(rs);
+//            }
+//        }
+//        return null;
+//    }
 
     @Override
     public ArrayList<Reserva> obtenerTodos() throws SQLException, IOException {
-        ArrayList<Reserva> Reservaes = new ArrayList<>();
-        String sql = "SELECT * FROM Persona p JOIN Reserva a ON p.id_persona = a.id_persona_reserva WHERE p.activo=1";
+        ArrayList<Reserva> reservas = new ArrayList<>();
+        String query = "SELECT * FROM Persona p JOIN Reserva a ON p.id_persona = a.Persona_id_persona";
 
-        try (Connection con = DBManager.getInstance().getConnection();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                Reservaes.add(mapReserva(rs));
+        try(Connection con = DBManager.getInstance().getConnection();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query);) {        
+            while(rs.next()){
+                Reserva reserva = mapReserva(rs);
+                reservas.add(reserva);
             }
-        }
-        return Reservaes;
+        } 
+        return reservas;
     }
-*/
-    private void setPreparedStatement(PreparedStatement pst, Reserva reserva) throws SQLException {
-        pst.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
-        pst.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
-        pst.setString(3, reserva.getEstado().name());
-        pst.setDate(4, new Date(reserva.getFechaReserva().getTime()));
-        Espacio espacio=reserva.getEspacio();
-        pst.setInt(5, espacio.getIdEspacio());
-        pst.setInt(6, reserva.getPersona().getIdPersona());
-        pst.setInt(7, reserva.getIdConstancia());
-    }
-/*
+
+//    private void setPreparedStatement(PreparedStatement pst, Reserva reserva) throws SQLException {
+//        pst.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
+//        pst.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
+//        pst.setDate(4, new Date(reserva.getFechaReserva().getTime()));
+//        Espacio espacio=reserva.getEspacio();
+//        pst.setInt(5, espacio.getIdEspacio());
+//        pst.setInt(6, reserva.getPersona().getIdPersona());
+//        pst.setInt(7, reserva.getIdConstancia());
+//    }
+
     private Reserva mapReserva(ResultSet rs) throws SQLException {
         Reserva reserva = new Reserva();
-        reserva.setIdConstancia(rs.getInt("id_constancia"));
-        reserva.setFecha(rs.getDate("fecha"));
-        reserva.setMetodoPago(EMetodoPago.valueOf(rs.getString("metodo_pago")));
-        reserva.setTotal(rs.getDouble("total"));
-        reserva.setDetallePago(rs.getString("detalle_pago"));
-        
+        reserva.setIdConstancia(rs.getInt("id_constancia_reserva"));
+        reserva.setFecha(rs.getDate("fecha_reserva"));
+        reserva.setHorarioIni(rs.getTime("horario_ini").toLocalTime());
+        reserva.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
+//        reserva.setMetodoPago(EMetodoPago.valueOf(rs.getString("metodo_pago")));
+//        reserva.setTotal(rs.getDouble("total"));
+//        reserva.setDetallePago(rs.getString("detalle_pago"));
+//        
         return reserva;
     }
-*/
+
 }
