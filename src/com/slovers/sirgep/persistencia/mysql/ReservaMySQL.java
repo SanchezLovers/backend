@@ -63,7 +63,7 @@ public class ReservaMySQL implements ReservaDAO{
             ps.setInt(1, id);
             ps.executeUpdate();
             
-            System.out.println("Se ha eliminado la reserva" + id);
+            System.out.println("Se ha eliminado la reserva " + id);
         }
     }
     /*
@@ -80,22 +80,27 @@ public class ReservaMySQL implements ReservaDAO{
         }
         return null;
     }
-
+*/
     @Override
-    public ArrayList<Reserva> obtenerTodos() throws SQLException, IOException {
-        ArrayList<Reserva> Reservaes = new ArrayList<>();
-        String sql = "SELECT * FROM Persona p JOIN Reserva a ON p.id_persona = a.id_persona_reserva WHERE p.activo=1";
-
-        try (Connection con = DBManager.getInstance().getConnection();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                Reservaes.add(mapReserva(rs));
+    public Reserva obtenerPorId(int id) throws SQLException, IOException {
+        String sql = "SELECT * FROM Reserva r "
+            + "JOIN Espacio e ON r.Espacio_id_espacio=e.id_espacio "
+            + "JOIN Persona p ON r.Persona_id_persona=p.id_persona "
+            + "JOIN Constancia c ON c.id_constancia=r.id_constancia_reserva "
+            + "WHERE num_reserva=?";
+        try(Connection con = DBManager.getInstance().getConnection()){
+            try(PreparedStatement ps = con.prepareStatement(sql)){
+                ps.setInt(1, id);
+                try(ResultSet rs = ps.executeQuery()){
+                    if(rs.next()) return mapReserva(rs);
+                }
             }
         }
-        return Reservaes;
+        return null;
     }
-*/
+
+    
+
     private void setPreparedStatement(PreparedStatement pst, Reserva reserva) throws SQLException {
         pst.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
         pst.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
@@ -105,16 +110,12 @@ public class ReservaMySQL implements ReservaDAO{
         pst.setInt(5, reserva.getPersona().getIdPersona());
         pst.setInt(6, reserva.getIdConstancia());
     }
-/*
-    private Reserva mapReserva(ResultSet rs) throws SQLException {
-        Reserva reserva = new Reserva();
-        reserva.setIdConstancia(rs.getInt("id_constancia"));
-        reserva.setFecha(rs.getDate("fecha"));
-        reserva.setMetodoPago(EMetodoPago.valueOf(rs.getString("metodo_pago")));
-        reserva.setTotal(rs.getDouble("total"));
-        reserva.setDetallePago(rs.getString("detalle_pago"));
-        
-        return reserva;
-    }
-*/
+    public Reserva mapReserva(ResultSet rs) throws SQLException{
+            Reserva reserva = new Reserva();
+            reserva.setNumReserva(rs.getInt("num_reserva"));
+            reserva.setHorarioIni(rs.getTime("horario_ini").toLocalTime());
+            reserva.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
+            reserva.setFechaReserva(rs.getDate("fecha_reserva"));
+            return reserva;
+        }
 }

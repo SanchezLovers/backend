@@ -19,7 +19,8 @@ public class Reserva extends Constancia{
 
     //Constructor
     public Reserva() {       
-
+        this.persona = new Persona();
+        this.espacio = new Espacio();
     }
 
     //Getter y Setter para numReserva

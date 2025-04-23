@@ -57,13 +57,15 @@ public class Principal{
 //        probarDepartamento();
 //        probarConstancia();
 //        
-   
         ReservaMySQL reservaMySQL = new ReservaMySQL();
+        try{
+            Reserva res = reservaMySQL.obtenerPorId(1);
+            System.out.println("Reserva obtenida por id:");
+            System.out.println(res);
+        }catch (SQLException|IOException ex){
+            ex.printStackTrace();
+        }
         
-        reservaMySQL.eliminar(10);
-        reservaMySQL.eliminar(9);
-        reservaMySQL.eliminar(8);
-        reservaMySQL.eliminar(7);
     }
     
     static Distrito devuelveDistrito(){
