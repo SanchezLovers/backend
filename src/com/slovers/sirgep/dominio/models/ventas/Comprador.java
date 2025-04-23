@@ -35,7 +35,7 @@ public class Comprador extends Persona{
 
         String cadena = "Reservas realizadas por " + this.getNombres() + " " + this.getPrimerApellido() + ":\n";
         for (Reserva r : this.getReservas()) {
-            cadena += r.ToString() + "\n";
+            cadena += r.toString() + "\n";
         }
         return cadena;
     }

@@ -77,14 +77,14 @@ public class Constancia{
     }
 
     //Metodos
-    public String ToString() {
+    @Override
+    public String toString() {
         String cadena="";
-        //String cadena = "Correo: " + this.correo + "\n";
-        //cadena += "Número: " + this.numero + "\n";
-        //cadena += "Método de pago: " + this.metodoPago + "\n";
-        //cadena += "Detalle de pago: " + this.detallePago + "\n";
-        //cadena += "IGV: " + (this.igv*100)+"%" + "\n";
-        //cadena += "Total: " + this.total;
+        cadena += "Fecha: " + this.fecha.toString() + "\n";
+        cadena += "Método de pago: " + this.metodoPago + "\n";
+        cadena += "Detalle de pago: " + this.detallePago + "\n";
+        cadena += "IGV: " + (this.igv*100)+"%" + "\n";
+        cadena += "Total: " + this.total;
         return cadena;
     }
 }

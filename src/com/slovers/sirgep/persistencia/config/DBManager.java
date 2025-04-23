@@ -30,7 +30,7 @@ public class DBManager {
             PASSWORD = linea.split("=")[1]; 
             Class.forName("com.mysql.cj.jdbc.Driver");
             
-            System.out.println("Se conectó a la BD correctamente.");
+            System.out.println("Se conecto a la BD correctamente.");
         } catch (ClassNotFoundException e){
             System.out.println("Error al cargar el driver de MySQL: " + e.getMessage());
             Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, e);
