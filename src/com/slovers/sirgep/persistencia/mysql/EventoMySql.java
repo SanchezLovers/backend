@@ -15,13 +15,14 @@ import java.util.ArrayList;
  * @author willi
  */
 public class EventoMySql implements EventoDAO{
-    
+    //añadiendo activo
     @Override
+    //modificado 
     public void insertar(Evento evento) throws SQLException, IOException{
-        String query = "INSERT INTO Evento(id_evento, nombre, fecha, "
+        String query = "INSERT INTO Evento(nombre, fecha, "
                 + "ubicacion, referencia, cant_entradas_dispo, cant_entradas_vendidas, "
-                + "precio_entradas, Distrito_id_distrito) VALUES (?, ?, ?, ?, ?, ?, "
-                + "?, ?, ?)";
+                + "precio_entradas, Distrito_id_distrito, activo) VALUES "
+                + "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try(Connection con = DBManager.getInstance().getConnection()){
             try(PreparedStatement ps=con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
                 setEventoParameters(ps, evento);
@@ -38,7 +39,7 @@ public class EventoMySql implements EventoDAO{
     @Override
     public void actualizar(Evento evento) throws SQLException, IOException{
         String query = "UPDATE Evento SET nombre=?, fecha=?, ubicacion=?, "
-                + "referencia=?, cant_entradas_dispo=?, can_entradas_vendidas=?, "
+                + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
                 + "precio_entradas=?, Distrito_id_distrito=? WHERE id_evento=?";
         try(Connection con = DBManager.getInstance().getConnection()){
             try(PreparedStatement ps=con.prepareStatement(query)){
@@ -94,12 +95,13 @@ public class EventoMySql implements EventoDAO{
         return eventos;
     }
     
+    //modificado para que trabaje con el id autoincrementado
     public void setEventoParameters(PreparedStatement ps, Evento evento) throws SQLException{
-        ps.setInt(1, evento.getIdEvento());
-        ps.setString(2, evento.getNombre());
-        ps.setDate(3, new java.sql.Date(evento.getFecha().getTime())); //Se convierte el java.util.Date a java.sql.Date
-        ps.setString(4, evento.getUbicacion());
-        ps.setString(5, evento.getReferencia());
+//        ps.setInt(1, evento.getIdEvento());
+        ps.setString(1, evento.getNombre());
+        ps.setDate(2, new java.sql.Date(evento.getFecha().getTime())); //Se convierte el java.util.Date a java.sql.Date
+        ps.setString(3, evento.getUbicacion());
+        ps.setString(4, evento.getReferencia());
         ps.setInt(5, evento.getCantEntradasDispo());
         ps.setInt(6, evento.getCantEntradasVendidas());
         ps.setDouble(7, evento.getPrecioEntrada());

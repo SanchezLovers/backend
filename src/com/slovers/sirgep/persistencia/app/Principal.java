@@ -6,14 +6,17 @@ import com.slovers.sirgep.dominio.models.gestion.Espacio;
 import com.slovers.sirgep.dominio.models.gestion.Departamento;
 import com.slovers.sirgep.dominio.models.gestion.Provincia;
 import com.slovers.sirgep.dominio.models.gestion.Distrito;
+import com.slovers.sirgep.dominio.models.gestion.Evento;
 import com.slovers.sirgep.dominio.models.ventas.Comprador;
 import com.slovers.sirgep.dominio.enums.ETipoEspacio;
 import com.slovers.sirgep.dominio.enums.ETipoAdministrador;
 import com.slovers.sirgep.dominio.enums.ETipoDocumento;
 import com.slovers.sirgep.persistencia.mysql.EspacioMySQL;
 import com.slovers.sirgep.persistencia.mysql.AdministradorMySQL;
+import com.slovers.sirgep.persistencia.mysql.EventoMySql;
 import com.slovers.sirgep.persistencia.config.DBManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.time.LocalTime;
 import java.io.IOException;
 import java.sql.Connection;
@@ -34,19 +37,15 @@ public class Principal{
         //Implementación de pruebas DAO y MySQL
 //        probarEspacio();
         
-        probarAdministrador();
+//        probarAdministrador();
         
-//        probarEvento();
+        probarEvento();
 //        probarDepartamento();
-//        probarProvincia();
+//        probarConstancia();
         
     }
-
-    static void probarEspacio(){
-     //Clase Espacio
-        EspacioMySQL esp = new EspacioMySQL();
-        Espacio espacio =  new Espacio();
-        
+    
+    static Distrito devuelveDistrito(){
         Departamento departamento = new Departamento();
         departamento.setIdDepartamento(1);
         departamento.setNombre("Lima");
@@ -61,6 +60,85 @@ public class Principal{
         distrito.setIdDistrito(1);
         distrito.setProvincia(provincia);
         
+        return distrito;
+    }
+    
+    
+    static void probarEvento(){
+        Evento evento =  new Evento();
+        
+        EventoMySql evSQL = new EventoMySql();
+        
+        Distrito distrito = devuelveDistrito();
+        
+        evento.setCantEntradasDispo(20);
+        evento.setCantEntradasVendidas(0);
+        evento.setDistrito(distrito);
+        evento.setIdEvento(7);
+        evento.setNombre("Festival De Comida Chilena");
+        evento.setPrecioEntrada(5.5);
+        evento.setUbicacion("Avenida La Paz 123");
+        evento.setReferencia("Anfiteatro San Miguel");
+        evento.setFecha(new Date());
+        
+        //INSERTAR
+        
+        try {
+            evSQL.insertar(evento);
+            System.out.println("Evento "+ evento.getNombre() +" insertado."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        //UPDATE
+        evento.setNombre("ELIMINAR");
+        
+        try {
+            evSQL.actualizar(evento);
+            System.out.println("Evento "+ evento.getNombre() +" actualizado."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        
+        //Obtener por Id
+        
+        try {
+            evSQL.obtenerPorId(1);
+            System.out.println("Evento "+ evento.getNombre() +" obtenido por su "
+                    + "ID: " + evento.getIdEvento()); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        //ObtenerTodos
+        try {
+            ArrayList<Evento> eventos = evSQL.obtenerTodos();
+            System.out.println("Lista de Todos los Eventos independiente al estado:");
+            for (Evento e : eventos) {
+            System.out.println(e.getNombre() + " - " + e.getUbicacion());
+            }
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        //ELIMINAR
+        try {
+            evSQL.eliminar(evento.getIdEvento());
+            System.out.println("Espacio "+ evento.getNombre() +" tiene Activo = E.");
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    static void probarEspacio(){
+     //Clase Espacio
+        EspacioMySQL esp = new EspacioMySQL();
+        Espacio espacio =  new Espacio();
+
+
+        Distrito distrito = devuelveDistrito();
+
         espacio.setDistrito(distrito);
         espacio.setHorarioInicioAtencion(LocalTime.NOON);
         espacio.setHorarioFinAtencion(LocalTime.MIDNIGHT);
@@ -72,23 +150,23 @@ public class Principal{
         //----------------------------------------------------------------------
         //INSERT
         //Insertar el espacio
-        
+
         try {
             esp.insertar(espacio);
             System.out.println("Espacio "+ espacio.getNombre() +" insertado."); 
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
-        
+
         //System.out.println("Insertado con ID: " + espacio.getIdEspacio());
-        
+
         //----------------------------------------------------------------------
         //UPDATE
         //esp.actualizar funciona
         Espacio espacioModificar =  espacio;
-        
+
         espacioModificar.setIdEspacio(4);
-//        espacioModificar.setNombre("ELIMINAR");
+    //        espacioModificar.setNombre("ELIMINAR");
         espacioModificar.setPrecioReserva(8);
         espacioModificar.setSuperficie(4100);
         /*
@@ -123,7 +201,7 @@ public class Principal{
             ex.printStackTrace();
         }
         */
-        
+
         //----------------------------------------------------------------------
         //Eliminado lógico 
         /*
@@ -134,7 +212,7 @@ public class Principal{
             ex.printStackTrace();
         }
         //Eliminado Fisico
-        
+
         try {
             esp.eliminarFisico(espacio.getIdEspacio());
             System.out.println("Espacio "+ espacio.getNombre()+ " ha sido permanenentemente eliminado."); 
