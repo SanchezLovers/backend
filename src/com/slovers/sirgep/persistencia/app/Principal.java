@@ -92,8 +92,7 @@ public class Principal{
         
         AdministradorMySQL aSql = new AdministradorMySQL();
 //        aSql.insertar(admin);
-        
-*/
+
         //Prueba de Constancia
         Constancia constancia= new Constancia();
         SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
@@ -112,5 +111,8 @@ public class Principal{
         for(Constancia c : constancias){
             System.out.println(c);
         }
+*/
+        //Prueba de Entrada
+        
     }
 }
