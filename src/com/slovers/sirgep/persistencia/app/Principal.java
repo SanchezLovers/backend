@@ -7,12 +7,8 @@ import com.slovers.sirgep.dominio.models.gestion.Espacio;
 import com.slovers.sirgep.dominio.models.gestion.Departamento;
 import com.slovers.sirgep.dominio.models.gestion.Provincia;
 import com.slovers.sirgep.dominio.models.gestion.Distrito;
-<<<<<<< HEAD
 import com.slovers.sirgep.dominio.models.gestion.Evento;
-=======
-
 import com.slovers.sirgep.dominio.models.ventas.Constancia;
->>>>>>> origin/italo-c-patch-1
 import com.slovers.sirgep.dominio.models.ventas.Comprador;
 
 import com.slovers.sirgep.dominio.enums.ETipoEspacio;
@@ -21,12 +17,9 @@ import com.slovers.sirgep.dominio.enums.ETipoDocumento;
 
 import com.slovers.sirgep.persistencia.mysql.EspacioMySQL;
 import com.slovers.sirgep.persistencia.mysql.AdministradorMySQL;
-<<<<<<< HEAD
 import com.slovers.sirgep.persistencia.mysql.EventoMySql;
-=======
 import com.slovers.sirgep.persistencia.mysql.ConstanciaMySQL;
 
->>>>>>> origin/italo-c-patch-1
 import com.slovers.sirgep.persistencia.config.DBManager;
 
 import java.util.ArrayList;
@@ -35,6 +28,7 @@ import java.time.LocalTime;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
@@ -51,19 +45,12 @@ public class Principal{
         
         
         //Implementación de pruebas DAO y MySQL
-<<<<<<< HEAD
 //        probarEspacio();
         
 //        probarAdministrador();
-=======
-        /*
-        //Clase Espacio
-        EspacioMySQL esp = new EspacioMySQL();
-        Espacio espacio =  new Espacio();
->>>>>>> origin/italo-c-patch-1
         
-        probarEvento();
-//        probarDepartamento();
+//        probarEvento();
+        probarDepartamento();
 //        probarConstancia();
         
     }
@@ -173,7 +160,6 @@ public class Principal{
         //----------------------------------------------------------------------
         //INSERT
         //Insertar el espacio
-<<<<<<< HEAD
 
         try {
             esp.insertar(espacio);
@@ -248,20 +234,6 @@ public class Principal{
     
     static void probarAdministrador(){
         //**********************************************************************
-=======
-        System.out.println(espacio.getHorarioFinAtencion());
-        //esp.insertar(espacio);
-        //System.out.println("Insertado con ID: " + espacio.getIdEspacio());
-
-        // Obtener todos
-        //ArrayList<Espacio> espacios = esp.obtenerTodos();
-        //for (Espacio e : espacios) {
-        //    System.out.println(e.getNombre() + " - " + e.getUbicacion());
-        //}
-        */
-        
-        /*
->>>>>>> origin/italo-c-patch-1
         //PERSONA 
         //ADMINISTRADOR
         Administrador admin = new Administrador();
@@ -276,7 +248,6 @@ public class Principal{
         admin.setTipoDocumento(ETipoDocumento.DNI);
         admin.setTipoAdministrador(ETipoAdministrador.MUNICIPAL);
         
-<<<<<<< HEAD
         AdministradorMySQL adminSql = new AdministradorMySQL();
         //INSERTAR
         /*
@@ -328,6 +299,7 @@ public class Principal{
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
+        //ELIMINAR
         */
         try {
             adminSql.eliminar(admin.getIdPersona());
@@ -336,33 +308,51 @@ public class Principal{
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
-=======
+        
+    }
+    
+    static void probarConstancia(){
+        
         AdministradorMySQL aSql = new AdministradorMySQL();
 //        aSql.insertar(admin);
-        */
+        
         
         //Prueba de Constancia
         Constancia constancia= new Constancia();
         SimpleDateFormat fechaConstancia = new SimpleDateFormat("yyyy-MM-dd");//import java.text.SimpleDateFormat;
         constancia.setIdConstancia(1);//Comentar, si se va a usar el insert
-        constancia.setFecha(fechaConstancia.parse("2025-12-13"));//Necesita throws Exception
+        try{
+            constancia.setFecha(fechaConstancia.parse("2025-12-13"));
+        }catch(ParseException p){}
         constancia.setMetodoPago(EMetodoPago.TARJETA);
         constancia.setTotal(90);
-        constancia.setDetallePago("Fallido (F)");
+        constancia.setDetallePago("Actualizar");
         ConstanciaMySQL constanciaMySQL = new ConstanciaMySQL();
+        
+        //Insertar 
         //constanciaMySQL.insertar(constancia);
+        
+        constancia.setDetallePago("Fallido (F)");
+        //Actualizar
         //constanciaMySQL.actualizar(constancia);
+        
+        //Eliminar
         constanciaMySQL.eliminar(7);
+        
+        //Obtener por ID
         //constancia=constanciaMySQL.obtenerPorId(6);
         //System.out.println(constancia);
+        
+        //Obtener TODOS
         ArrayList<Constancia> constancias=constanciaMySQL.obtenerTodosActivos();
         for(Constancia c : constancias){
             System.out.println(c);
         }
-
-        //Prueba de Entrada
->>>>>>> origin/italo-c-patch-1
+    }
+    
+    static void probarDepartamento(){
         
     }
+
 
 }

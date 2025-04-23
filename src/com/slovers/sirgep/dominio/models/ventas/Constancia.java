@@ -77,14 +77,6 @@ public class Constancia{
     }
 
     //Metodos
-<<<<<<< HEAD
-    public String ToString() {
-        String cadena="";
-        //cadena += "Método de pago: " + this.metodoPago + "\n";
-        //cadena += "Detalle de pago: " + this.detallePago + "\n";
-        //cadena += "IGV: " + (this.igv*100)+"%" + "\n";
-        //cadena += "Total: " + this.total;
-=======
     @Override
     public String toString() {
         String cadena="---------------------------------------------------------------------"+ "\n";
@@ -93,7 +85,6 @@ public class Constancia{
         cadena += "Detalle de pago: " + this.detallePago + "\n";
         cadena += "IGV: " + (this.igv*100)+"%" + "\n";
         cadena += "Total: " + this.total+ "\n";
->>>>>>> origin/italo-c-patch-1
         return cadena;
     }
 }
