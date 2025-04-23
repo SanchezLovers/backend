@@ -76,7 +76,7 @@ public class DepartamentoMySQL implements DepartamentoDAO {
     @Override
     public ArrayList<Departamento> obtenerTodos() throws SQLException, IOException {
         ArrayList<Departamento> lista = new ArrayList<>();
-        String sql = "SELECT * FROM Departamento WHERE activo='A'";
+        String sql = "SELECT * FROM Departamento";
         try (Connection con = DBManager.getInstance().getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {

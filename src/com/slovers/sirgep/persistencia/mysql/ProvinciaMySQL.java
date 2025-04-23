@@ -71,7 +71,7 @@ public class ProvinciaMySQL implements ProvinciaDAO {
     @Override
     public ArrayList<Provincia> obtenerTodos() throws SQLException, IOException {
         ArrayList<Provincia> lista = new ArrayList<>();
-        String sql = "SELECT * FROM Provincia WHERE activo='A'";
+        String sql = "SELECT * FROM Provincia";
         try (Connection con = DBManager.getInstance().getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
