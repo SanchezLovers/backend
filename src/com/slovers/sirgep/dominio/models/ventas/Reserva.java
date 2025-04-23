@@ -5,14 +5,12 @@ import java.util.Date;
 
 import com.slovers.sirgep.dominio.models.gestion.Espacio;
 import com.slovers.sirgep.dominio.models.gestion.Persona;
-import com.slovers.sirgep.dominio.enums.EEstadoReserva;
 
 public class Reserva extends Constancia{
     //Atributos
     private int numReserva;
     private LocalTime horarioIni;
     private LocalTime horarioFin;
-    private EEstadoReserva estado;
     private Date fechaReserva;
 
     //Relaciones
@@ -51,15 +49,6 @@ public class Reserva extends Constancia{
 
     public Reserva setHorarioFin(LocalTime horarioFin) {
         this.horarioFin = horarioFin;
-        return this;
-    }
-    //Getter y Setter para estado
-    public EEstadoReserva getEstado() {
-        return this.estado;
-    }
-    
-    public Reserva setEstado(EEstadoReserva estado) {
-        this.estado = estado;
         return this;
     }
     

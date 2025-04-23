@@ -1,6 +1,5 @@
 package com.slovers.sirgep.persistencia.mysql;
 
-import com.slovers.sirgep.dominio.enums.EEstadoReserva;
 import com.slovers.sirgep.dominio.enums.EMetodoPago;
 import com.slovers.sirgep.dominio.models.gestion.Espacio;
 import com.slovers.sirgep.dominio.models.gestion.Persona;
@@ -18,14 +17,14 @@ import java.util.ArrayList;
  * 
  * @author italo
  */
-public class ReservaMySQL implements ReservaDAO {
+public class ReservaMySQL implements ReservaDAO{
 
-    @Override
+    @Override //funciona, se le quitó el eTipoEstado
     public void insertar(Reserva reserva) throws SQLException, IOException {
         //Anteriormente debí insertar la Constancia que es la clase padre
         String sql = "INSERT INTO Reserva"
-                + "(horario_ini, horario_fin, estado, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, 'A')";
+                + "(horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, 'A')";
         try (Connection con = DBManager.getInstance().getConnection()) {
             try (PreparedStatement pst = con.prepareStatement(sql)) {
                 this.setPreparedStatement(pst,reserva);
@@ -34,11 +33,12 @@ public class ReservaMySQL implements ReservaDAO {
             }
         }
     }
-/*
+    //Modificado - nombres de variables
+    
+    /*
     @Override
     public void actualizar(Reserva reserva) throws SQLException, IOException {
-        String personaSql = "UPDATE Persona SET nombres=?, primer_apellido=?, segundo_apellido=?, correo=?, usuario=?, contrasenia=?, num_documento=?, tipo_documento=?, activo=? WHERE id_persona=?";
-        String reservaSql = "UPDATE Reserva SET tipo_Reserva=? WHERE id_persona_reserva=?";
+        String reservaSql = "UPDATE Reserva SET tipo_Reserva=?,  WHERE id_persona_reserva=?";
 
         try (Connection con = DBManager.getInstance().getConnection()) {
             try (PreparedStatement pstConstancia = con.prepareStatement(personaSql)) {
@@ -54,17 +54,19 @@ public class ReservaMySQL implements ReservaDAO {
             }
         }
     }
-
+*/
     @Override
     public void eliminar(int id) throws SQLException, IOException {
-        String sql = "UPDATE Persona SET activo=0 WHERE id_persona=?";
+        String sql = "DELETE from Reserva WHERE num_reserva=?";
         try (Connection con = DBManager.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+            PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
+            
+            System.out.println("Se ha eliminado la reserva" + id);
         }
     }
-
+    /*
     @Override
     public Reserva obtenerPorId(int id) throws SQLException, IOException {
         String sql = "SELECT * FROM Persona p JOIN Reserva a ON p.id_persona = a.id_persona_reserva WHERE p.id_persona=?";
@@ -97,12 +99,11 @@ public class ReservaMySQL implements ReservaDAO {
     private void setPreparedStatement(PreparedStatement pst, Reserva reserva) throws SQLException {
         pst.setTimestamp(1, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioIni())));
         pst.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), reserva.getHorarioFin())));
-        pst.setString(3, reserva.getEstado().name());
-        pst.setDate(4, new Date(reserva.getFechaReserva().getTime()));
+        pst.setDate(3, new Date(reserva.getFechaReserva().getTime()));
         Espacio espacio=reserva.getEspacio();
-        pst.setInt(5, espacio.getIdEspacio());
-        pst.setInt(6, reserva.getPersona().getIdPersona());
-        pst.setInt(7, reserva.getIdConstancia());
+        pst.setInt(4, espacio.getIdEspacio());
+        pst.setInt(5, reserva.getPersona().getIdPersona());
+        pst.setInt(6, reserva.getIdConstancia());
     }
 /*
     private Reserva mapReserva(ResultSet rs) throws SQLException {

@@ -1,7 +1,6 @@
 package com.slovers.sirgep.persistencia.app;
 
 import com.slovers.sirgep.dominio.enums.EDiaSemana;
-import com.slovers.sirgep.dominio.enums.EEstadoReserva;
 import com.slovers.sirgep.dominio.enums.EMetodoPago;
 
 import com.slovers.sirgep.dominio.models.gestion.Persona;
@@ -55,9 +54,16 @@ public class Principal{
 //        probarAdministrador();
         
 //        probarEvento();
-        probarDepartamento();
+//        probarDepartamento();
 //        probarConstancia();
+//        
+   
+        ReservaMySQL reservaMySQL = new ReservaMySQL();
         
+        reservaMySQL.eliminar(10);
+        reservaMySQL.eliminar(9);
+        reservaMySQL.eliminar(8);
+        reservaMySQL.eliminar(7);
     }
     
     static Distrito devuelveDistrito(){
