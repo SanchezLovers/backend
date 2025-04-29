@@ -31,14 +31,14 @@ public class Main{
     public static void main(String[] args) throws Exception,SQLException, IOException{
         Connection con = DBManager.getInstance().getConnection();
         //Implementación de pruebas DAO y MySQL
-//        probarEspacio();
+        probarEspacio();
         
 //        probarAdministrador();
         
 //        probarEvento();
 
 //        probarDepartamento();
-        probarConstancia();
+//        probarConstancia();
     }
     
     static Distrito devuelveDistrito(){

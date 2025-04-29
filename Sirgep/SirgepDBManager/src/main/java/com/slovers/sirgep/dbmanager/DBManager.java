@@ -17,7 +17,7 @@ public class DBManager {
     private static String PASSWORD;
     
     private DBManager() throws IOException {
-        String pathFile = "com/slovers/sirgep/dbmanager/config/config.properties";
+        String pathFile = "config.properties";
         try{
             InputStream input = DBManager.class.getClassLoader().getResourceAsStream(pathFile);
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
