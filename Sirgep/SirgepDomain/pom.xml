@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.slovers</groupId>
+        <groupId>pe.edu.pucp</groupId>
         <artifactId>Sirgep</artifactId>
         <version>1.0</version>
     </parent>
@@ -11,6 +11,6 @@
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <exec.mainClass>com.slovers.sirgep.domain.SirgepDomain</exec.mainClass>
+        <exec.mainClass>pe.edu.pucp.sirgep.domain.SirgepDomain</exec.mainClass>
     </properties>
 </project>
