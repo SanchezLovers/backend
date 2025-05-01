@@ -27,6 +27,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import pe.edu.pucp.sirgep.da.usuarios.Implementacion.PersonaImpl;
+import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
 public class Main{
     public static void main(String[] args) throws Exception,SQLException, IOException{
@@ -148,12 +152,8 @@ public class Main{
         //INSERT
         //Insertar el espacio
 
-        try {
-            esp.insertar(espacio);
-            System.out.println("Espacio "+ espacio.getNombre() +" insertado."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        esp.insertar(espacio);
+        System.out.println("Espacio "+ espacio.getNombre() +" insertado."); 
 
 
         //----------------------------------------------------------------------
@@ -166,36 +166,23 @@ public class Main{
         espacioModificar.setPrecioReserva(8);
         espacioModificar.setSuperficie(4100);
         
-        try {
-            esp.actualizar(espacioModificar);
-            System.out.println("Espacio " + espacioModificar.getNombre()+ " ha sido modificado."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        esp.actualizar(espacioModificar);
+        System.out.println("Espacio " + espacioModificar.getNombre()+ " ha sido modificado.");
         
         //----------------------------------------------------------------------
         //Obtener todos
         
-        try {
-            ArrayList<Espacio> espacios = esp.obtenerTodos();
-            System.out.println("Lista de Todos los espacios independiente al estado:");
-            for (Espacio e : espacios) {
+        List<Espacio> espacios = esp.listar();
+        System.out.println("Lista de Todos los espacios independiente al estado:");
+        for (Espacio e : espacios) {
             System.out.println(e.getNombre() + " - " + e.getUbicacion());
-            }
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
         }
         
         //----------------------------------------------------------------------
         //obtener por id
         
-        try {
-            Espacio espacioId1 = esp.obtenerPorId(2);
-            System.out.println("Se ha obtenido : " + espacioId1.getNombre() +
-                    " Mediante el ID: " + espacioId1.getIdEspacio()); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        Espacio espacioId1 = esp.buscar(2);
+        System.out.println("Se ha obtenido : " + espacioId1.getNombre() +" Mediante el ID: " + espacioId1.getIdEspacio()); 
         
 
         //----------------------------------------------------------------------

@@ -2,14 +2,8 @@ package pe.edu.pucp.sirgep.da.infraestructura.dao;
 
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import pe.edu.pucp.sirgep.da.base.dao.BaseDAO;
 
-public interface EspacioDAO {
-    void insertar(Espacio espacio) throws SQLException, IOException;
-    void actualizar(Espacio espacio) throws SQLException, IOException;
-    void eliminar(int id) throws SQLException, IOException;
-    ArrayList<Espacio> obtenerTodos() throws SQLException, IOException;
-    Espacio obtenerPorId(int id) throws SQLException, IOException;
+public interface EspacioDAO extends BaseDAO<Espacio>{
+    
 }

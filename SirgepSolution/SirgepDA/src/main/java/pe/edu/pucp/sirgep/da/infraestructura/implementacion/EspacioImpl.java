@@ -1,150 +1,200 @@
 package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
 
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
-import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
-import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
+import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 
-import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Time;
-import java.sql.Statement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 
-public class EspacioImpl implements EspacioDAO {
-    //Ana: estoy agrengando el tipo activo, le agregue i a incio
-    //      estoy agregando el idDistrito
+public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
+
+    @Override
+    protected String getInsertQuery() {
+        String query = "INSERT INTO Espacio(nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
+                + "ubicacion, superficie, precio_reserva, activo, Distrito_id_distrito) values(?, ?, ?, ?, ?, ?, ?, 'A', ?)";
+        return query;
+    }
+
+    @Override
+    protected String getSelectByIdQuery() {
+        String sql = "SELECT id_espacio, nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
+                + "ubicacion, superficie, precio_reserva FROM Espacio WHERE id_espacio=?";
+        return sql;
+    }
+
+    @Override
+    protected String getSelectAllQuery() {
+        String query = "SELECT id_espacio, nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
+                + "ubicacion, superficie, precio_reserva FROM Espacio";
+        return query;
+    }
+
+    @Override
+    protected String getUpdateQuery() {
+        String query = "UPDATE Espacio SET nombre=?, tipo_espacio=?, horario_inicio_atencion=?,"
+                + " horario_fin_atencion=?, ubicacion=?, superficie=?, precio_reserva=? WHERE id_espacio=?";
+        return query;
+    }
+
+    @Override
+    protected String getDeleteLogicoQuery() {
+        String query = "UPDATE Espacio SET activo='E' WHERE id_espacio=?";
+        return query;
+    }
+    
+    @Override
+    protected String getDeleteFisicoQuery() {
+        String query = "DELETE FROM Espacio WHERE id_espacio=?";
+        return query;
+    }
+
+    @Override
+    protected void setInsertParameters(PreparedStatement ps, Espacio e){
+        try{
+            ps.setString(1, e.getNombre());
+            ps.setString(2, e.getTipoEspacio().name());
+            ps.setTime(3,Time.valueOf(e.getHorarioInicioAtencion().toString()+":00"));
+            ps.setTime(4,Time.valueOf(e.getHorarioFinAtencion().toString() + ":00"));
+            ps.setString(5, e.getUbicacion());
+            ps.setDouble(6, e.getSuperficie());
+            ps.setDouble(7, e.getPrecioReserva());
+            ps.setDouble(8, e.getDistrito().getIdDistrito());
+        }catch(SQLException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    protected void setUpdateParameters(PreparedStatement ps, Espacio e){
+        try{
+            ps.setString(1, e.getNombre());
+            ps.setString(2, e.getTipoEspacio().name());
+            ps.setTime(3,Time.valueOf(e.getHorarioInicioAtencion().toString()+":00"));
+            ps.setTime(4,Time.valueOf(e.getHorarioFinAtencion().toString() + ":00"));
+            ps.setString(5, e.getUbicacion());
+            ps.setDouble(6, e.getSuperficie());
+            ps.setDouble(7, e.getPrecioReserva());
+            ps.setInt(8, e.getIdEspacio());
+        }catch(SQLException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    protected Espacio createFromResultSet(ResultSet rs){
+        try{
+            Espacio e=new Espacio();
+            e.setIdEspacio(rs.getInt("id_espacio"));
+            e.setNombre(rs.getString("nombre"));
+            e.setTipoEspacio(ETipoEspacio.valueOf(rs.getString("tipo_espacio")));
+            e.setHorarioInicioAtencion(rs.getTime("horario_inicio_atencion").toLocalTime());
+            e.setHorarioFinAtencion(rs.getTime("horario_fin_atencion").toLocalTime());
+            e.setUbicacion(rs.getString("ubicacion"));
+            e.setSuperficie(rs.getDouble("superficie"));
+            e.setPrecioReserva(rs.getDouble("precio_reserva"));
+            return e;
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void setId(Espacio e, int id) {
+        e.setIdEspacio(id);
+    }
+    
+/*
     @Override 
-    public void insertar(Espacio espacio) throws SQLException, IOException {
-        String query = "INSERT INTO Espacio(nombre, tipo_espacio, horario_inicio_atencion"
-                + ", horario_fin_atencion, ubicacion, superficie, precio_reserva, activo,"
-                + "Distrito_id_distrito) "
-                + " values(?, ?, ?, ?, ?, ?, ?, 'A', ?)";
-        
+    public int insertar(Espacio espacio){
         try(Connection con = DBManager.getInstance().getConnection();
-            PreparedStatement ps = con.prepareStatement(query);) {
-            
-            setEspacioParameters(ps, espacio); //Preparamos el ps con los atributos del objeto
-            ps.executeUpdate(); 
-            
+            PreparedStatement ps = con.prepareStatement(this.getInsertQuery());) {
+            this.setEspacioParameters(ps, espacio); //Preparamos el ps con los atributos del objeto
+            ps.executeUpdate();
             //Traer el último ID autogenerado
             try(Statement st = con.createStatement();
                 ResultSet rskeys = st.executeQuery("select @@last_insert_id");){
-                
                 if(rskeys.next()){
-                    espacio.setIdEspacio(rskeys.getInt(1));
+                    int id=rskeys.getInt(1);
+                    espacio.setIdEspacio(id);
+                    return id;
                 }
             }
-        } 
+            return -1;
+        }catch(SQLException|IOException e){
+            throw new RuntimeException("Error al insertar un espacio: ", e);
+        }
     }
     
-    //Modificado para que consulte datos de la tabla Espacio
     @Override
-    public ArrayList<Espacio> obtenerTodos() throws SQLException, IOException {
-        ArrayList<Espacio> espacios = new ArrayList<>();
-        String query = "SELECT id_espacio, nombre, tipo_espacio,"
-                + " horario_inicio_atencion, horario_fin_atencion, ubicacion, superficie, precio_reserva "
-                + " FROM Espacio ";
-        try(Connection con = DBManager.getInstance().getConnection();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(query);) {        
-            while(rs.next()){
-                Espacio espacio = mapEspacio(rs);
-                espacios.add(espacio);
-            }
-        } 
-        return espacios;
-    }
-    
-    //Ana: Modifiqué los nombres para que funcionen con la tabla de la bd
-    @Override
-    public Espacio obtenerPorId(int id) throws SQLException, IOException {
-        String sql = "SELECT id_espacio, nombre, tipo_espacio,"
-                + " horario_inicio_atencion, horario_fin_atencion, ubicacion, superficie, precio_reserva "
-                + " FROM Espacio WHERE id_espacio=?";
+    public Espacio buscar(int id){
         try (Connection conn = DBManager.getInstance().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(this.getSelectByIdQuery())) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapEspacio(rs);
                 }
             }
+        }catch(SQLException|IOException e){
+            throw new RuntimeException("Error al obtener un espacio: ", e);
         }
         return null;
     }
     
-    //Modificado - nombres de variables
     @Override
-    public void actualizar(Espacio espacio) throws SQLException, IOException {
-        String query = "UPDATE Espacio SET nombre=?, tipo_espacio=?, horario_inicio_atencion=?,"
-                + " horario_fin_atencion=?, ubicacion=?, superficie=?, precio_reserva=? WHERE id_espacio=?";
-        
+    public ArrayList<Espacio> listar(){
+        ArrayList<Espacio> espacios = new ArrayList<>();
+        try(Connection con = DBManager.getInstance().getConnection();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(this.getSelectAllQuery())) {        
+            while(rs.next()){
+                Espacio espacio = mapEspacio(rs);
+                espacios.add(espacio);
+            }
+        }catch(SQLException|IOException e){
+            throw new RuntimeException("Error al obtener un espacios: ", e);
+        }
+        return espacios;
+    }
+    
+    @Override
+    public boolean actualizar(Espacio espacio){
         try (Connection conn = DBManager.getInstance().getConnection(); 
-                PreparedStatement ps = conn.prepareStatement(query)) {
-            
+                PreparedStatement ps = conn.prepareStatement(this.getUpdateQuery())) {
             setEspacioParameters(ps, espacio);
             ps.setInt(8, espacio.getIdEspacio());
             ps.executeUpdate();
+            return true;
+        }catch(SQLException|IOException e){
+            throw new RuntimeException("Error al actualizar un espacio: ", e);
         }
     }
     
     @Override
-    public void eliminar(int id) throws SQLException, IOException {
-        //Eliminación logica
-        String query = "UPDATE Espacio SET activo='E' WHERE id_espacio=?";
+    public boolean eliminarLogico(int id){
         try (Connection conn = DBManager.getInstance().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(query)) {            
+             PreparedStatement ps = conn.prepareStatement(this.getDeleteLogicoQuery())) {            
              ps.setInt(1, id);
              ps.executeUpdate();
+             return true;
+        }catch(SQLException|IOException e){
+            throw new RuntimeException("Error al eliminar logicamente un espacio: ", e);
         }
     }
     
-    public void eliminarFisico(int id) throws SQLException, IOException{
-        String query = "DELETE FROM Espacio WHERE id_espacio=?";
+    public boolean eliminarFisico(int id){
         try(Connection con = DBManager.getInstance().getConnection();
-            PreparedStatement ps = con.prepareStatement(query)){
+            PreparedStatement ps = con.prepareStatement(this.getDeleteFisicoQuery())){
             ps.setInt(1, id);
             ps.executeUpdate();
+            return true;
+        }catch(SQLException|IOException e){
+            throw new RuntimeException("Error al eliminar fisicamente un espacio: ", e);
         }
     }
-    
-    //Ana: estoy editanto los parametros 3 y 4 para que funcionen con 
-    //  Time para mySQL 
-    private void setEspacioParameters(PreparedStatement ps, Espacio e) throws SQLException {
-        ps.setString(1, e.getNombre());
-        ps.setString(2, e.getTipoEspacio().name());
-        //ps.setDate(2, new java.sql.Date(a.getFechaNacimiento().getTime()));// Asumiendo fecha_nacimiento como java.util.Date
-        // e.horarios to string antes de convertilos a time y encadeno segundos
-        ps.setTime(3,
-                Time.valueOf(e.getHorarioInicioAtencion().toString()+":00"));
-        ps.setTime(4,
-                Time.valueOf(e.getHorarioFinAtencion().toString() + ":00"));
-        ps.setString(5, e.getUbicacion());
-        ps.setDouble(6, e.getSuperficie());
-        ps.setDouble(7, e.getPrecioReserva());
-//        int = e.getDistrito().getIdDistrito();
-        Distrito dis = e.getDistrito();
-        ps.setDouble(8, dis.getIdDistrito());
-    }
-    
-    private Espacio mapEspacio(ResultSet rs) throws SQLException {
-        Espacio e = new Espacio();
-        e.setIdEspacio(rs.getInt("id_espacio")); //modifiqué el id
-        e.setNombre(rs.getString("nombre"));
-        e.setTipoEspacio(ETipoEspacio.valueOf(rs.getString("tipo_espacio")));
-        e.setHorarioInicioAtencion(rs.getTime("horario_inicio_atencion").toLocalTime());
-        e.setHorarioFinAtencion(rs.getTime("horario_fin_atencion").toLocalTime());
-        e.setUbicacion(rs.getString("ubicacion"));
-        e.setSuperficie(rs.getDouble("superficie"));
-        e.setPrecioReserva(rs.getDouble("precio_reserva"));
-        
-        //e.setFechaNacimiento(new java.util.Date(rs.getDate("fecha_nacimiento").getTime()));// Asumiendo fecha_nacimiento como java.util.Date
-        //e.setTipoAlumno(TIPO_ALUMNO.valueOf(rs.getString("tipo_alumno")));
-        return e;
-    }
+*/
 }
