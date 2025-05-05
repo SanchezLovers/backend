@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
+package pe.edu.pucp.sirgep.da.infraestructura.test;
 
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.EDiaSemana;
@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
+import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioImpl;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EspacioImplTest {
