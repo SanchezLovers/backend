@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.da.infraestructura.test;
+package pe.edu.pucp.sirgep.da.infraestructura;
 
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.EDiaSemana;
