@@ -16,8 +16,8 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Administrador;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioImpl;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EventoImpl;
 import pe.edu.pucp.sirgep.da.ubicacion.implementacion.DepartamentoImpl;
-import pe.edu.pucp.sirgep.da.usuarios.Implementacion.AdministradorImpl;
-import pe.edu.pucp.sirgep.da.ventas.Implementacion.ConstanciaImpl;
+import pe.edu.pucp.sirgep.da.usuarios.implementacion.AdministradorImpl;
+import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import pe.edu.pucp.sirgep.da.usuarios.Implementacion.PersonaImpl;
+import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
 import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
