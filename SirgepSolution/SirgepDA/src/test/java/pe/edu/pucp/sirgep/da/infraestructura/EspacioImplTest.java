@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
+package pe.edu.pucp.sirgep.da.infraestructura;
 
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.EDiaSemana;
@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
+import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioImpl;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EspacioImplTest {
@@ -24,27 +25,27 @@ public class EspacioImplTest {
 
     @BeforeEach
     public void setUp() {
-        espacio = new Espacio();
+        this.espacio = new Espacio();
         
         Distrito distrito = new Distrito();
         distrito.setIdDistrito(1);
-        espacio.setDistrito(distrito);  // ← usar el mismo distrito
+        this.espacio.setDistrito(distrito);  // ← usar el mismo distrito
 
-        espacio.setHorarioInicioAtencion(LocalTime.of(9, 0));
-        espacio.setHorarioFinAtencion(LocalTime.of(18, 0));
-        espacio.setIdEspacio(1);
-        espacio.setNombre("Sala de reuniones A");
-        espacio.setPrecioReserva(120.50);
-        espacio.setSuperficie(35.75);
-        espacio.setTipoEspacio(ETipoEspacio.TEATRO);
-        espacio.setUbicacion("Edificio B, segundo piso");
-        espacio.setIdEspacio(1);
+        this.espacio.setHorarioInicioAtencion(LocalTime.of(9, 0));
+        this.espacio.setHorarioFinAtencion(LocalTime.of(18, 0));
+        this.espacio.setIdEspacio(1);
+        this.espacio.setNombre("Sala de reuniones A");
+        this.espacio.setPrecioReserva(120.50);
+        this.espacio.setSuperficie(35.75);
+        this.espacio.setTipoEspacio(ETipoEspacio.TEATRO);
+        this.espacio.setUbicacion("Edificio B, segundo piso");
+        this.espacio.setIdEspacio(1);
 
         ArrayList<EDiaSemana> dias = new ArrayList<>();
         dias.add(EDiaSemana.LUNES);
         dias.add(EDiaSemana.MIERCOLES);
         dias.add(EDiaSemana.VIERNES);
-        espacio.setListaDiasAtencion(dias);
+        this.espacio.setListaDiasAtencion(dias);
 
         ArrayList<Reserva> reservas = new ArrayList<>();
         Reserva reserva1 = new Reserva();
@@ -53,16 +54,16 @@ public class EspacioImplTest {
         reserva2.setIdConstancia(2);
         reservas.add(reserva1);
         reservas.add(reserva2);
-        espacio.setReservas(reservas);
+        this.espacio.setReservas(reservas);
 
-        espacioDAO = new EspacioImpl();
+        this.espacioDAO = new EspacioImpl();
     }
 
     @Test
     @Order(1)
     public void testInsertar() {
         System.out.println("Ejecutando test insertar...");
-        int result = espacioDAO.insertar(espacio);
+        int result = this.espacioDAO.insertar(this.espacio);
         assertTrue(result != -1);
     }
 
@@ -70,7 +71,7 @@ public class EspacioImplTest {
     @Order(2)
     public void testBuscar() {
         System.out.println("Ejecutando test buscar...");
-        Espacio result = espacioDAO.buscar(2);
+        Espacio result = this.espacioDAO.buscar(2);
         assertNotNull(result);
     }
 
@@ -78,7 +79,7 @@ public class EspacioImplTest {
     @Order(3)
     public void testListar() {
         System.out.println("Ejecutando test listar...");
-        List<Espacio> lista = espacioDAO.listar();
+        List<Espacio> lista = this.espacioDAO.listar();
         assertNotNull(lista);
     }
 
@@ -86,7 +87,7 @@ public class EspacioImplTest {
     @Order(4)
     public void testActualizar() {
         System.out.println("Ejecutando test actualizar...");
-        boolean result = espacioDAO.actualizar(espacio);
+        boolean result = this.espacioDAO.actualizar(this.espacio);
         assertTrue(result);
     }
 
@@ -94,7 +95,7 @@ public class EspacioImplTest {
     @Order(5)
     public void testEliminarLogico() {
         System.out.println("Ejecutando test eliminarLogico...");
-        boolean result = espacioDAO.eliminarLogico(espacio.getIdEspacio());
+        boolean result = this.espacioDAO.eliminarLogico(this.espacio.getIdEspacio());
         assertTrue(result);
     }
 
@@ -102,7 +103,7 @@ public class EspacioImplTest {
     @Order(6)
     public void testEliminarFisico() {
         System.out.println("Ejecutando test eliminarFisico...");
-        //boolean result = espacioDAO.eliminarFisico(espacio.getIdEspacio());
+        //boolean result = this.espacioDAO.eliminarFisico(this.espacio.getIdEspacio());
         assertTrue(true);
     }
 }

@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.da.usuarios.Implementacion;
+package pe.edu.pucp.sirgep.da.usuarios.implementacion;
 
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.da.usuarios.dao.CompradorDAO;

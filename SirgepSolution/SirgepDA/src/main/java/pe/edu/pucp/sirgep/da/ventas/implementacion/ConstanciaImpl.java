@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.da.ventas.Implementacion;
+package pe.edu.pucp.sirgep.da.ventas.implementacion;
 
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;

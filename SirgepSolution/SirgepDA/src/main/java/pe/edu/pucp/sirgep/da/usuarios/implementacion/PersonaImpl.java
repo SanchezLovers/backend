@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.da.usuarios.Implementacion;
+package pe.edu.pucp.sirgep.da.usuarios.implementacion;
 
 import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
