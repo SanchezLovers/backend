@@ -1,11 +1,5 @@
 package pe.edu.pucp.sirgep.da.usuarios;
 
-import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
-import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
-import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
-import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
-
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

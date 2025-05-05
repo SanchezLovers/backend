@@ -1,11 +1,5 @@
 package pe.edu.pucp.sirgep.da.usuarios;
 
-import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
-import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
-import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
-import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
-
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,13 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
-import pe.edu.pucp.sirgep.da.usuarios.dao.AdministradorDAO;
-import pe.edu.pucp.sirgep.da.usuarios.dao.CompradorDAO;
-import pe.edu.pucp.sirgep.da.usuarios.implementacion.AdministradorImpl;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.CompradorImpl;
-import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoAdministrador;
 import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoDocumento;
-import pe.edu.pucp.sirgep.domain.usuarios.models.Administrador;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
