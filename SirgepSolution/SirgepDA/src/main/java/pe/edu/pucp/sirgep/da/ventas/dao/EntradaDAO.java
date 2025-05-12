@@ -1,15 +1,8 @@
 package pe.edu.pucp.sirgep.da.ventas.dao;
 
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
+import pe.edu.pucp.sirgep.da.base.dao.BaseDAO;
 
-import java.sql.SQLException;
-import java.io.IOException;
-import java.util.ArrayList;
-
-public interface EntradaDAO {
-    void insertar(Entrada entrada) throws SQLException, IOException;
-    void actualizar(Entrada entrada) throws SQLException, IOException;
-    void eliminar(int id) throws SQLException, IOException;
-    ArrayList<Entrada> obtenerTodos() throws SQLException, IOException;
-    Entrada obtenerPorId(int id) throws SQLException, IOException;
+public interface EntradaDAO extends BaseDAO<Entrada>{
+    
 }

@@ -50,8 +50,8 @@ public class ConstanciaImpl implements ConstanciaDAO {
     }
 
     @Override
-    public int actualizar(Constancia constancia){
-        int resultado = 0;
+    public boolean actualizar(Constancia constancia){
+        boolean resultado = false;
         try{
             //Establecer una conexion con la BD
             con = DBManager.getInstance().getConnection();
@@ -60,8 +60,9 @@ public class ConstanciaImpl implements ConstanciaDAO {
             pst = con.prepareStatement(sql);
             this.setPreparedStatement(constancia);
             pst.setInt(5, constancia.getIdConstancia());
-            resultado = pst.executeUpdate();
+            pst.executeUpdate();
             System.out.println("Se ha actualizado la constancia...");
+            resultado =true;
         }catch(IOException|SQLException ex){
             System.out.println("Error al actualizar la constancia: "+ex.getMessage());
         }finally{
@@ -75,8 +76,8 @@ public class ConstanciaImpl implements ConstanciaDAO {
     }
 
     @Override
-    public int eliminar(int idConstancia){
-        int resultado = 0;
+    public boolean eliminarLogico(int idConstancia){
+        boolean resultado = false;
         try{
             //Establecer una conexion con la BD
             con = DBManager.getInstance().getConnection();
@@ -84,10 +85,36 @@ public class ConstanciaImpl implements ConstanciaDAO {
             String sql = "UPDATE Constancia SET activo='E' WHERE id_constancia=?";//Se cambio de 'I' a 'E' 
             pst = con.prepareStatement(sql);
             pst.setInt(1, idConstancia);
-            resultado = pst.executeUpdate();
-            System.out.println("Se ha eliminado la constancia...");
+            pst.executeUpdate();
+            System.out.println("Se ha eliminado logicamente la constancia...");
+            resultado = true;
         }catch(IOException|SQLException ex){
-            System.out.println("Error al eliminar la constancia: "+ex.getMessage());
+            System.out.println("Error al eliminar logicamente la constancia: "+ex.getMessage());
+        }finally{
+            try{
+                con.close();
+            }catch(SQLException ex){
+                System.out.println("Error al cerrar Connection: "+ex.getMessage());
+            }
+        }
+        return resultado;
+    }
+    
+    @Override
+    public boolean eliminarFisico(int idConstancia){
+        boolean resultado = false;
+        try{
+            //Establecer una conexion con la BD
+            con = DBManager.getInstance().getConnection();
+            //Ejecutamos la sentencia SQL
+            String sql = "DELETE FROM Constancia WHERE id_constancia=?";//Se cambio de 'I' a 'E' 
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, idConstancia);
+            pst.executeUpdate();
+            System.out.println("Se ha eliminado fisicamente la constancia...");
+            resultado = true;
+        }catch(IOException|SQLException ex){
+            System.out.println("Error al eliminar fisicamente la constancia: "+ex.getMessage());
         }finally{
             try{
                 con.close();
@@ -99,7 +126,7 @@ public class ConstanciaImpl implements ConstanciaDAO {
     }
 
     @Override
-    public Constancia obtenerPorId(int idConstancia){
+    public Constancia buscar(int idConstancia){
         try{
             con = DBManager.getInstance().getConnection();
             String sql = "SELECT * FROM Constancia WHERE id_Constancia=?";
@@ -128,7 +155,7 @@ public class ConstanciaImpl implements ConstanciaDAO {
     }
 
     @Override
-    public ArrayList<Constancia> obtenerTodosActivos(){
+    public ArrayList<Constancia> listar(){
         ArrayList<Constancia> constancias = new ArrayList<>();
         try{
             con = DBManager.getInstance().getConnection();

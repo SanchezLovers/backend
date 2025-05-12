@@ -87,4 +87,5 @@ public class Constancia{
         cadena += "Total: " + this.total+ "\n";
         return cadena;
     }
+
 }
