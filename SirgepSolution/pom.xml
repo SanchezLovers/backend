@@ -10,6 +10,7 @@
         <module>SirgepDBManager</module>
         <module>SirgepDA</module>
         <module>Sirgep</module>
+        <module>SirgepBusiness</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

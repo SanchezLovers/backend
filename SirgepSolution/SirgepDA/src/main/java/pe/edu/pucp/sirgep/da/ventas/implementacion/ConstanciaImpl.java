@@ -1,176 +1,110 @@
 package pe.edu.pucp.sirgep.da.ventas.implementacion;
-
-import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
-import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
-import pe.edu.pucp.sirgep.dbmanager.DBManager;
-import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
-
-import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
-/*
-import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-*/
-/**
- * @author darkJCdark (Jorge Chamorro)
- */
-public class ConstanciaImpl implements ConstanciaDAO {
-    //Atributos
-    private Connection con;
-    private PreparedStatement pst;
-    private ResultSet rs;
+import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
+import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
+import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
+import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 
-    //Metodos CRUD
+public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDAO{
+
     @Override
-    public int insertar(Constancia constancia) {
-        int resultado=0;
-        try {
-            //Establecer una conexion con la BD
-            con = DBManager.getInstance().getConnection();
-            //Ejecutamos la sentencia SQL
-            String sql = "INSERT INTO Constancia(fecha, metodo_pago, igv, total, detalle_pago, activo) VALUES (?, ?, 0.18, ?, ?, 'A')";
-            pst = con.prepareStatement(sql);
-            this.setPreparedStatement(constancia);
-            resultado=pst.executeUpdate();
-            constancia.setIdConstancia(resultado);
-            System.out.println("Se ha registrado la constancia...");
-        }catch(IOException | SQLException ex){
-            System.out.println("Error al insertar la constancia: "+ex.getMessage());
-        }finally{
-            try{
-                con.close();
-            }catch(SQLException ex){
-                System.out.println("Error al cerrar Connection: "+ex.getMessage());
-            }
-        }
-        return resultado;
+    protected String getInsertQuery() {
+        return "INSERT INTO Constancia(fecha, metodo_pago, igv, total, detalle_pago, activo) VALUES(?,?,?,?,?,?)";
     }
 
     @Override
-    public int actualizar(Constancia constancia){
-        int resultado = 0;
-        try{
-            //Establecer una conexion con la BD
-            con = DBManager.getInstance().getConnection();
-            //Ejecutamos la sentencia SQL
-            String sql = "UPDATE Constancia SET fecha=?, metodo_pago=?, total=?, detalle_pago=? WHERE id_constancia=?";
-            pst = con.prepareStatement(sql);
-            this.setPreparedStatement(constancia);
-            pst.setInt(5, constancia.getIdConstancia());
-            resultado = pst.executeUpdate();
-            System.out.println("Se ha actualizado la constancia...");
-        }catch(IOException|SQLException ex){
-            System.out.println("Error al actualizar la constancia: "+ex.getMessage());
-        }finally{
-            try{
-                con.close();
-            }catch(SQLException ex){
-                System.out.println("Error al cerrar Connection: "+ex.getMessage());
-            }
-        }
-        return resultado;
+    protected String getSelectByIdQuery() {
+        return "SELECT fecha, metodo_pago, igv, total, detalle_pago, activo FROM Constancia WHERE id_constancia = ?";
     }
 
     @Override
-    public int eliminar(int idConstancia){
-        int resultado = 0;
-        try{
-            //Establecer una conexion con la BD
-            con = DBManager.getInstance().getConnection();
-            //Ejecutamos la sentencia SQL
-            String sql = "UPDATE Constancia SET activo='E' WHERE id_constancia=?";//Se cambio de 'I' a 'E' 
-            pst = con.prepareStatement(sql);
-            pst.setInt(1, idConstancia);
-            resultado = pst.executeUpdate();
-            System.out.println("Se ha eliminado la constancia...");
-        }catch(IOException|SQLException ex){
-            System.out.println("Error al eliminar la constancia: "+ex.getMessage());
-        }finally{
-            try{
-                con.close();
-            }catch(SQLException ex){
-                System.out.println("Error al cerrar Connection: "+ex.getMessage());
-            }
-        }
-        return resultado;
+    protected String getSelectAllQuery() {
+        return "SELECT id_constancia, fecha, metodo_pago, igv, total, detalle_pago, activo FROM Constancia";
     }
 
     @Override
-    public Constancia obtenerPorId(int idConstancia){
-        try{
-            con = DBManager.getInstance().getConnection();
-            String sql = "SELECT * FROM Constancia WHERE id_Constancia=?";
-            pst = con.prepareStatement(sql);
-            pst.setInt(1, idConstancia);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                System.out.println("Se ha obtenido la constancia...");
-                return setConstancia();
-            }
-        }catch(IOException|SQLException ex){
-            System.out.println("Error al obtener la constancia: "+ex.getMessage());
-        }finally{
-            try{
-                rs.close();
-            }catch(SQLException ex){
-                System.out.println("Error al cerrar ResultSet: "+ex.getMessage());
-            }
-            try{
-                con.close();
-            }catch(SQLException ex){
-                System.out.println("Error al cerrar Connection: "+ex.getMessage());
-            }
-        }
-        return null;
+    protected String getUpdateQuery() {
+        return "UPDATE Constancia SET fecha = ?,"
+                + "metodo_pago = ?,"
+                + "igv = ?,"
+                + "total = ?,"
+                + "detalle_pago = ? "
+                + " WHERE id_constancia = ?";
     }
 
     @Override
-    public ArrayList<Constancia> obtenerTodosActivos(){
-        ArrayList<Constancia> constancias = new ArrayList<>();
+    protected String getDeleteLogicoQuery() {
+        return "UPDATE Constancia SET activo = 'I' WHERE id_contancia = ?";
+    }
+
+    @Override
+    protected String getDeleteFisicoQuery() {
+        return "DELETE FROM Constancia WHERE id_constancia = ?";
+    }
+
+    @Override
+    protected void setInsertParameters(PreparedStatement ps, Constancia constancia) {
         try{
-            con = DBManager.getInstance().getConnection();
-            String sql = "SELECT * FROM Constancia WHERE activo = 'A'";
-            pst = con.prepareStatement(sql);
-            rs = pst.executeQuery();
-            while(rs.next()){
-                Constancia constancia=this.setConstancia();
-                constancias.add(constancia);
-            }
-            System.out.println("Se ha obtenido las constancias...");
-        }catch(IOException|SQLException ex){
-            System.out.println("Error al obtener las constancias: "+ex.getMessage());
-        }finally{
-            try{
-                rs.close();
-            }catch(SQLException ex){
-                System.out.println("Error al cerrar ResultSet: "+ex.getMessage());
-            }
-            try{
-                con.close();
-            }catch(SQLException ex){
-                System.out.println("Error al cerrar Connection: "+ex.getMessage());
-            }
+            // return "INSERT INTO Constancia(fecha, metodo_pago, igv, total, detalle_pago, activo) VALUES(?,?,?,?,?,?)";
+            ps.setDate(1, new Date(constancia.getFecha().getTime()));
+            ps.setString(2, constancia.getMetodoPago().toString());
+            ps.setDouble(3, constancia.getIgv());
+            ps.setDouble(4, constancia.getTotal());
+            ps.setString(5, constancia.getDetallePago());
+            ps.setString(6, String.valueOf('A')); // es activo
+        }catch(SQLException e){
+            System.out.println("Se encontro un error a la hora de insertar parametros: " + e.getMessage());
         }
-        return constancias;
+    }
+
+    @Override
+    protected Constancia createFromResultSet(ResultSet rs) {
+        Constancia aux = new Constancia();
+        // rs --> tendrá todos los parámetros de la constancia
+        // "SELECT fecha, metodo_pago, igv, total, detalle_pago, activo FROM Constancia WHERE id_constancia = ?";
+        try{
+            aux.setFecha(rs.getDate("fecha"));
+            aux.setMetodoPago(EMetodoPago.valueOf(rs.getString("metodo_pago")));
+            aux.setIgv(rs.getDouble("igv"));
+            aux.setTotal(rs.getDouble("total"));
+            aux.setDetallePago(rs.getString("detalle_pago"));
+            //aux.set(rs.getString("activo").charAt(0)); preguntar sobre el activo?
+        }
+        catch(SQLException e){
+            System.out.println("Se encontro un error a la hora de crear desde RS: " + e.getMessage());
+        }
+        return aux;
+    }
+
+    @Override
+    protected void setUpdateParameters(PreparedStatement ps, Constancia entity) {
+        try{
+            /*
+            "UPDATE Constancia SET fecha = ?,"
+                + "metodo_pago = ?,"
+                + "igv = ?,"
+                + "total = ?,"
+                + "detalle_pago = ?
+                WHERE id_constancia = ?";
+            */
+            ps.setDate(1, new Date(entity.getFecha().getTime()));
+            ps.setString(2, entity.getMetodoPago().toString());
+            ps.setDouble(3, entity.getIgv());
+            ps.setDouble(4, entity.getTotal());
+            ps.setString(5, entity.getDetallePago());
+            ps.setInt(6, entity.getIdConstancia());
+        }catch(SQLException e){
+            System.out.println("Se encontro un error a la hora de MODIFICAR tabla: " + e.getMessage());
+        }
+    }
+
+    @Override
+    protected void setId(Constancia entity, int id) {
+        entity.setIdConstancia(id);
     }
     
-    //Metodos complementarios
-    private void setPreparedStatement(Constancia constancia) throws SQLException {
-        pst.setDate(1, new Date(constancia.getFecha().getTime()));////import java.sql.Date;
-        pst.setString(2, constancia.getMetodoPago().toString());
-        pst.setDouble(3, constancia.getTotal());
-        pst.setString(4, constancia.getDetallePago());
-    }
-    private Constancia setConstancia() throws SQLException {
-        Constancia constancia = new Constancia();
-        constancia.setIdConstancia(rs.getInt("id_constancia"));
-        constancia.setFecha(rs.getDate("fecha"));
-        constancia.setMetodoPago(EMetodoPago.valueOf(rs.getString("metodo_pago")));
-        constancia.setTotal(rs.getDouble("total"));
-        constancia.setDetallePago(rs.getString("detalle_pago"));
-        return constancia;
-    }
+    
 }
