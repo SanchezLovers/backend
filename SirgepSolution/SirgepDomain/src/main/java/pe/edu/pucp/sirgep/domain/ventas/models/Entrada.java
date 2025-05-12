@@ -10,7 +10,7 @@ public class Entrada extends Constancia{
     //Relaciones
     private Funcion funcion;
     private Persona persona;
-
+    
     //Constructor
     public Entrada(){
 

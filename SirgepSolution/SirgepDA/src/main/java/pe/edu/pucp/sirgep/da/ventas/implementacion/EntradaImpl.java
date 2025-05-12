@@ -69,9 +69,10 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     @Override
     protected void setInsertParameters(PreparedStatement ps, Entrada entrada){
         try{
-            ps.setInt(1, entrada.getPersona().getIdPersona());
-            ps.setInt(2, entrada.getIdConstancia());
-            ps.setInt(3, entrada.getFuncion().getIdFuncion());
+            ps.setInt(1, entrada.getNumEntrada());
+            ps.setInt(2, entrada.getPersona().getIdPersona());
+            ps.setInt(3, entrada.getIdConstancia());
+            ps.setInt(4, entrada.getFuncion().getIdFuncion());
         }catch(SQLException e){
             throw new RuntimeException(e);
         }
@@ -96,7 +97,14 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Entrada entrada){
-        setInsertParameters(ps, entrada);
+        try{
+            ps.setInt(1, entrada.getPersona().getIdPersona());
+            ps.setInt(2, entrada.getIdConstancia());
+            ps.setInt(3, entrada.getFuncion().getIdFuncion());
+            ps.setInt(4, entrada.getNumEntrada());
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
     }
     
     @Override
