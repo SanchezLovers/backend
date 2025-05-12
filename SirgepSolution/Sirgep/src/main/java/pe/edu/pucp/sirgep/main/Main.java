@@ -244,43 +244,22 @@ public class Main{
         admin.setTipoAdministrador(ETipoAdministrador.MUNICIPAL);
         
         
-        try {
-            adminSql.actualizar(admin);
-            System.out.println("Administrador "+ admin.getNombres()+" actualizado correctamente.");
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        adminSql.actualizar(admin);
+        System.out.println("Administrador "+ admin.getNombres()+" actualizado correctamente.");
         
         //CONSULTAR POR ID
-        
-        try {
-            Administrador adminConsulta = adminSql.obtenerPorId(admin.getIdPersona());
-            System.out.println("Persona "+ adminConsulta.getNombres()+ 
-                    " obtenida mediante su ID: " + adminConsulta.getIdPersona());
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        Administrador adminConsulta = adminSql.buscar(admin.getIdPersona());
+        System.out.println("Persona "+ adminConsulta.getNombres()+" obtenida mediante su ID: " + adminConsulta.getIdPersona());
         
         //CONSULTAR TODOS
-        
-        try {
-            ArrayList<Administrador> admins = adminSql.obtenerTodos();
-            System.out.println("Lista de Todos los adminsitradores independiente al estado:");
-            for (Administrador a : admins) {
+        List<Administrador> admins = adminSql.listar(); //ELIMINAR
+        System.out.println("Lista de Todos los adminsitradores independiente al estado:");
+        for (Administrador a : admins) {
             System.out.println(a.getNombres() + " - " + a.getTipoAdministrador());
-            }
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
         }
-        //ELIMINAR
         
-        try {
-            adminSql.eliminar(admin.getIdPersona());
-            System.out.println("Estado de actividad de Adminsitrador " + admin.getNombres() + 
-                    " marcado como 'E' (eliminado)");
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        adminSql.eliminarLogico(admin.getIdPersona());
+        System.out.println("Estado de actividad de Adminsitrador " + admin.getNombres() +" marcado como 'E' (eliminado)");
         
     }
     
@@ -306,14 +285,14 @@ public class Main{
         constanciaMySQL.actualizar(constancia);
         
         //Eliminar
-        constanciaMySQL.eliminar(7);
+        constanciaMySQL.eliminarLogico(7);
         
         //Obtener por ID
-        constancia=constanciaMySQL.obtenerPorId(6);
+        constancia=constanciaMySQL.buscar(6);
         System.out.println(constancia);
         
         //Obtener TODOS
-        ArrayList<Constancia> constancias=constanciaMySQL.obtenerTodosActivos();
+        List<Constancia> constancias=constanciaMySQL.listar();
         for(Constancia c : constancias){
             System.out.println(c);
         }
