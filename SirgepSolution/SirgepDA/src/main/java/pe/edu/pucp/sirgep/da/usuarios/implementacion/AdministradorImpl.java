@@ -8,127 +8,192 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Administrador;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
+import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 
-public class AdministradorImpl implements AdministradorDAO {
+public class AdministradorImpl extends BaseImpl<Administrador> implements AdministradorDAO {
+    private final PersonaImpl personaDAO;
+    
+    public AdministradorImpl() {
+        this.personaDAO = new PersonaImpl();
+    }
+    
     @Override
-    public void insertar(Administrador admin) throws SQLException, IOException {
-        String personaSql = "INSERT INTO Persona(nombres, primer_apellido, "
-                + "segundo_apellido, correo, usuario, contrasenia, num_documento,"
-                + " tipo_documento, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'A')";
-        String adminSql = "INSERT INTO Administrador(id_persona_admin,"
-                + " tipo_administrador, activo) VALUES (?, ?, 'A')";
-        //se añadio parametros al insert de Adminsitrador
-        try (Connection con = DBManager.getInstance().getConnection()) {
-            try (PreparedStatement psPersona = con.prepareStatement(personaSql, Statement.RETURN_GENERATED_KEYS)) {
-                setPersonaParameters(psPersona, admin);
-                psPersona.executeUpdate();
-                try (ResultSet rs = psPersona.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        admin.setIdPersona(rs.getInt(1));
-                    }
-                }
-            }
+    protected String getInsertQuery(){
+        String sql = "INSERT INTO Administrador(tipo_administrador,id_persona_admin,activo)"
+                   + "VALUES (?,?,'A')";
+        return sql;
+    }
+    @Override
+    protected String getSelectByIdQuery(){
+        String sql = "SELECT id_persona,nombres,primer_apellido,"
+                + "segundo_apellido,correo,usuario,contrasenia,num_documento,"
+                + "tipo_documento,tipo_administrador "
+                + "FROM Persona P, Administrador A "
+                + "WHERE P.id_persona = A.id_persona_admin AND id_persona_admin=?";
+        return sql;
+    }
+    @Override
+    protected String getSelectAllQuery(){
+        String sql = "SELECT id_persona,nombres,primer_apellido,"
+                + "segundo_apellido,correo,usuario,contrasenia,num_documento,"
+                + "tipo_documento,tipo_administrador "
+                + "FROM Persona P, Administrador A "
+                + "WHERE P.id_persona = A.id_persona_admin AND P.activo='A'";
+        return sql;
+    }
+    @Override
+    protected String getUpdateQuery(){
+        String sql = "UPDATE Administrador "
+                   + "SET tipo_administrador=?"
+                   + "WHERE id_persona_admin=?";
+        return sql;
+    }
+    @Override
+    protected String getDeleteLogicoQuery(){
+        String sql = "UPDATE Administrador SET activo='E' WHERE id_persona_admin=?";
+        return sql;
+    }
+    @Override
+    protected String getDeleteFisicoQuery(){
+        String query = "DELETE FROM Administrador WHERE id_persona_admin=?";
+        return query;
+    }
+    
+    @Override
+    protected void setInsertParameters(PreparedStatement ps, Administrador administrador){
+        try{
+            ps.setString(1, administrador.getTipoAdministrador().toString());
+            ps.setInt(2, administrador.getIdPersona());
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    protected Administrador createFromResultSet(ResultSet rs){
+        try{
+            Administrador persona = new Administrador();
+            persona.setIdPersona(rs.getInt("id_persona"));
+            persona.setNombres(rs.getString("nombres"));
+            persona.setPrimerApellido(rs.getString("primer_apellido"));
+            persona.setSegundoApellido(rs.getString("segundo_apellido"));
+            persona.setCorreo(rs.getString("correo"));
+            persona.setUsuario(rs.getString("usuario"));
+            persona.setContrasenia(rs.getString("contrasenia"));
+            persona.setNumDocumento(rs.getString("num_documento"));
+            persona.setTipoDocumento(ETipoDocumento.valueOf(rs.getString("tipo_documento")));
+            persona.setTipoAdministrador(ETipoAdministrador.valueOf(rs.getString("tipo_administrador")));
+            return persona;
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    protected void setUpdateParameters(PreparedStatement ps, Administrador administrador){
+        setInsertParameters(ps, administrador);//son los mismos
+    }
+    @Override
+    protected void setId(Administrador entity, int id){
+        entity.setIdPersona(id);
+    }
 
-            try (PreparedStatement psAdmin = con.prepareStatement(adminSql)) {
-                psAdmin.setInt(1, admin.getIdPersona());
-                psAdmin.setString(2, admin.getTipoAdministrador().name());
-                psAdmin.executeUpdate();
+    /*Sobrecarga necesaria para primero insertar a la persona*/
+    @Override
+    public int insertar(Administrador entity) {
+        int id=-1;
+        try (Connection conn = DBManager.getInstance().getConnection()){
+            conn.setAutoCommit(false);
+            id = personaDAO.insertar(entity);//Insercion inicial de la persona
+            try(PreparedStatement pst=conn.prepareStatement(this.getInsertQuery(),Statement.RETURN_GENERATED_KEYS)){
+                this.setInsertParameters(pst, entity);
+                pst.executeUpdate();
+                conn.commit();
+                System.out.println("Se inserto un registro de "+entity.getClass().getSimpleName()+" con ID="+id);
+            }catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query insertado", e);
+            }finally {
+                conn.setAutoCommit(true);
             }
+        }catch(IOException|SQLException e) {
+            throw new RuntimeException("Error al insertar "+entity.getClass().getSimpleName()+" ", e);
+        }finally{
+            return id;
         }
     }
     
-    //se eliminó la edición de activo ya que no se edita esa informacion en 
-        // estas funciones
+    /*Sobrecarga necesaria para actualizar tambien a la persona*/
     @Override
-    public void actualizar(Administrador admin) throws SQLException, IOException {
-        String personaSql = "UPDATE Persona SET nombres=?, primer_apellido=?,"
-                + " segundo_apellido=?, correo=?, usuario=?, contrasenia=?, "
-                + "num_documento=?, tipo_documento=? WHERE id_persona=?";
-        String adminSql = "UPDATE Administrador SET tipo_administrador=?"
-                + " WHERE id_persona_admin=?";
-        
-
-        try (Connection con = DBManager.getInstance().getConnection()) {
-            try (PreparedStatement psPersona = con.prepareStatement(personaSql)) {
-                setPersonaParameters(psPersona, admin);
-                psPersona.setInt(9, admin.getIdPersona());
-                psPersona.executeUpdate();
+    public boolean actualizar(Administrador entity) {
+        boolean resultado=false;
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+            resultado = personaDAO.actualizar(entity);//Actualizacion incial de la persona
+            try (PreparedStatement ps = conn.prepareStatement(this.getUpdateQuery())) {
+                this.setUpdateParameters(ps, entity);
+                ps.executeUpdate();
+                conn.commit();
+                System.out.println("Se actualizo un registro de " + entity.getClass().getSimpleName());
+                resultado=true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query de actualizado ", e);
+            } finally {
+                conn.setAutoCommit(true);
             }
-
-            try (PreparedStatement psAdmin = con.prepareStatement(adminSql)) {
-                psAdmin.setString(1, admin.getTipoAdministrador().name());
-                psAdmin.setInt(2, admin.getIdPersona());
-                psAdmin.executeUpdate();
-            }
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException("Error al actualizar " + entity.getClass().getSimpleName(), e);
+        }finally{
+            return resultado;
         }
     }
 
+    /*Sobrecarga necesaria para eliminar tambien a la persona*/
     @Override
-    public void eliminar(int id) throws SQLException, IOException {
-        String sql = "UPDATE Persona SET activo='E' WHERE id_persona=?";
-        try (Connection con = DBManager.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        }
-    }
-
-    @Override
-    public Administrador obtenerPorId(int id) throws SQLException, IOException {
-        String sql = "SELECT * FROM Persona p JOIN Administrador a ON p.id_persona = a.id_persona_admin WHERE p.id_persona=?";
-
-        try (Connection con = DBManager.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapAdministrador(rs);
+    public boolean eliminarLogico(int id) {
+        boolean resultado=false;
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(this.getDeleteLogicoQuery())) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                conn.commit();
+                System.out.println("Se elimino logicamente un registro con ID=" + id);
+                resultado=personaDAO.eliminarLogico(id);//Eliminacion de Persona, luego de eliminar Administrador
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query de eliminado lógico " , e);
+            } finally {
+                conn.setAutoCommit(true);
             }
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException("Error al eliminar logicamente la entidad", e);
+        }finally{
+            return resultado;
         }
-        return null;
     }
-
-    //Editado para que devuelva todos independientemente del estado.
+    
+    /*Sobrecarga necesaria para eliminar tambien a la persona*/
     @Override
-    public ArrayList<Administrador> obtenerTodos() throws SQLException, IOException {
-        ArrayList<Administrador> administradores = new ArrayList<>();
-        String sql = "SELECT * FROM Persona p JOIN Administrador a ON p.id_persona = a.id_persona_admin";
-
-        try (Connection con = DBManager.getInstance().getConnection();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                administradores.add(mapAdministrador(rs));
+    public boolean eliminarFisico(int id) {
+        boolean resultado=false;
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(this.getDeleteFisicoQuery())) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                conn.commit();
+                System.out.println("Se elimino fisicamente un registro con ID=" + id);
+                resultado=personaDAO.eliminarFisico(id);//Eliminacion de Persona, luego de eliminar  Administrador
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query de eliminado físico ", e);
+            } finally {
+                conn.setAutoCommit(true);
             }
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException("Error al eliminar fisicamente la entidad", e);
+        }finally{
+            return resultado;
         }
-        return administradores;
-    }
-
-    private void setPersonaParameters(PreparedStatement ps, Administrador admin) throws SQLException {
-        ps.setString(1, admin.getNombres());
-        ps.setString(2, admin.getPrimerApellido());
-        ps.setString(3, admin.getSegundoApellido());
-        ps.setString(4, admin.getCorreo());
-        ps.setString(5, admin.getUsuario());
-        ps.setString(6, admin.getContrasenia());
-        ps.setString(7, admin.getNumDocumento());
-        ps.setString(8, admin.getTipoDocumento().name());
-//        ps.setInt(9, 1); // activo
-    // Ana : Se comenta el setero del activo para que pueeda ser hardcodeado entre A, Y y E.
-    }
-
-    private Administrador mapAdministrador(ResultSet rs) throws SQLException {
-        Administrador admin = new Administrador();
-        admin.setIdPersona(rs.getInt("id_persona"));
-        admin.setNombres(rs.getString("nombres"));
-        admin.setPrimerApellido(rs.getString("primer_apellido"));
-        admin.setSegundoApellido(rs.getString("segundo_apellido"));
-        admin.setCorreo(rs.getString("correo"));
-        admin.setUsuario(rs.getString("usuario"));
-        admin.setContrasenia(rs.getString("contrasenia"));
-        admin.setNumDocumento(rs.getString("num_documento"));
-        admin.setTipoDocumento(ETipoDocumento.valueOf(rs.getString("tipo_documento")));
-        admin.setTipoAdministrador(ETipoAdministrador.valueOf(rs.getString("tipo_administrador")));
-        return admin;
     }
 }

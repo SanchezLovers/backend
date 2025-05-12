@@ -21,6 +21,7 @@ public class Reserva extends Constancia{
     public Reserva() {       
         this.persona = new Persona();
         this.espacio = new Espacio();
+        this.fechaReserva = new Date();
     }
 
     //Getter y Setter para numReserva
@@ -52,7 +53,7 @@ public class Reserva extends Constancia{
         this.horarioFin = horarioFin;
         return this;
     }
-    
+
     //Getter y Setter para fechaReserva
     public Date getFechaReserva() {
         return this.fechaReserva;
