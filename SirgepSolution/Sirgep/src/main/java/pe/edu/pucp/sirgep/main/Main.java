@@ -1,12 +1,10 @@
 package pe.edu.pucp.sirgep.main;
 
-
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
-import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
@@ -14,7 +12,6 @@ import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoAdministrador;
 import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoDocumento;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Administrador;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioImpl;
-import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EventoImpl;
 import pe.edu.pucp.sirgep.da.ubicacion.implementacion.DepartamentoImpl;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.AdministradorImpl;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
@@ -157,21 +154,12 @@ public class Main{
 
         //----------------------------------------------------------------------
         //Eliminado lógico 
+        esp.eliminarLogico(espacioModificar.getIdEspacio());
+
         
-        try {
-            esp.(espacioModificar.getIdEspacio());
-            System.out.println("Espacio "+ espacioModificar.getNombre() +" tiene Activo = E.");
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
         //Eliminado Fisico
-        
-        try {
-            esp.eliminarFisico(espacio.getIdEspacio());
-            System.out.println("Espacio "+ espacio.getNombre()+ " ha sido permanenentemente eliminado."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+//        esp.eliminarFisico(espacio.getIdEspacio());
+
     }
     
     static void probarAdministrador(){
