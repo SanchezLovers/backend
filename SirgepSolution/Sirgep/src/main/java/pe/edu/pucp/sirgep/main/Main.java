@@ -1,12 +1,10 @@
 package pe.edu.pucp.sirgep.main;
 
-
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
-import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
@@ -14,13 +12,11 @@ import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoAdministrador;
 import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoDocumento;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Administrador;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioImpl;
-import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EventoImpl;
 import pe.edu.pucp.sirgep.da.ubicacion.implementacion.DepartamentoImpl;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.AdministradorImpl;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.time.LocalTime;
 import java.io.IOException;
 import java.sql.Connection;
@@ -28,26 +24,31 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
-import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
-import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
+
+/**
+ * 
+ * @author Ana Gabriela 
+ */
 
 public class Main{
+
     public static void main(String[] args) throws Exception,SQLException, IOException{
         Connection con = DBManager.getInstance().getConnection();
         //Implementación de pruebas DAO y MySQL
 //        probarEspacio();
         
-//        probarAdministrador();
+        probarAdministrador();
         
 //        probarEvento();
 
 //        probarDepartamento();
+//        probarProvincia();
+        
         probarConstancia();
     }
-    
-    static Distrito devuelveDistrito(){
 
+
+    static Distrito devuelveDistrito(){
         Departamento departamento = new Departamento();
         departamento.setIdDepartamento(1);
         departamento.setNombre("Lima");
@@ -61,75 +62,8 @@ public class Main{
         distrito.setNombre("San Miguel");
         distrito.setIdDistrito(1);
         distrito.setProvincia(provincia);
+        
         return distrito;
-    }
-    
-    
-    static void probarEvento(){
-        Evento evento =  new Evento();
-        
-        EventoImpl evSQL = new EventoImpl();
-        
-        Distrito distrito = devuelveDistrito();
-        
-        evento.setCantEntradasDispo(20);
-        evento.setCantEntradasVendidas(0);
-        evento.setDistrito(distrito);
-        evento.setIdEvento(7);
-        evento.setNombre("Festival De Comida Chilena");
-        evento.setPrecioEntrada(5.5);
-        evento.setUbicacion("Avenida La Paz 123");
-        evento.setReferencia("Anfiteatro San Miguel");
-        evento.setFecha(new Date());
-        
-        //INSERTAR
-        
-        try {
-            evSQL.insertar(evento);
-            System.out.println("Evento "+ evento.getNombre() +" insertado."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
-        
-        //UPDATE
-        evento.setNombre("ELIMINAR");
-        
-        try {
-            evSQL.actualizar(evento);
-            System.out.println("Evento "+ evento.getNombre() +" actualizado."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
-        
-        
-        //Obtener por Id
-        
-        try {
-            evSQL.obtenerPorId(1);
-            System.out.println("Evento "+ evento.getNombre() +" obtenido por su "
-                    + "ID: " + evento.getIdEvento()); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
-        
-        //ObtenerTodos
-        try {
-            ArrayList<Evento> eventos = evSQL.obtenerTodos();
-            System.out.println("Lista de Todos los Eventos independiente al estado:");
-            for (Evento e : eventos) {
-            System.out.println(e.getNombre() + " - " + e.getUbicacion());
-            }
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
-        
-        //ELIMINAR
-        try {
-            evSQL.eliminar(evento.getIdEvento());
-            System.out.println("Espacio "+ evento.getNombre() +" tiene Activo = E.");
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
     static void probarEspacio(){
@@ -143,7 +77,7 @@ public class Main{
         espacio.setDistrito(distrito);
         espacio.setHorarioInicioAtencion(LocalTime.NOON);
         espacio.setHorarioFinAtencion(LocalTime.MIDNIGHT);
-        espacio.setNombre("PRUEBA 2 Cancha de Futbol Universitaria");
+        espacio.setNombre("PRUEBA LAB Cancha de Futbol Universitaria");
         espacio.setPrecioReserva(6);
         espacio.setSuperficie(400);
         espacio.setTipoEspacio(ETipoEspacio.CANCHA);
@@ -151,6 +85,16 @@ public class Main{
         //----------------------------------------------------------------------
         //INSERT
         //Insertar el espacio
+        /*
+        try {
+            esp.insertar(espacio);
+            System.out.println("Espacio "+ espacio.getNombre() +" insertado."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        */
+        //System.out.println("Insertado con ID: " + espacio.getIdEspacio());
+        
 
         esp.insertar(espacio);
         System.out.println("Espacio "+ espacio.getNombre() +" insertado."); 
@@ -158,14 +102,28 @@ public class Main{
 
         //----------------------------------------------------------------------
         //UPDATE
-//        esp.actualizar funciona
+        //esp.actualizar funciona
         Espacio espacioModificar =  espacio;
-
-        espacioModificar.setIdEspacio(4);
-    //        espacioModificar.setNombre("ELIMINAR");
-        espacioModificar.setPrecioReserva(8);
-        espacioModificar.setSuperficie(4100);
         
+        espacioModificar.setIdEspacio(6);
+        espacioModificar.setNombre("ELIMINAR");
+        espacioModificar.setPrecioReserva(8);
+        espacioModificar.setSuperficie(6000);
+        /*
+        try {
+            esp.actualizar(espacioModificar);
+            System.out.println("Espacio " + espacioModificar.getNombre()+ " ha sido modificado."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        */
+        //----------------------------------------------------------------------
+        //Obtener todos
+        /*
+        try {
+            ArrayList<Espacio> espacios = esp.obtenerTodos();
+            System.out.println("Lista de Todos los espacios independiente al estado:");
+            for (Espacio e : espacios) {
         esp.actualizar(espacioModificar);
         System.out.println("Espacio " + espacioModificar.getNombre()+ " ha sido modificado.");
         
@@ -177,9 +135,19 @@ public class Main{
         for (Espacio e : espacios) {
             System.out.println(e.getNombre() + " - " + e.getUbicacion());
         }
+        */
         
         //----------------------------------------------------------------------
         //obtener por id
+        /*
+        try {
+            Espacio espacioId1 = esp.obtenerPorId(6);
+            System.out.println("Se ha obtenido : " + espacioId1.getNombre() +
+                    " Mediante el ID: " + espacioId1.getIdEspacio()); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        */
         
         Espacio espacioId1 = esp.buscar(2);
         System.out.println("Se ha obtenido : " + espacioId1.getNombre() +" Mediante el ID: " + espacioId1.getIdEspacio()); 
@@ -187,22 +155,12 @@ public class Main{
 
         //----------------------------------------------------------------------
         //Eliminado lógico 
-        /*
-        try {
-            esp.eliminar(espacioModificar.getIdEspacio());
-            System.out.println("Espacio "+ espacioModificar.getNombre() +" tiene Activo = E.");
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
-        //Eliminado Fisico
+        esp.eliminarLogico(espacioModificar.getIdEspacio());
 
-        try {
-            esp.eliminarFisico(espacio.getIdEspacio());
-            System.out.println("Espacio "+ espacio.getNombre()+ " ha sido permanenentemente eliminado."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
-        */
+        
+        //Eliminado Fisico
+//        esp.eliminarFisico(espacio.getIdEspacio());
+
     }
     
     static void probarAdministrador(){
@@ -212,37 +170,35 @@ public class Main{
         Administrador admin = new Administrador();
 //        
         admin.setIdPersona(1);
-        admin.setNombres("Benny");
+        admin.setNombres("Melanie PRUEBA");
         admin.setContrasenia("benz123");
-        admin.setPrimerApellido("Benny");
-        admin.setSegundoApellido("Blanco");
-        admin.setCorreo("benny@admin.com");
-        admin.setNumDocumento("123455");
+        admin.setPrimerApellido("Blanco");
+        admin.setSegundoApellido("Baca");
+        admin.setCorreo("Beny@admin.com");
+        admin.setNumDocumento("123456");
         admin.setTipoDocumento(ETipoDocumento.DNI);
-        admin.setTipoAdministrador(ETipoAdministrador.MUNICIPAL);
+        admin.setTipoAdministrador(ETipoAdministrador.REGIONAL);
         
         AdministradorImpl adminSql = new AdministradorImpl();
         //INSERTAR
         /*
         try {
-            adminSql.insertar(admin);
-            System.out.println("Administrador " + admin.getTipoAdministrador() + " "
-                    + admin.getNombres()+" insertado correctamente.");
+            aSql.insertar(admin);
+            System.out.println("Persona "+ admin.getNombres()+" insertada correctamente.");
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
         }
-        */
         
+        */
         //ACTUALIZAR 
-        admin.setIdPersona(3);
+        admin.setIdPersona(6);
         admin.setNombres("ELIMINAR");
-        admin.setContrasenia("ELIMINAR");
+        admin.setContrasenia("anac123");
         admin.setPrimerApellido("Cris");
         admin.setSegundoApellido("tina");
         admin.setCorreo("anaC@admin.com");
         admin.setNumDocumento("123456");
         admin.setTipoAdministrador(ETipoAdministrador.MUNICIPAL);
-        
         
         adminSql.actualizar(admin);
         System.out.println("Administrador "+ admin.getNombres()+" actualizado correctamente.");
@@ -260,8 +216,18 @@ public class Main{
         
         adminSql.eliminarLogico(admin.getIdPersona());
         System.out.println("Estado de actividad de Adminsitrador " + admin.getNombres() +" marcado como 'E' (eliminado)");
+
+        /*
+        try {
+            aSql.actualizar(admin);
+            System.out.println("Persona "+ admin.getNombres()+" actualizada correctamente.");
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        */
         
     }
+
     
     static void probarConstancia(){
         
