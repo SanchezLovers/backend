@@ -37,7 +37,7 @@ public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDA
 
     @Override
     protected String getDeleteLogicoQuery() {
-        return "UPDATE Constancia SET activo = 'I' WHERE id_contancia = ?";
+        return "UPDATE Constancia SET activo = 'I' WHERE id_constancia = ?";
     }
 
     @Override
