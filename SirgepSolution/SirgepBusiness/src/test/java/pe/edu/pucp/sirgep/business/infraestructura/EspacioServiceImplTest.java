@@ -1,6 +1,5 @@
 package pe.edu.pucp.sirgep.business.infraestructura;
 
-import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.EDiaSemana;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
