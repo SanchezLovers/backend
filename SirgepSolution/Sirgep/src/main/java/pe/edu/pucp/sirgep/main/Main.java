@@ -64,73 +64,51 @@ public class Main{
         return distrito;
     }
     
-//    
-//    static void probarEvento(){
-//        Evento evento =  new Evento();
-//        
-//        EventoImpl evSQL = new EventoImpl();
-//        
-//        Distrito distrito = devuelveDistrito();
-//        
-//        evento.setCantEntradasDispo(20);
-//        evento.setCantEntradasVendidas(0);
-//        evento.setDistrito(distrito);
-//        evento.setIdEvento(7);
-//        evento.setNombre("Festival De Comida Chilena");
-//        evento.setPrecioEntrada(5.5);
-//        evento.setUbicacion("Avenida La Paz 123");
-//        evento.setReferencia("Anfiteatro San Miguel");
-//        evento.setFecha(new Date());
-//        
-//        //INSERTAR
-//        
-//        try {
-//            evSQL.insertar(evento);
-//            System.out.println("Evento "+ evento.getNombre() +" insertado."); 
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        
-//        //UPDATE
-//        evento.setNombre("ELIMINAR");
-//        
-//        try {
-//            evSQL.actualizar(evento);
-//            System.out.println("Evento "+ evento.getNombre() +" actualizado."); 
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        
-//        
-//        //Obtener por Id
-//        
-//        try {
-//            evSQL.obtenerPorId(1);
-//            System.out.println("Evento "+ evento.getNombre() +" obtenido por su "
-//                    + "ID: " + evento.getIdEvento()); 
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        
-//        //ObtenerTodos
-//        try {
-//            ArrayList<Evento> eventos = evSQL.obtenerTodos();
-//            System.out.println("Lista de Todos los Eventos independiente al estado:");
-//            for (Evento e : eventos) {
-//            System.out.println(e.getNombre() + " - " + e.getUbicacion());
-//            }
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        
-//        //ELIMINAR
-//        try {
-//            evSQL.eliminar(evento.getIdEvento());
-//            System.out.println("Espacio "+ evento.getNombre() +" tiene Activo = E.");
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//    }
+    
+    static void probarEvento(){
+        Evento evento =  new Evento();
+        
+        EventoImpl evSQL = new EventoImpl();
+        
+        Distrito distrito = devuelveDistrito();
+        
+        evento.setCantEntradasDispo(20);
+        evento.setCantEntradasVendidas(0);
+        evento.setDistrito(distrito);
+        evento.setIdEvento(7);
+        evento.setNombre("Festival De Comida Chilena");
+        evento.setPrecioEntrada(5.5);
+        evento.setUbicacion("Avenida La Paz 123");
+        evento.setReferencia("Anfiteatro San Miguel");
+        evento.setFecha(new Date());
+        
+        //INSERTAR
+        evSQL.insertar(evento);
+        System.out.println("Evento "+ evento.getNombre() +" insertado.");
+        
+        //UPDATE
+        evento.setNombre("ELIMINAR");
+        
+        evSQL.actualizar(evento);
+        System.out.println("Evento "+ evento.getNombre() +" actualizado.");
+        
+        
+        //Obtener por Id
+        evSQL.buscar(1);
+        System.out.println("Evento "+ evento.getNombre() +" obtenido por su "
+                + "ID: " + evento.getIdEvento());
+        
+        //ObtenerTodos
+        List<Evento> eventos = evSQL.listar();
+        System.out.println("Lista de Todos los Eventos independiente al estado:");
+        for (Evento e : eventos) {
+            System.out.println(e.getNombre() + " - " + e.getUbicacion());
+        }
+        
+        //ELIMINAR
+        evSQL.eliminarLogico(evento.getIdEvento());
+        System.out.println("Espacio "+ evento.getNombre() +" tiene Activo = E.");
+    }
 
     static void probarEspacio(){
      //Clase Espacio
@@ -298,64 +276,64 @@ public class Main{
         }
     }
     
-//    static void probarDepartamento(){
-//        //Probando rama de Ana Cristina:
-//        
-//        Departamento departamento = new Departamento();
-//        
-//        departamento.setIdDepartamento(17);
-//        departamento.setNombre("TesteoDepa");
-//        
-//        DepartamentoImpl depaMySQL = new DepartamentoImpl();
-//        //inserts
-//
-//        departamento.setNombre("TestDepa2");
-//        departamento.setIdDepartamento(19);
-//        try {
-//            depaMySQL.insertar(departamento);
-//            System.out.println("Departamento "+ departamento.getNombre() +" insertado."); 
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        
-//        //actualizar
-//        
-//        departamento.setIdDepartamento(17);
-//        departamento.setNombre("ELIMINAR");
-//        try {
-//            depaMySQL.actualizar(departamento);
-//            System.out.println("Departamento "+ departamento.getNombre() +" actualizado."); 
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        // obtener por ID
-//        try {
-//            Departamento d = depaMySQL.obtenerPorId(departamento.getIdDepartamento());
-//            System.out.println("obtenido por ID: "); 
-//            System.out.println(d); 
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        
-//        // obtener Todos
-//        
-//        try {
-//            ArrayList<Departamento> depas = depaMySQL.obtenerTodos();
-//            System.out.println("Lista de Departamentos idependientemente de la columna Activo:");
-//            for(Departamento d : depas){
-//                System.out.println(d);
-//            }
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        
-//        
-//        //eliminar logico
-//        try {
-//            depaMySQL.eliminar(departamento.getIdDepartamento());
-//            System.out.println("Departamento "+ departamento.getNombre() +" con estado E (Eliminado)."); 
-//        } catch (SQLException | IOException ex) {
-//            ex.printStackTrace();
-//        }
-//    }
+    static void probarDepartamento(){
+        //Probando rama de Ana Cristina:
+        
+        Departamento departamento = new Departamento();
+        
+        departamento.setIdDepartamento(17);
+        departamento.setNombre("TesteoDepa");
+        
+        DepartamentoImpl depaMySQL = new DepartamentoImpl();
+        //inserts
+
+        departamento.setNombre("TestDepa2");
+        departamento.setIdDepartamento(19);
+        try {
+            depaMySQL.insertar(departamento);
+            System.out.println("Departamento "+ departamento.getNombre() +" insertado."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        //actualizar
+        
+        departamento.setIdDepartamento(17);
+        departamento.setNombre("ELIMINAR");
+        try {
+            depaMySQL.actualizar(departamento);
+            System.out.println("Departamento "+ departamento.getNombre() +" actualizado."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        // obtener por ID
+        try {
+            Departamento d = depaMySQL.obtenerPorId(departamento.getIdDepartamento());
+            System.out.println("obtenido por ID: "); 
+            System.out.println(d); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        // obtener Todos
+        
+        try {
+            ArrayList<Departamento> depas = depaMySQL.obtenerTodos();
+            System.out.println("Lista de Departamentos idependientemente de la columna Activo:");
+            for(Departamento d : depas){
+                System.out.println(d);
+            }
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        
+        //eliminar logico
+        try {
+            depaMySQL.eliminar(departamento.getIdDepartamento());
+            System.out.println("Departamento "+ departamento.getNombre() +" con estado E (Eliminado)."); 
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
