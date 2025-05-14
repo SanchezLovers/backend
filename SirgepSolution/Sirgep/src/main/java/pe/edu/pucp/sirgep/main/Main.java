@@ -289,51 +289,30 @@ public class Main{
 
         departamento.setNombre("TestDepa2");
         departamento.setIdDepartamento(19);
-        try {
-            depaMySQL.insertar(departamento);
-            System.out.println("Departamento "+ departamento.getNombre() +" insertado."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        depaMySQL.insertar(departamento);
+        System.out.println("Departamento "+ departamento.getNombre() +" insertado.");
         
         //actualizar
         
         departamento.setIdDepartamento(17);
         departamento.setNombre("ELIMINAR");
-        try {
-            depaMySQL.actualizar(departamento);
-            System.out.println("Departamento "+ departamento.getNombre() +" actualizado."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        depaMySQL.actualizar(departamento);
+        System.out.println("Departamento "+ departamento.getNombre() +" actualizado.");
         // obtener por ID
-        try {
-            Departamento d = depaMySQL.obtenerPorId(departamento.getIdDepartamento());
-            System.out.println("obtenido por ID: "); 
-            System.out.println(d); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        Departamento d = depaMySQL.buscar(departamento.getIdDepartamento());
+        System.out.println("obtenido por ID: ");
+        System.out.println(d);
         
         // obtener Todos
-        
-        try {
-            ArrayList<Departamento> depas = depaMySQL.obtenerTodos();
-            System.out.println("Lista de Departamentos idependientemente de la columna Activo:");
-            for(Departamento d : depas){
-                System.out.println(d);
-            }
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+        List<Departamento> departamentos = depaMySQL.listar();
+        System.out.println("Lista de Departamentos idependientemente de la columna Activo:");
+        for(Departamento dep : departamentos){
+            System.out.println(dep);
         }
         
         
         //eliminar logico
-        try {
-            depaMySQL.eliminar(departamento.getIdDepartamento());
-            System.out.println("Departamento "+ departamento.getNombre() +" con estado E (Eliminado)."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
+        depaMySQL.eliminarLogico(departamento.getIdDepartamento());
+        System.out.println("Departamento "+ departamento.getNombre() +" con estado E (Eliminado).");
     }
 }

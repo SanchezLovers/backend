@@ -58,7 +58,7 @@ public class FuncionServiceImplTest {
     @Order(2)
     public void testBuscar() {
         System.out.println("Ejecutando test buscar...");
-        Funcion result = this.funcionService.buscar(1);
+        Funcion result = this.funcionService.buscar(2);
         assertNotNull(result);
     }
 
