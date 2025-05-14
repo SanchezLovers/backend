@@ -1,6 +1,5 @@
 package pe.edu.pucp.sirgep.main;
 
-
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
@@ -19,7 +18,6 @@ import pe.edu.pucp.sirgep.da.ubicacion.implementacion.DepartamentoImpl;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.AdministradorImpl;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.time.LocalTime;
 import java.io.IOException;
@@ -28,21 +26,18 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
-import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
-import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
 public class Main{
     public static void main(String[] args) throws Exception,SQLException, IOException{
         Connection con = DBManager.getInstance().getConnection();
         //Implementación de pruebas DAO y MySQL
-//        probarEspacio();
+        probarEspacio();
         
-//        probarAdministrador();
+        probarAdministrador();
         
-//        probarEvento();
+        probarEvento();
 
-//        probarDepartamento();
+        probarDepartamento();
         probarConstancia();
     }
     
@@ -164,23 +159,12 @@ public class Main{
         
 
         //----------------------------------------------------------------------
-        //Eliminado lógico 
-        /*
-        try {
-            esp.eliminar(espacioModificar.getIdEspacio());
-            System.out.println("Espacio "+ espacioModificar.getNombre() +" tiene Activo = E.");
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
-        //Eliminado Fisico
+        //Eliminado lógico
+        esp.eliminarLogico(espacioModificar.getIdEspacio()); //Eliminado Fisico
+        System.out.println("Espacio "+ espacioModificar.getNombre() +" tiene Activo = E.");
 
-        try {
-            esp.eliminarFisico(espacio.getIdEspacio());
-            System.out.println("Espacio "+ espacio.getNombre()+ " ha sido permanenentemente eliminado."); 
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
-        */
+        esp.eliminarFisico(espacio.getIdEspacio());
+        System.out.println("Espacio "+ espacio.getNombre()+ " ha sido permanenentemente eliminado.");
     }
     
     static void probarAdministrador(){
@@ -201,15 +185,9 @@ public class Main{
         
         AdministradorImpl adminSql = new AdministradorImpl();
         //INSERTAR
-        /*
-        try {
-            adminSql.insertar(admin);
-            System.out.println("Administrador " + admin.getTipoAdministrador() + " "
-                    + admin.getNombres()+" insertado correctamente.");
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-        }
-        */
+        adminSql.insertar(admin);
+        System.out.println("Administrador " + admin.getTipoAdministrador() + " "
+                + admin.getNombres()+" insertado correctamente.");
         
         //ACTUALIZAR 
         admin.setIdPersona(3);
@@ -309,7 +287,6 @@ public class Main{
         for(Departamento dep : departamentos){
             System.out.println(dep);
         }
-        
         
         //eliminar logico
         depaMySQL.eliminarLogico(departamento.getIdDepartamento());
