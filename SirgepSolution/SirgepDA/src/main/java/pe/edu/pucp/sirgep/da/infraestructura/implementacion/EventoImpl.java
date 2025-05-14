@@ -10,112 +10,129 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
+import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
+import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 
-public class EventoImpl implements EventoDAO{
+public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     //añadiendo activo
     @Override
     //modificado 
-    public void insertar(Evento evento) throws SQLException, IOException{
+    protected String getInsertQuery(){
         String query = "INSERT INTO Evento(nombre, fecha, "
-                + "ubicacion, referencia, cant_entradas_dispo, cant_entradas_vendidas, "
-                + "precio_entradas, Distrito_id_distrito, activo) VALUES "
-                + "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try(Connection con = DBManager.getInstance().getConnection()){
-            try(PreparedStatement ps=con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
-                setEventoParameters(ps, evento);
-                ps.executeUpdate();
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        evento.setIdEvento(rs.getInt(1));
-                    }
-                }
-            }
-        }
+                + "descripcion, ubicacion, referencia, cant_entradas_dispo, cant_entradas_vendidas, "
+                + "precio_entradas, Distrito_id_distrito, activo, url_imagen) VALUES "
+                + "(?, ?, ?, ?, ?, ?, ?, ?, ?, 'A', ?)";
+        return query;
     }
 
     @Override
-    public void actualizar(Evento evento) throws SQLException, IOException{
-        String query = "UPDATE Evento SET nombre=?, fecha=?, ubicacion=?, "
+    protected String getUpdateQuery(){
+        String query = "UPDATE Evento SET nombre=?, fecha=?, descripcion=?, ubicacion=?, "
                 + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
-                + "precio_entradas=?, Distrito_id_distrito=? WHERE id_evento=?";
-        try(Connection con = DBManager.getInstance().getConnection()){
-            try(PreparedStatement ps=con.prepareStatement(query)){
-                setEventoParameters(ps, evento);
-                ps.setInt(9, evento.getIdEvento());
-                ps.executeUpdate();
-            }
-        }
+                + "precio_entradas=?, Distrito_id_distrito=?, url_imagen=? WHERE id_evento=?";
+        return query;
     }
 
     @Override
-    public void eliminar(int idEvento) throws SQLException, IOException{
+    protected String getDeleteLogicoQuery(){
         String query = "UPDATE Evento SET activo='E' WHERE id_evento=?";
-        try(Connection con = DBManager.getInstance().getConnection()){
-            try(PreparedStatement ps=con.prepareStatement(query)){
-                ps.setInt(1, idEvento);
-                ps.executeUpdate();
-            }
-        }
+        return query;
+    }
+    @Override
+    protected String getDeleteFisicoQuery() {
+        String query = "DELETE FROM Evento WHERE id_espacio=?";
+        return query;
     }
 
+
     @Override
-    public Evento obtenerPorId(int idEvento) throws SQLException, IOException{
+    protected String getSelectByIdQuery(){
         String query = "SELECT e.*, d.id_distrito, d.nombre as nombre_distrito, "
                 + "d.Provincia_id_provincia, d.activo FROM Evento e JOIN Distrito d "
                 + "ON e.Distrito_id_distrito=d.id_distrito "
                 + "WHERE e.id_evento=?";
-        try(Connection con = DBManager.getInstance().getConnection()){
-            try(PreparedStatement ps=con.prepareStatement(query)){
-                ps.setInt(1, idEvento);
-                try(ResultSet rs = ps.executeQuery()){
-                    if(rs.next()) return mapEvento(rs);
-                }
-            }
-        }
-        return null;
+        
+        return query;
     }
 
     @Override
-    public ArrayList<Evento> obtenerTodos() throws SQLException, IOException{
-        ArrayList<Evento> eventos = new ArrayList<>();
+    public String getSelectAllQuery(){
         String query = "SELECT e.*, d.id_distrito, d.nombre as nombre_distrito, "
                 + "d.Provincia_id_provincia, d.activo FROM Evento e JOIN Distrito d "
                 + "ON e.Distrito_id_distrito=d.id_distrito";
-        try(Connection con = DBManager.getInstance().getConnection()){
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(query);
-            while(rs.next()){
-                eventos.add(mapEvento(rs));
-            }
+        
+        return query;
+    }
+/*(nombre, fecha, "
+                + "descripcion, ubicacion, referencia, cant_entradas_dispo, cant_entradas_vendidas, "
+                + "precio_entradas, Distrito_id_distrito, activo, url_imagen)*/
+    @Override
+    protected void setInsertParameters(PreparedStatement ps, Evento e){
+        try{
+            ps.setString(1, e.getNombre());
+            ps.setDate(2, Date.valueOf(e.getFecha().toString()));
+            ps.setString(3, e.getDescripción());
+            ps.setString(4, e.getUbicacion());
+            ps.setString(5, e.getReferencia());
+            ps.setInt(6, e.getCantEntradasDispo());
+            ps.setInt(7, e.getCantEntradasVendidas());
+            ps.setDouble(8, e.getPrecioEntrada());
+            ps.setInt(9, e.getDistrito().getIdDistrito());
+            ps.setString(10, e.getUrlImagen());
+        }catch(SQLException ex){
+            throw new RuntimeException(ex);
         }
-        return eventos;
+    }
+/*SET nombre=?, fecha=?, descripcion=?, ubicacion=?, "
+                + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
+                + "precio_entradas=?, Distrito_id_distrito=?, url_imagen=? */
+    @Override
+    protected void setUpdateParameters(PreparedStatement ps, Evento e){
+        try{
+            ps.setString(1, e.getNombre());
+            ps.setDate(2, Date.valueOf(e.getFecha().toString()));
+            ps.setString(3, e.getDescripción());
+            ps.setString(4, e.getUbicacion());
+            ps.setString(5, e.getReferencia());
+            ps.setInt(6, e.getCantEntradasDispo());
+            ps.setInt(7, e.getCantEntradasVendidas());
+            ps.setDouble(8, e.getPrecioEntrada());
+            ps.setInt(9, e.getDistrito().getIdDistrito());
+            ps.setString(10, e.getUrlImagen());
+            ps.setInt(11, e.getIdEvento());
+        }catch(SQLException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    protected Evento createFromResultSet(ResultSet rs){
+        try{
+            Evento e=new Evento();
+            e.setIdEvento(rs.getInt("id_evento"));
+            e.setCantEntradasDispo(rs.getInt("cant_entradas_dispo"));
+            e.setCantEntradasVendidas(rs.getInt("cant_entradas_vendidas"));
+            e.setNombre(rs.getString("nombre"));
+            e.setUbicacion(rs.getString("ubicacion"));
+            e.setReferencia(rs.getString("referencia"));
+            e.setDescripcion(rs.getString("descripcion"));
+            e.setFecha(rs.getDate("fecha"));
+            e.setPrecioEntrada(rs.getDouble("precio_entradas"));
+            return e;
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void setId(Evento e, int id) {
+        e.setIdEvento(id);
     }
     
-    //modificado para que trabaje con el id autoincrementado
-    public void setEventoParameters(PreparedStatement ps, Evento evento) throws SQLException{
-//        ps.setInt(1, evento.getIdEvento());
-        ps.setString(1, evento.getNombre());
-        ps.setDate(2, new java.sql.Date(evento.getFecha().getTime())); //Se convierte el java.util.Date a java.sql.Date
-        ps.setString(3, evento.getUbicacion());
-        ps.setString(4, evento.getReferencia());
-        ps.setInt(5, evento.getCantEntradasDispo());
-        ps.setInt(6, evento.getCantEntradasVendidas());
-        ps.setDouble(7, evento.getPrecioEntrada());
-        ps.setInt(8, evento.getDistrito().getIdDistrito());
-        ps.setString(9, "A");
-    }
     
-    public Evento mapEvento(ResultSet rs) throws SQLException{
-        Evento evento = new Evento();
-        evento.setIdEvento(rs.getInt("id_evento"));
-        evento.setNombre(rs.getString("nombre"));
-        evento.setFecha(rs.getDate("fecha"));
-        evento.setUbicacion(rs.getString("ubicacion"));
-        evento.setReferencia(rs.getString("referencia"));
-        evento.setCantEntradasDispo(rs.getInt("cant_entradas_dispo"));
-        evento.setCantEntradasVendidas(rs.getInt("cant_entradas_vendidas"));
-        evento.setPrecioEntrada(rs.getDouble("precio_entradas"));
-        return evento;
-    }
 }

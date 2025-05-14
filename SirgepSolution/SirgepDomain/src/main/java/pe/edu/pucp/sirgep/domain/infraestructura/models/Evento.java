@@ -11,6 +11,8 @@ public class Evento {
     private String nombre;
     private String ubicacion;
     private String referencia;
+    private String descripcion;
+    private String urlImagen;
     private int cantEntradasDispo;
     private int cantEntradasVendidas;
     private double precioEntrada;
@@ -59,6 +61,22 @@ public class Evento {
 
     public void setReferencia(String referencia) {
         this.referencia = referencia;
+    }
+    // Getter y Setter para descripción
+    public String getDescripción() {
+        return this.descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+    // Getter y Setter para url
+    public String getUrlImagen() {
+        return this.urlImagen;
+    }
+
+    public void setUrlImagen(String url) {
+        this.urlImagen = url;
     }
 
     // Getter y Setter para cantEntradasDispo
@@ -122,11 +140,13 @@ public class Evento {
         cadena += "Evento: " + this.nombre + "\n";
         cadena += "Fecha: " + this.fecha + "\n";
         cadena+=this.distrito.toString()+ "\n";
+        cadena += "Descripción: " + this.descripcion + "\n";
         cadena += "Ubicación: " + this.ubicacion + "\n";
         cadena += "Referencia: " + this.referencia + "\n";
         cadena += "Precio entrada: " + this.precioEntrada + "\n";
         cadena += "Entradas disponibles: " + this.cantEntradasDispo + "\n";
         cadena += "Entradas vendidas: " + this.cantEntradasVendidas+ "\nFunciones:\n";
+        cadena += "URL de la Imagen: " + this.urlImagen+ "\nFunciones:\n";
         for(Funcion f:this.funciones){
             cadena+=f.toString()+"\n";
         }
