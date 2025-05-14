@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package pe.edu.pucp.sirgep.business.ventas.impl;
 
 import java.util.List;
@@ -10,10 +6,6 @@ import pe.edu.pucp.sirgep.da.ventas.dao.ReservaDAO;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ReservaImpl;
 import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
 
-/**
- *
- * @author benny
- */
 public class ReservaServiceImpl implements IReservaService {
 
     private final ReservaDAO reservaDAO;

@@ -17,5 +17,4 @@ public class AdministradorServiceImpl implements IAdministradorService{
     public Administrador buscar(int id) {
         return administradorDAO.buscar(id);
     }
-    
 }

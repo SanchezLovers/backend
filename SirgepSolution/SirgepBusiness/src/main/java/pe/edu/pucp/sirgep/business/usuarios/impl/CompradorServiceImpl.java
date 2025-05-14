@@ -43,5 +43,4 @@ public class CompradorServiceImpl implements ICompradorService{
     public boolean eliminarFisico(int id) {
         return compradorDAO.eliminarFisico(id);
     }
-    
 }

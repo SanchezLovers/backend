@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package pe.edu.pucp.sirgep.business.ventas.impl;
 
 import java.util.List;
@@ -10,10 +6,6 @@ import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 
-/**
- *
- * @author benny
- */
 public class ConstanciaServiceImpl implements IConstanciaService {
 
     private final ConstanciaDAO constanciaDAO;
@@ -51,5 +43,4 @@ public class ConstanciaServiceImpl implements IConstanciaService {
     public boolean eliminarFisico(int id) {
         return constanciaDAO.eliminarFisico(id);
     }
-    
 }
