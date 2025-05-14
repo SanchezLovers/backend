@@ -25,29 +25,29 @@ public class FuncionImpl extends BaseImpl<Funcion>implements FuncionDAO{
 
     @Override
     protected String getSelectByIdQuery() {
-        return "SELECT idfuncion, hora_inicio, hora_fin, Evento_idEvento FROM "
-                + "Funcion WHERE idfuncion = ?";
+        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento FROM "
+                + "Funcion WHERE id_funcion = ?";
     }
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT idfuncion, hora_inicio, hora_fin, Evento_idEvento FROM Funcion";
+        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento FROM Funcion";
     }
 
     @Override
     protected String getUpdateQuery() {
         return "UPDATE Funcion SET hora_inicio = ?, hora_fin = ?, "
-                + "Evento_idEvento = ? WHERE idfuncion = ?";
+                + "Evento_idEvento = ? WHERE id_funcion = ?";
     }
 
     @Override
     protected String getDeleteLogicoQuery() {
-        return "UPDATE Funcion SET activo = 'E' WHERE idfuncion = ?";
+        return "UPDATE Funcion SET activo = 'E' WHERE id_funcion = ?";
     }
 
     @Override
     protected String getDeleteFisicoQuery() {
-        return "DELETE FROM Funcion WHERE idfuncion = ?";
+        return "DELETE FROM Funcion WHERE id_funcion = ?";
     }
     
     @Override
@@ -77,7 +77,7 @@ public class FuncionImpl extends BaseImpl<Funcion>implements FuncionDAO{
     protected Funcion createFromResultSet(ResultSet rs) {
         try {
             Funcion f = new Funcion();
-            f.setIdFuncion(rs.getInt("idfuncion"));
+            f.setIdFuncion(rs.getInt("id_funcion"));
             f.setHoraInicio(rs.getTime("hora_inicio").toLocalTime());
             f.setHoraFin(rs.getTime("hora_fin").toLocalTime());
 
@@ -95,6 +95,4 @@ public class FuncionImpl extends BaseImpl<Funcion>implements FuncionDAO{
     protected void setId(Funcion f, int id) {
         f.setIdFuncion(id);
     }
-
-    
 }
