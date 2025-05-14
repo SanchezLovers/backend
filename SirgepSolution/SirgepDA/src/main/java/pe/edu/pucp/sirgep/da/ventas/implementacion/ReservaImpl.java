@@ -16,6 +16,7 @@ import java.util.List;
 import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
+import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 
 public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
 
@@ -35,7 +36,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
 
     @Override
     protected String getSelectByIdQuery() {
-        return "SELECT horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo FROM Reserva WHERE num_reserva = ?";
+        return "SELECT horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva FROM Reserva WHERE num_reserva = ?";
     }
 
     @Override
@@ -144,26 +145,29 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
     
     @Override
     public int insertar(Reserva entity){
-        int id=-1;
+        int idC=-1, idR=-1;
         try (Connection con = DBManager.getInstance().getConnection()){
             con.setAutoCommit(false);
             // insertar la constancia
-            id = constanciaDAO.insertar(entity);
-            try(PreparedStatement ps=con.prepareStatement(this.getInsertQuery(),Statement.RETURN_GENERATED_KEYS)){
-                this.setInsertParameters(ps, entity); //armamos el ps con la entidad Reserva pasada
-                ps.executeUpdate(); // se inserta la Reserva ahora
-                con.commit();
-                System.out.println("Se inserto un registro de "+entity.getClass().getSimpleName()+" con ID="+id);
-            }catch (SQLException e) {
-                con.rollback();
-                throw new RuntimeException("Error al insertar la entidad" + e.getMessage());
-            }finally {
-                con.setAutoCommit(true);
-            }
+            idC = constanciaDAO.insertar((Constancia)entity);
+            idR = super.insertar(entity);
+//            try(PreparedStatement ps=con.prepareStatement(this.getInsertQuery(),Statement.RETURN_GENERATED_KEYS)){
+//                this.setInsertParameters(ps, entity); //armamos el ps con la entidad Reserva pasada
+//                ps.executeUpdate(); // se inserta la Reserva ahora
+//                con.commit();
+//                System.out.println("Se inserto un registro de "+entity.getClass().getSimpleName()+" con ID="+id);
+//            }catch (SQLException e) {
+//                con.rollback();
+//                throw new RuntimeException("Error al insertar la entidad" + e.getMessage());
+//            }finally {
+//                con.setAutoCommit(true);
+//            }
         }catch(IOException|SQLException e) {
             throw new RuntimeException("Error al insertar "+entity.getClass().getSimpleName()+" ", e);
         }finally{
-            return id;
+            if(idR>0)
+                return idR;
+            return -1;
         }
     }
 //    T buscar(int id);
@@ -205,7 +209,10 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
     }
     
     public boolean eliminarFisicoDerivada(int id, Connection con) throws SQLException{
+        // primero, debemos eliminar la constancia
+        
         try(PreparedStatement ps = con.prepareStatement(this.getDeleteLogicoQuery(), Statement.RETURN_GENERATED_KEYS)){
+            if(!constanciaDAO.eliminarFisico(id)) return false;
             ps.setInt(1, id);
             ps.executeUpdate();
             con.commit();
@@ -282,11 +289,11 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             
             // intentamos insertar constancia
             seEliminoFisC = constanciaDAO.eliminarLogico(id);
-            if(!seEliminoFisC) throw new RuntimeException("No se actualizo la constancia correctamente");
+            if(!seEliminoFisC) throw new RuntimeException("No se ELIMINO de forma FISICA la constancia correctamente");
             
             // ahora, necesito insertar la reserva como tal
             seEliminoFisR = eliminarFisicoDerivada(id,con);
-            if(!seEliminoFisR) throw new RuntimeException("No se actualizo la reserva correctamente");
+            if(!seEliminoFisR) throw new RuntimeException("No se ELIMINO de forma FISICA la reserva correctamente");
         }
         catch(SQLException|IOException e){
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
@@ -294,7 +301,5 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         
         return (seEliminoFisR && seEliminoFisC);
     }
-
-//    boolean eliminarFisico(int id);
     
 }

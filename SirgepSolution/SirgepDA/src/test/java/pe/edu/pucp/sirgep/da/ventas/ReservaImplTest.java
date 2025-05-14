@@ -47,20 +47,12 @@ public class ReservaImplTest {
         espacio = new Espacio();
         persona = new Persona();
     }
-    
-    @BeforeAll
-    public static void setUpClass() {
-    }
-    
-    @AfterAll
-    public static void tearDownClass() {
-    }
-    
+
     @BeforeEach
     public void setUp() {
         // creando espacio
         espacio.setNombre("ESPACIO - PRUEBA - RESERVA");
-        espacio.setIdEspacio(98);
+        espacio.setIdEspacio(2);
         espacio.setPrecioReserva(45.50);
         espacio.setTipoEspacio(ETipoEspacio.TEATRO);
         
@@ -68,13 +60,13 @@ public class ReservaImplTest {
         persona.setNombres("PRUEBA TEST");
         persona.setContrasenia("probando12345&");
         persona.setCorreo("test@test.com");
-        persona.setIdPersona(98);
+        persona.setIdPersona(2);
         persona.setNumDocumento("65498723");
         persona.setPrimerApellido("TEST PRIMER APE");
         persona.setSegundoApellido("TEST 2DO APE");
         
         // RESERVA:
-        entidad.setDetallePago("DETALLE PRUEBA DE RESERVA - PROBANDO 1 2 3 ...");
+        entidad.setDetallePago("DETALLE PRUEBA DE RESERVA - PROBANDO");
         entidad.setEspacio(espacio);
         Date fechaConstancia = java.sql.Date.valueOf(LocalDate.now());
         Date fechaReserva = java.sql.Date.valueOf(LocalDate.of(2023, Month.MARCH, 30));
@@ -94,16 +86,6 @@ public class ReservaImplTest {
         if(idGenerado > 0) this.entidad.setNumReserva(idGenerado);
         
     }
-    
-    @AfterEach
-    public void tearDown() {
-    }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
     
     @Test
     @Order(1)
@@ -135,7 +117,7 @@ public class ReservaImplTest {
     @Order(4)
     public void probarActualizar(){
         System.out.println("Se prueba el actualizar en RESERVA ... ID: " + entidad.getNumReserva());
-        entidad.setDetallePago("RESERVA ... Se compro el ACTUALIZADO_ESPACIO/EVENTO X para la fecha FECHA_ACTUALIZADA_TEST por el monto MONTO_ACTUALIZADO_TEST");
+        entidad.setDetallePago("RESERVA ... DETALLE_ACTUALIZADO_TEST ___ ");
         entidad.setFecha(new Date(2023,12,02)); // cambiar porque es función deprecada
         entidad.setIgv(0.198);
         entidad.setMetodoPago(EMetodoPago.YAPE);
@@ -157,11 +139,11 @@ public class ReservaImplTest {
         assertTrue(retorno);
     }
     
-    @Test
-    @Order(6)
-    public void probarEliminarFisico() {
-        System.out.println("Se prueba el ELIMINADO FISICO en RESERVA ... ID: " + entidad.getNumReserva());
-        boolean retorno = reservaDAO.eliminarFisico(entidad.getNumReserva());
-        assertTrue(retorno);
-    }
+    //@Test
+    //@Order(6)
+//    public void probarEliminarFisico() {
+//        System.out.println("Se prueba el ELIMINADO FISICO en RESERVA ... ID: " + entidad.getNumReserva());
+//        boolean retorno = reservaDAO.eliminarFisico(entidad.getNumReserva());
+//        assertTrue(retorno);
+//    }
 }

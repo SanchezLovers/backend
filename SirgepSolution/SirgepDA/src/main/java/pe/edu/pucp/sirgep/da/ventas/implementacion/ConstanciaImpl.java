@@ -27,11 +27,12 @@ public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDA
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE Constancia SET fecha = ?,"
+        return "UPDATE Constancia SET "
+                + "fecha = ?,"
                 + "metodo_pago = ?,"
                 + "igv = ?,"
                 + "total = ?,"
-                + "detalle_pago = ? "
+                + "detalle_pago = ?"
                 + " WHERE id_constancia = ?";
     }
 

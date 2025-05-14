@@ -85,12 +85,14 @@ public class ConstanciaImplTest {
     @Test
     @Order(4)
     public void probarActualizar(){
-        System.out.println("Se prueba el actualizar en constancia ...");
-        entidad.setDetallePago("Se compro el ACTUALIZADO_ESPACIO/EVENTO X para la fecha FECHA_ACTUALIZADA_TEST por el monto MONTO_ACTUALIZADO_TEST");
+        System.out.println("Se prueba el actualizar en constancia ... en el ID: " + entidad.getIdConstancia());
+        
         entidad.setFecha(new java.util.Date(2023,12,02)); // cambiar porque es función deprecada
-        entidad.setIgv(0.19);
         entidad.setMetodoPago(EMetodoPago.YAPE);
+        entidad.setIgv(0.19);
         entidad.setTotal(1000.47);
+        entidad.setDetallePago("Se compro el ACTUALIZADO_ESPACIO/EVENTO X ___ MONTO_ACTUALIZADO_TEST");
+        // el activo ya está en rs
         boolean retorno = constanciaDAO.actualizar(entidad);
         assertTrue(retorno);
     }
