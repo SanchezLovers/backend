@@ -1,19 +1,14 @@
 package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
 
 import pe.edu.pucp.sirgep.da.infraestructura.dao.FuncionDAO;
-import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
-
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.util.ArrayList;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
 
 
 public class FuncionImpl extends BaseImpl<Funcion>implements FuncionDAO{
