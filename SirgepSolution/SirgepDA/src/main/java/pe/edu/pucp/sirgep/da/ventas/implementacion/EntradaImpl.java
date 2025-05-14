@@ -1,105 +1,204 @@
 package pe.edu.pucp.sirgep.da.ventas.implementacion;
 
+import pe.edu.pucp.sirgep.dbmanager.DBManager; 
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
-import pe.edu.pucp.sirgep.dbmanager.DBManager;
+import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.da.ventas.dao.EntradaDAO;
+import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
+import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 
 import java.sql.Connection;
-import java.sql.Statement;
+//import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-public class EntradaImpl implements EntradaDAO{
+public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
+    private final ConstanciaImpl constanciaDAO;
+    
+    public EntradaImpl(){
+        this.constanciaDAO = new ConstanciaImpl();
+    }
+    
     @Override
-    public void insertar(Entrada entrada) throws SQLException, IOException{
-        String query="INSERT INTO Entrada(num_entrada, Persona_id_persona, "
-                + "id_constancia_entrada, Funcion_id_funcion) VALUES(?, ?, ?, ?)";
-        try(Connection con = DBManager.getInstance().getConnection()){
-            try(PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
-                setEntradaParameters(ps, entrada);
-                ps.executeUpdate();
-                try(ResultSet rs = ps.getGeneratedKeys()){
-                    if(rs.next()){
-                        entrada.setNumEntrada(rs.getInt(1));
-                    }
-                }
-            }
+    protected String getInsertQuery(){
+        String sql = "INSERT INTO Entrada(num_entrada,Persona_id_persona,id_constancia_entrada,"
+                + "Funcion_id_funcion,activo)"
+                   + "VALUES (?,?,?,?,'A')";
+        return sql;
+    }
+    
+    @Override
+    protected String getSelectByIdQuery(){
+        String sql = "SELECT id_constancia,fecha,metodo_pago,igv,total,detalle_pago,"
+                + "num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion "
+                + "FROM Constancia C, Entrada E "
+                + "WHERE C.id_constancia = E.id_constancia_entrada AND id_constancia_entrada=?";
+        return sql;
+    }
+    
+    @Override
+    protected String getSelectAllQuery(){
+        String sql = "SELECT id_constancia,fecha,metodo_pago,igv,total,detalle_pago,"
+                + "num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion "
+                + "FROM Constancia C, Entrada E "
+                + "WHERE C.id_constancia = E.id_constancia_entrada AND E.activo='A'";
+        return sql;
+    }
+    
+    @Override
+    protected String getUpdateQuery(){
+        String sql = "UPDATE Entrada "
+                   + "SET Persona_id_persona=?, id_constancia_entrada=?, Funcion_id_funcion=? "
+                   + "WHERE num_entrada=?";
+        return sql;
+    }
+    
+    @Override
+    protected String getDeleteLogicoQuery(){
+        String sql = "UPDATE Entrada SET activo='E' WHERE num_entrada=?";
+        return sql;
+    }
+    
+    @Override
+    protected String getDeleteFisicoQuery(){
+        String query = "DELETE FROM Entrada WHERE num_entrada=?";
+        return query;
+    }
+    
+    @Override
+    protected void setInsertParameters(PreparedStatement ps, Entrada entrada){
+        try{
+            ps.setInt(1, entrada.getNumEntrada());
+            ps.setInt(2, entrada.getPersona().getIdPersona());
+            ps.setInt(3, entrada.getIdConstancia());
+            ps.setInt(4, entrada.getFuncion().getIdFuncion());
+        }catch(SQLException e){
+            throw new RuntimeException(e);
         }
     }
     
     @Override
-    public void actualizar(Entrada entrada) throws SQLException, IOException{
-        String query = "UPDATE Entrada SET Persona_id_persona=?, id_constancia_entrada=?, "
-                + "Funcion_id_funcion=? WHERE num_entrada=?";
-        try(Connection con = DBManager.getInstance().getConnection()){
-            try(PreparedStatement ps = con.prepareStatement(query)){
-                setEntradaParameters(ps, entrada);
-                ps.setInt(4, entrada.getNumEntrada());
-                ps.executeUpdate();
-            }
+    protected Entrada createFromResultSet(ResultSet rs){
+         try{
+            Entrada constancia = new Entrada();
+            constancia.setIdConstancia(rs.getInt("id_constancia"));
+            constancia.setFecha(rs.getDate("fecha"));
+            constancia.setMetodoPago(EMetodoPago.valueOf(rs.getString("metodo_pago")));
+            constancia.setIgv(rs.getDouble("igv"));
+            constancia.setTotal(rs.getDouble("total"));
+            constancia.setDetallePago(rs.getString("detalle_pago"));
+            constancia.setNumEntrada(rs.getInt("num_entrada"));
+            return constancia;
+        }catch(SQLException e){
+            throw new RuntimeException(e);
         }
     }
     
     @Override
-    public void eliminar(int id) throws SQLException, IOException{
-        String query = "UPDATE Entrada SET activo='E' WHERE num_entrada=?";
+    protected void setUpdateParameters(PreparedStatement ps, Entrada entrada){
+        try{
+            ps.setInt(1, entrada.getPersona().getIdPersona());
+            ps.setInt(2, entrada.getIdConstancia());
+            ps.setInt(3, entrada.getFuncion().getIdFuncion());
+            ps.setInt(4, entrada.getNumEntrada());
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    protected void setId(Entrada entrada, int id){
+        entrada.setNumEntrada(id);
+    }
+    
+    @Override
+    public int insertar(Entrada entrada){
+        int idC=-1, idE=-1;
         try(Connection con = DBManager.getInstance().getConnection()){
-            try(PreparedStatement ps = con.prepareStatement(query)){
+            con.setAutoCommit(false);
+            idC = constanciaDAO.insertar((Constancia)entrada);
+            idE = super.insertar(entrada);
+        }catch(IOException|SQLException e) {
+            throw new RuntimeException("Error al insertar "+entrada.getClass().getSimpleName()+" ", e);
+        }finally{
+            if(idE>0)
+                return idE;
+            return idC;
+        }
+    }
+    
+    @Override
+    public boolean actualizar(Entrada entrada){
+        boolean resultado = false;
+        try(Connection con = DBManager.getInstance().getConnection()){
+            con.setAutoCommit(false);
+            resultado = constanciaDAO.actualizar(entrada);
+            try(PreparedStatement ps = con.prepareStatement(this.getUpdateQuery())){
+                this.setUpdateParameters(ps, entrada);
+                ps.executeUpdate();
+                con.commit();
+                System.out.println("Se actualizo un registro de " + entrada.getClass().getSimpleName());
+                resultado=true;
+            } catch (SQLException e) {
+                con.rollback();
+                throw new RuntimeException("Error al ejecutar el query de actualizado ", e);
+            } finally {
+                con.setAutoCommit(true);
+            }
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException("Error al actualizar " + entrada.getClass().getSimpleName(), e);
+        }finally{
+            return resultado;
+        }
+    }
+    
+    @Override
+    public boolean eliminarLogico(int id){
+        boolean resultado=false;
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(this.getDeleteLogicoQuery())) {
                 ps.setInt(1, id);
                 ps.executeUpdate();
+                conn.commit();
+                System.out.println("Se elimino logicamente un registro con ID=" + id);
+                resultado=constanciaDAO.eliminarLogico(id);
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query de eliminado lógico " , e);
+            } finally {
+                conn.setAutoCommit(true);
             }
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException("Error al eliminar logicamente la entidad", e);
+        }finally{
+            return resultado;
         }
     }
     
     @Override
-    public ArrayList<Entrada> obtenerTodos() throws SQLException, IOException{
-        ArrayList<Entrada> entradas = new ArrayList<>();
-        String query = "SELECT * FROM Entrada e "
-                + "JOIN Persona p ON e.Persona_id_persona=p.id_persona "
-                + "JOIN Constancia c ON e.id_constancia_entrada=c.id_constancia "
-                + "JOIN Funcion f ON e.Funcion_id_funcion=f.id_funcion";
-        try(Connection con = DBManager.getInstance().getConnection()){
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(query);
-            while(rs.next()){
-                entradas.add(mapEntrada(rs));
-            }
-        }
-        return entradas;
-    }
-    
-    @Override
-    public Entrada obtenerPorId(int id) throws SQLException, IOException{
-        String query = "SELECT * FROM Entrada e "
-                + "JOIN Persona p ON e.Persona_id_persona=p.id_persona "
-                + "JOIN Constancia c ON e.id_constancia_entrada=c.id_constancia "
-                + "JOIN Funcion f ON e.Funcion_id_funcion=f.id_funcion "
-                + "WHERE e.num_entrada=?";
-        try(Connection con = DBManager.getInstance().getConnection()){
-            try(PreparedStatement ps = con.prepareStatement(query)){
+    public boolean eliminarFisico(int id) {
+        boolean resultado=false;
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(this.getDeleteFisicoQuery())) {
                 ps.setInt(1, id);
-                try(ResultSet rs = ps.executeQuery()){
-                    if(rs.next()) return mapEntrada(rs);
-                }
+                ps.executeUpdate();
+                conn.commit();
+                System.out.println("Se elimino fisicamente un registro con ID=" + id);
+                resultado=constanciaDAO.eliminarFisico(id);
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query de eliminado físico ", e);
+            } finally {
+                conn.setAutoCommit(true);
             }
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException("Error al eliminar fisicamente la entidad", e);
+        }finally{
+            return resultado;
         }
-        return null;
-    }
-    
-    public void setEntradaParameters(PreparedStatement ps, Entrada entrada) throws SQLException{
-        ps.setInt(1, entrada.getNumEntrada());
-        ps.setInt(2, entrada.getPersona().getIdPersona());
-        ps.setInt(3, entrada.getIdConstancia());
-        ps.setInt(4, entrada.getFuncion().getIdFuncion());
-        ps.setString(5, "A");
-    }
-    
-    public Entrada mapEntrada(ResultSet rs) throws SQLException{
-        Entrada entrada = new Entrada();
-        entrada.setNumEntrada(rs.getInt("num_entrada"));
-        return entrada;
     }
 }
