@@ -6,6 +6,7 @@ import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.da.ventas.dao.EntradaDAO;
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
+import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
 
 import java.sql.Connection;
 //import java.sql.Statement;
@@ -15,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
-    private final ConstanciaImpl constanciaDAO;
+    private final ConstanciaDAO constanciaDAO;
     
     public EntradaImpl(){
         this.constanciaDAO = new ConstanciaImpl();
@@ -23,8 +24,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     
     @Override
     protected String getInsertQuery(){
-        String sql = "INSERT INTO Entrada(num_entrada,Persona_id_persona,id_constancia_entrada,"
-                + "Funcion_id_funcion,activo)"
+        String sql = "INSERT INTO Entrada(num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion,activo) "
                    + "VALUES (?,?,?,?,'A')";
         return sql;
     }
@@ -34,7 +34,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         String sql = "SELECT id_constancia,fecha,metodo_pago,igv,total,detalle_pago,"
                 + "num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion "
                 + "FROM Constancia C, Entrada E "
-                + "WHERE C.id_constancia = E.id_constancia_entrada AND id_constancia_entrada=?";
+                + "WHERE C.id_constancia = E.id_constancia_entrada AND num_entrada=?";
         return sql;
     }
     

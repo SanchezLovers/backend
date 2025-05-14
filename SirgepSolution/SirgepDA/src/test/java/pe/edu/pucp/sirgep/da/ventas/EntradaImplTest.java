@@ -48,7 +48,6 @@ public class EntradaImplTest {
         this.entrada.setTotal(20.59);
         this.entrada.setNumEntrada(1);
         this.entrada.setFuncion(funcion);
-        this.entrada.setIdConstancia(50);
         this.entrada.setPersona(persona);
         this.entradaDAO = new EntradaImpl();
     }
