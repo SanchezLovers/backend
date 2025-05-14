@@ -5,9 +5,10 @@ import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.da.ventas.dao.EntradaDAO;
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
+import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 
 import java.sql.Connection;
-import java.sql.Statement;
+//import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.io.IOException;
@@ -114,25 +115,17 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     
     @Override
     public int insertar(Entrada entrada){
-        int id=-1;
+        int idC=-1, idE=-1;
         try(Connection con = DBManager.getInstance().getConnection()){
             con.setAutoCommit(false);
-            id = constanciaDAO.insertar(entrada);
-            try(PreparedStatement ps = con.prepareStatement(this.getInsertQuery(), Statement.RETURN_GENERATED_KEYS)){
-                this.setInsertParameters(ps, entrada);
-                ps.executeUpdate();
-                con.commit();
-                System.out.println("Se inserto un registro de "+entrada.getClass().getSimpleName()+" con ID="+id);
-            }catch (SQLException e){
-                con.rollback();
-                throw new RuntimeException("Error al ejecutar el query insertado", e);
-            }finally{
-                con.setAutoCommit(true);
-            }
+            idC = constanciaDAO.insertar((Constancia)entrada);
+            idE = super.insertar(entrada);
         }catch(IOException|SQLException e) {
             throw new RuntimeException("Error al insertar "+entrada.getClass().getSimpleName()+" ", e);
         }finally{
-            return id;
+            if(idE>0)
+                return idE;
+            return idC;
         }
     }
     
