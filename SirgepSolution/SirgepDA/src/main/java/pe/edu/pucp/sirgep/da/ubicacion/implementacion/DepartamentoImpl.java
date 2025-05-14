@@ -1,10 +1,12 @@
 package pe.edu.pucp.sirgep.da.ubicacion.implementacion;
 
+import java.io.IOException;
 import pe.edu.pucp.sirgep.da.ubicacion.dao.DepartamentoDAO;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 
 import java.sql.*;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
+import pe.edu.pucp.sirgep.dbmanager.DBManager;
 
 public class DepartamentoImpl extends BaseImpl<Departamento> implements DepartamentoDAO {
 
@@ -16,7 +18,7 @@ public class DepartamentoImpl extends BaseImpl<Departamento> implements Departam
     @Override
     protected String getInsertQuery(){
         String sql = "INSERT INTO Departamento(id_departamento,nombre,activo) "
-                   + "VALUES (?,?,'A')";
+                + "VALUES (?,?,'A')";
         return sql;
     }
     
@@ -93,4 +95,26 @@ public class DepartamentoImpl extends BaseImpl<Departamento> implements Departam
         departamento.setIdDepartamento(id);
     }
     
+    //Sobrecarga necesaria debido a que el departamento no es autogenerado
+    @Override
+    public int insertar(Departamento departamento) {
+        
+        try(Connection con = DBManager.getInstance().getConnection()){
+            con.setAutoCommit(false);
+            try(PreparedStatement ps=con.prepareStatement(this.getInsertQuery())){
+                this.setInsertParameters(ps, departamento);
+                ps.executeUpdate();
+                System.out.println("Se ejecuto insert departamento "+departamento.getIdDepartamento());
+            }catch (SQLException e){
+                con.rollback();
+                throw new RuntimeException("Error al ejecutar el query insetado",e);
+            }finally {
+                con.setAutoCommit(true);
+            }
+        }catch(IOException|SQLException e) {
+            throw new RuntimeException("Error al insertar "+departamento.getClass().getSimpleName()+" ", e);
+        }finally{
+            return departamento.getIdDepartamento();
+        }
+    }
 }
