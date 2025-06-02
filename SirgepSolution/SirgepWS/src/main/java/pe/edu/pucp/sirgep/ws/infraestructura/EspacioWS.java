@@ -8,7 +8,7 @@ import pe.edu.pucp.sirgep.business.infraestructura.impl.EspacioServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEspacioService;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
 
-@WebService(serviceName = "EspacioWS")
+@WebService(serviceName = "EspacioWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class EspacioWS {
 
     private final IEspacioService espacioService;
