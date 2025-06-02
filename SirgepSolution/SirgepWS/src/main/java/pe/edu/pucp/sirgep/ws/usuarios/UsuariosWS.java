@@ -4,7 +4,6 @@
  */
 package pe.edu.pucp.sirgep.ws.usuarios;
 
-import pe.edu.pucp.sirgep.ws.resources.*;
 import jakarta.jws.WebService;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
