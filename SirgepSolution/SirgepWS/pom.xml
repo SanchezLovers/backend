@@ -29,6 +29,11 @@
             <artifactId>jakarta.xml.ws-api</artifactId>
             <version>4.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>SirgepBusiness</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     
     <build>
