@@ -296,7 +296,7 @@ public class Main{
         }
         // obtener por ID
         try {
-            Departamento d = depaMySQL.obtenerPorId(departamento.getIdDepartamento());
+            Departamento d = depaMySQL.buscar(departamento.getIdDepartamento());
             System.out.println("obtenido por ID: "); 
             System.out.println(d); 
         } catch (SQLException | IOException ex) {
@@ -306,7 +306,7 @@ public class Main{
         // obtener Todos
         
         try {
-            ArrayList<Departamento> depas = depaMySQL.obtenerTodos();
+            List<Departamento> depas = depaMySQL.listar();
             System.out.println("Lista de Departamentos idependientemente de la columna Activo:");
             for(Departamento d : depas){
                 System.out.println(d);
@@ -318,7 +318,7 @@ public class Main{
         
         //eliminar logico
         try {
-            depaMySQL.eliminar(departamento.getIdDepartamento());
+            depaMySQL.eliminarLogico(departamento.getIdDepartamento());
             System.out.println("Departamento "+ departamento.getNombre() +" con estado E (Eliminado)."); 
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
