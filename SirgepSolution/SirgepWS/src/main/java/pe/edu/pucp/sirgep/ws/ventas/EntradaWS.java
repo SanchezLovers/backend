@@ -18,11 +18,14 @@ public class EntradaWS {
     }
 
     @WebMethod(operationName = "insertarEntrada")
-    public void insertarEntrada(@WebParam(name = "entrada") Entrada entrada) {
+    public int insertarEntrada(@WebParam(name = "entrada") Entrada entrada) {
+        int id=-1;
         try {
-            entradaService.insertar(entrada);
+            id=entradaService.insertar(entrada);
         } catch (Exception ex) {
             throw new WebServiceException("Error al insertar entrada: " + ex.getMessage());
+        }finally{
+            return id;
         }
     }
 
@@ -45,29 +48,38 @@ public class EntradaWS {
     }
 
     @WebMethod(operationName = "actualizarEntrada")
-    public void actualizarEntrada(@WebParam(name = "entrada") Entrada entrada) {
+    public boolean actualizarEntrada(@WebParam(name = "entrada") Entrada entrada) {
+        boolean resultado=false;
         try {
-            entradaService.actualizar(entrada);
+            resultado=entradaService.actualizar(entrada);
         } catch (Exception ex) {
             throw new WebServiceException("Error al actualizar entrada: " + ex.getMessage());
+        }finally{
+            return resultado;
         }
     }
 
     @WebMethod(operationName = "eliminarLogicoEntrada")
-    public void eliminarLogicoEntrada(@WebParam(name = "idEntrada") int idEntrada){
+    public boolean eliminarLogicoEntrada(@WebParam(name = "idEntrada") int idEntrada){
+        boolean resultado=false;
         try {
-            entradaService.eliminarLogico(idEntrada);
+            resultado=entradaService.eliminarLogico(idEntrada);
         } catch (Exception ex) {
             throw new WebServiceException("Error al eliminar logicamente entrada: " + ex.getMessage());
+        }finally{
+            return resultado;
         }
     }
 
     @WebMethod(operationName = "eliminarFisicoEntrada")
-    public void eliminarFisicoEntrada(@WebParam(name = "idEntrada") int idEntrada){
+    public boolean eliminarFisicoEntrada(@WebParam(name = "idEntrada") int idEntrada){
+        boolean resultado=false;
         try {
-            entradaService.eliminarFisico(idEntrada);
+            resultado=entradaService.eliminarFisico(idEntrada);
         } catch (Exception ex) {
             throw new WebServiceException("Error al eliminar fisicamente entrada: " + ex.getMessage());
+        }finally{
+            return resultado;
         }
     }
 }
