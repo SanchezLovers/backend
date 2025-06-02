@@ -56,8 +56,8 @@ public class EventoImplTest {
         this.e.setPrecioEntrada(5.50);
         this.e.setReferencia("En la esquina del cruce A y B");
         this.e.setUbicacion("Avenida ABC 123");
-        this.e.setUrlImagen("https://drive.google.com/file/d/1iZbitocJvmzLkEtMTUZqZld1tPxEHTNe/view?usp=drive_link");
-
+        //this.e.setUrlImagen();
+        
 
         this.eventoImpl = new EventoImpl();
     }
@@ -74,7 +74,7 @@ public class EventoImplTest {
     @Order(2)
     public void testBuscar() {
         System.out.println("Ejecutando test buscar...");
-        Evento result = this.eventoImpl.buscar(2);
+        Evento result = this.eventoImpl.buscar(1);
         assertNotNull(result);
     }
 

@@ -24,7 +24,7 @@ public class AdministradorImplTest {
         this.administrador = new Administrador();
 
         // 2. Asignar valores simples
-        this.administrador.setIdPersona(15);
+        this.administrador.setIdPersona(13);
         this.administrador.setNombres("Ariana");
         this.administrador.setPrimerApellido("Oyanguren");
         this.administrador.setSegundoApellido("Valdivia");
@@ -33,7 +33,7 @@ public class AdministradorImplTest {
         this.administrador.setCorreo("ariana.ov@example.com");
         this.administrador.setUsuario("ariana.ov");
         this.administrador.setContrasenia("letzylow!123");
-        this.administrador.setTipoAdministrador(ETipoAdministrador.REGIONAL);
+//        this.administrador.setTipoAdministrador(ETipoAdministrador.REGIONAL);
 
         this.administradorDAO = new AdministradorImpl();
     }

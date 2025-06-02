@@ -41,7 +41,7 @@ public class EntradaImplTest {
         Persona persona = new Persona();
         funcion.setIdFuncion(1);
         persona.setIdPersona(1);
-        this.entrada.setIdConstancia(200);
+        this.entrada.setIdConstancia(293);
         this.entrada.setFecha(fecha);
         this.entrada.setMetodoPago(EMetodoPago.YAPE);
         this.entrada.setDetallePago("Pago_Prueba");

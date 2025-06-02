@@ -4,10 +4,10 @@ import java.util.List;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 
 public interface IEventoService {
-    int insertar(Evento espacio);
+    int insertar(Evento evento);
     Evento buscar(int id);
     List<Evento> listar();
-    boolean actualizar(Evento espacio);
+    boolean actualizar(Evento evento);
     boolean eliminarLogico(int id);
     boolean eliminarFisico(int id);
 }
