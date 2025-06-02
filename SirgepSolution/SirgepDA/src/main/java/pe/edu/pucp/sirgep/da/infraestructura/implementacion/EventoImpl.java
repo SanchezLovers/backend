@@ -25,8 +25,8 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     protected String getInsertQuery(){
         String query = "INSERT INTO Evento(nombre, fecha, "
                 + "descripcion, ubicacion, referencia, cant_entradas_dispo, cant_entradas_vendidas, "
-                + "precio_entradas, Distrito_id_distrito, activo, url_imagen) VALUES "
-                + "(?, ?, ?, ?, ?, ?, ?, ?, ?, 'A', ?)";
+                + "precio_entradas, Distrito_id_distrito, activo) VALUES "
+                + "(?, ?, ?, ?, ?, ?, ?, ?, ?, 'A')";
         return query;
     }
 
@@ -34,7 +34,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     protected String getUpdateQuery(){
         String query = "UPDATE Evento SET nombre=?, fecha=?, descripcion=?, ubicacion=?, "
                 + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
-                + "precio_entradas=?, Distrito_id_distrito=?, url_imagen=? WHERE id_evento=?";
+                + "precio_entradas=?, Distrito_id_distrito=? WHERE id_evento=?";
         return query;
     }
 
@@ -83,7 +83,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             ps.setInt(7, e.getCantEntradasVendidas());
             ps.setDouble(8, e.getPrecioEntrada());
             ps.setInt(9, e.getDistrito().getIdDistrito());
-            ps.setString(10, e.getUrlImagen());
+//            ps.setString(10, e.getUrlImagen());
         }catch(SQLException ex){
             throw new RuntimeException(ex);
         }
@@ -103,8 +103,8 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             ps.setInt(7, e.getCantEntradasVendidas());
             ps.setDouble(8, e.getPrecioEntrada());
             ps.setInt(9, e.getDistrito().getIdDistrito());
-            ps.setString(10, e.getUrlImagen());
-            ps.setInt(11, e.getIdEvento());
+//            ps.setString(10, e.getUrlImagen());
+            ps.setInt(10, e.getIdEvento());
         }catch(SQLException ex){
             throw new RuntimeException(ex);
         }

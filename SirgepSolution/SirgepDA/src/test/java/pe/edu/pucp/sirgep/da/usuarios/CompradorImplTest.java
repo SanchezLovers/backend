@@ -22,7 +22,7 @@ public class CompradorImplTest {
         this.comprador = new Comprador();
 
         // 2. Asignar valores simples
-        this.comprador.setIdPersona(18);
+        this.comprador.setIdPersona(2);
         this.comprador.setNombres("Italo");
         this.comprador.setPrimerApellido("Carrion");
         this.comprador.setSegundoApellido("Segura");

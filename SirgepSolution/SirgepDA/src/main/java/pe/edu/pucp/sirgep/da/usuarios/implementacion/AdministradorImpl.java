@@ -8,6 +8,8 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Administrador;
 
 import java.io.IOException;
 import java.sql.*;
+import jdk.jshell.spi.ExecutionControl;
+import jdk.jshell.spi.ExecutionControl.NotImplementedException;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 
 public class AdministradorImpl extends BaseImpl<Administrador> implements AdministradorDAO {
@@ -19,15 +21,15 @@ public class AdministradorImpl extends BaseImpl<Administrador> implements Admini
     
     @Override
     protected String getInsertQuery(){
-        String sql = "INSERT INTO Administrador(tipo_administrador,id_persona_admin,activo)"
-                   + "VALUES (?,?,'A')";
+        String sql = "INSERT INTO Administrador(id_persona_admin,activo)"
+                   + "VALUES (?,'A')";
         return sql;
     }
     @Override
     protected String getSelectByIdQuery(){
         String sql = "SELECT id_persona,nombres,primer_apellido,"
                 + "segundo_apellido,correo,usuario,contrasenia,num_documento,"
-                + "tipo_documento,tipo_administrador "
+                + "tipo_documento "
                 + "FROM Persona P, Administrador A "
                 + "WHERE P.id_persona = A.id_persona_admin AND id_persona_admin=?";
         return sql;
@@ -36,17 +38,14 @@ public class AdministradorImpl extends BaseImpl<Administrador> implements Admini
     protected String getSelectAllQuery(){
         String sql = "SELECT id_persona,nombres,primer_apellido,"
                 + "segundo_apellido,correo,usuario,contrasenia,num_documento,"
-                + "tipo_documento,tipo_administrador "
+                + "tipo_documento "
                 + "FROM Persona P, Administrador A "
                 + "WHERE P.id_persona = A.id_persona_admin AND P.activo='A'";
         return sql;
     }
     @Override
     protected String getUpdateQuery(){
-        String sql = "UPDATE Administrador "
-                   + "SET tipo_administrador=?"
-                   + "WHERE id_persona_admin=?";
-        return sql;
+        throw new UnsupportedOperationException("Aún no implementado");
     }
     @Override
     protected String getDeleteLogicoQuery(){
@@ -62,8 +61,8 @@ public class AdministradorImpl extends BaseImpl<Administrador> implements Admini
     @Override
     protected void setInsertParameters(PreparedStatement ps, Administrador administrador){
         try{
-            ps.setString(1, administrador.getTipoAdministrador().toString());
-            ps.setInt(2, administrador.getIdPersona());
+//            ps.setString(1, administrador.getTipoAdministrador().toString());
+            ps.setInt(1, administrador.getIdPersona());
         }catch(SQLException e){
             throw new RuntimeException(e);
         }
@@ -81,7 +80,7 @@ public class AdministradorImpl extends BaseImpl<Administrador> implements Admini
             persona.setContrasenia(rs.getString("contrasenia"));
             persona.setNumDocumento(rs.getString("num_documento"));
             persona.setTipoDocumento(ETipoDocumento.valueOf(rs.getString("tipo_documento")));
-            persona.setTipoAdministrador(ETipoAdministrador.valueOf(rs.getString("tipo_administrador")));
+//            persona.setTipoAdministrador(ETipoAdministrador.valueOf(rs.getString("tipo_administrador")));
             return persona;
         }catch(SQLException e){
             throw new RuntimeException(e);

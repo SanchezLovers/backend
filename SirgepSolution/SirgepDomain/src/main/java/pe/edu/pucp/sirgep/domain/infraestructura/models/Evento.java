@@ -12,7 +12,8 @@ public class Evento {
     private String ubicacion;
     private String referencia;
     private String descripcion;
-    private String urlImagen;
+//    private String urlImagen;
+    private byte[] archivoImagen;
     private int cantEntradasDispo;
     private int cantEntradasVendidas;
     private double precioEntrada;
@@ -44,6 +45,13 @@ public class Evento {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+    public byte[] getArchivo() {
+        return archivoImagen;
+    }
+
+    public void setArchivo(byte[] archivo) {
+        this.archivoImagen = archivo;
+    }
 
     // Getter y Setter para ubicacion
     public String getUbicacion() {
@@ -71,13 +79,6 @@ public class Evento {
         this.descripcion = descripcion;
     }
     // Getter y Setter para url
-    public String getUrlImagen() {
-        return this.urlImagen;
-    }
-
-    public void setUrlImagen(String url) {
-        this.urlImagen = url;
-    }
 
     // Getter y Setter para cantEntradasDispo
     public int getCantEntradasDispo() {
@@ -146,7 +147,7 @@ public class Evento {
         cadena += "Precio entrada: " + this.precioEntrada + "\n";
         cadena += "Entradas disponibles: " + this.cantEntradasDispo + "\n";
         cadena += "Entradas vendidas: " + this.cantEntradasVendidas+ "\nFunciones:\n";
-        cadena += "URL de la Imagen: " + this.urlImagen+ "\nFunciones:\n";
+        cadena += "\nFunciones:\n";
         for(Funcion f:this.funciones){
             cadena+=f.toString()+"\n";
         }
