@@ -71,7 +71,7 @@ public class EspacioImplTest {
     @Order(2)
     public void testBuscar() {
         System.out.println("Ejecutando test buscar...");
-        Espacio result = this.espacioDAO.buscar(2);
+        Espacio result = this.espacioDAO.buscar(1);
         assertNotNull(result);
     }
 
