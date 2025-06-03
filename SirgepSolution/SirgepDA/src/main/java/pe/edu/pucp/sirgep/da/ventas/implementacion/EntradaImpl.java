@@ -120,7 +120,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             con.setAutoCommit(false);
             idC = constanciaDAO.insertar((Constancia)entrada);
             idE = super.insertar(entrada);
-        }catch(IOException|SQLException e) {
+        }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+entrada.getClass().getSimpleName()+" ", e);
         }finally{
             if(idE>0)
@@ -147,7 +147,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             } finally {
                 con.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al actualizar " + entrada.getClass().getSimpleName(), e);
         }finally{
             return resultado;
@@ -171,7 +171,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar logicamente la entidad", e);
         }finally{
             return resultado;
@@ -195,7 +195,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar fisicamente la entidad", e);
         }finally{
             return resultado;

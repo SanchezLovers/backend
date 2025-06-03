@@ -112,7 +112,7 @@ public class DistritoImpl extends BaseImpl<Distrito> implements  DistritoDAO{
             }finally {
                 conn.setAutoCommit(true);
             }
-        }catch(IOException|SQLException e) {
+        }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+entity.getClass().getSimpleName()+" ", e);
         }finally{
             return entity.getIdDistrito();
