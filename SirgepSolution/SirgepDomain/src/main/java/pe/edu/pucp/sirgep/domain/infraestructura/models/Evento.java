@@ -71,7 +71,7 @@ public class Evento {
         this.referencia = referencia;
     }
     // Getter y Setter para descripción
-    public String getDescripción() {
+    public String getDescripcion() {
         return this.descripcion;
     }
 
