@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.EventoServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.FuncionServiceImpl;
+import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 
@@ -18,18 +19,25 @@ import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
  *
  * @author LEGION
  */
-@WebService(serviceName = "EventoWS", targetNamespace = "pe.edu.pucp.sirgep")
+@WebService(serviceName = "EventoWSAnaG", targetNamespace = "pe.edu.pucp.sirgep")
 public class EventoWSAnaG {
     private EventoServiceImpl eService;
     private FuncionServiceImpl fService;
-    
+    private EntradaServiceImpl entradasService;
     public EventoWSAnaG(){
         eService = new EventoServiceImpl();
         fService =  new FuncionServiceImpl();
+        entradasService =  new EntradaServiceImpl();
+    }
+
+    @WebMethod(operationName = "listarEventos")
+    public List<Evento> listarFuncionesDeEvento(){
+        return eService.listar();
+        
     }
     
-    @WebMethod(operationName = "listarPorID")
-    public Evento listarPorID(@WebParam(name = "Id") int id) {
+    @WebMethod(operationName = "buscarPorID")
+    public Evento buscarPorID(@WebParam(name = "Id") int id) {
         Evento e =  eService.buscar(id);
         return e;
     }
@@ -46,5 +54,10 @@ public class EventoWSAnaG {
         }
 //        Evento e =  eService.buscar(id);
         return funcionesEvento;
+    }
+    
+    public int cantEntradasDisponibles(@WebParam(name = "IdFuncion") int id,
+            @WebParam(name = "cantExFuncion") int cantEntradasPorFuncion){
+        return entradasService.cantidadDispo(id, cantEntradasPorFuncion);
     }
 }

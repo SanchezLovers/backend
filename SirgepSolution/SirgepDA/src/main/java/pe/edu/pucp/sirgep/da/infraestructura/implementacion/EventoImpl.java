@@ -76,7 +76,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         try{
             ps.setString(1, e.getNombre());
             ps.setDate(2, Date.valueOf(e.getFecha().toString()));
-            ps.setString(3, e.getDescripción());
+            ps.setString(3, e.getDescripcion());
             ps.setString(4, e.getUbicacion());
             ps.setString(5, e.getReferencia());
             ps.setInt(6, e.getCantEntradasDispo());
@@ -96,7 +96,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         try{
             ps.setString(1, e.getNombre());
             ps.setDate(2, Date.valueOf(e.getFecha().toString()));
-            ps.setString(3, e.getDescripción());
+            ps.setString(3, e.getDescripcion());
             ps.setString(4, e.getUbicacion());
             ps.setString(5, e.getReferencia());
             ps.setInt(6, e.getCantEntradasDispo());
