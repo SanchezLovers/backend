@@ -3,6 +3,7 @@ package pe.edu.pucp.sirgep.ws.infraestructura;
 import jakarta.jws.WebService;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
+import jakarta.xml.ws.WebServiceException;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.EventoServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEventoService;
@@ -36,6 +37,15 @@ public class EventoWS {
         catch(Exception ex)
         {
             throw new RuntimeException("Error al listar eventos: " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "listarEventoPorDistrito")
+    public List<Evento> listarEventoPorDistrito(@WebParam(name = "Id")int id) {
+        try {
+            return eventoService.listarPorDistrito(id);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar distritos: " + ex.getMessage());
         }
     }
 //    @WebMethod(operationName = "buscarEvento")

@@ -1,5 +1,6 @@
 package pe.edu.pucp.sirgep.business.infraestructura.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEventoService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EventoDAO;
@@ -42,5 +43,18 @@ public class EventoServiceImpl implements IEventoService {
     @Override
     public boolean eliminarFisico(int id) {
         return eventoDAO.eliminarFisico(id);
+    }
+    
+    @Override
+    public List<Evento> listarPorDistrito(int id) {
+        List<Evento> eventosGeneral = eventoDAO.listar();
+        List<Evento> eventosDelDistrito;
+        eventosDelDistrito = new ArrayList<>();
+        for (int i = 0; i < eventosGeneral.size(); i++) {
+            Evento e = eventosGeneral.get(i);
+            if (e.getDistrito().getIdDistrito()== id)
+                eventosDelDistrito.add(e);
+        }
+        return eventosDelDistrito;
     }
 }
