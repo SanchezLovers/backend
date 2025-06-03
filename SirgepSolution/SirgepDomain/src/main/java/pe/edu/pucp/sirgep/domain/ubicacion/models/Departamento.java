@@ -1,5 +1,4 @@
 package pe.edu.pucp.sirgep.domain.ubicacion.models;
-
 import java.util.ArrayList;
 
 public class Departamento{

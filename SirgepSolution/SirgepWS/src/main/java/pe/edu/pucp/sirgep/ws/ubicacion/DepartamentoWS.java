@@ -6,16 +6,13 @@
 package pe.edu.pucp.sirgep.ws.ubicacion;
 
 import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceException;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.ubicacion.service.DepartamentoServiceImpl;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
-import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 
-/**
- *
- * @author Ana Gabriela
- */
+@WebService(serviceName = "DepartamentoWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class DepartamentoWS {
     private final DepartamentoServiceImpl departamentoService;
     
@@ -23,10 +20,15 @@ public class DepartamentoWS {
         departamentoService = new DepartamentoServiceImpl();
     }
     
+    /**
+     *
+     * @return
+     */
     @WebMethod(operationName = "listarDepas")
     public List<Departamento> listarDepas() {
         try {
-            return departamentoService.listar();
+            List<Departamento> lista = departamentoService.listar(); 
+            return lista;
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar depas: " + ex.getMessage());
         }

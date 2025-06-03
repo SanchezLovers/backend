@@ -8,11 +8,8 @@ package pe.edu.pucp.sirgep.business.ubicacion.service;
 import java.util.ArrayList;
 import java.util.List;
 import pe.edu.pucp.sirgep.da.ubicacion.dao.DistritoDAO;
-import pe.edu.pucp.sirgep.da.ubicacion.dao.ProvinciaDAO;
 import pe.edu.pucp.sirgep.da.ubicacion.implementacion.DistritoImpl;
-import pe.edu.pucp.sirgep.da.ubicacion.implementacion.ProvinciaImpl;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
-import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
 
 public class DistritoServiceImpl {
     private final DistritoDAO distritoDAO;

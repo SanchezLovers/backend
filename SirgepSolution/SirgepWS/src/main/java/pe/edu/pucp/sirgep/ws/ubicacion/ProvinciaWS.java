@@ -6,6 +6,7 @@
 package pe.edu.pucp.sirgep.ws.ubicacion;
 
 import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceException;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.ubicacion.service.DepartamentoServiceImpl;
@@ -18,6 +19,7 @@ import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
  *
  * @author Ana Gabriela
  */
+@WebService(serviceName = "ProvinciaWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class ProvinciaWS {
    private final ProvinciaServiceImpl provinciaService;
     
