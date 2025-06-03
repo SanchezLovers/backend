@@ -6,6 +6,7 @@
 package pe.edu.pucp.sirgep.ws.ubicacion;
 
 import jakarta.jws.WebMethod;
+import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceException;
 import java.util.List;
@@ -21,14 +22,14 @@ import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
  */
 @WebService(serviceName = "ProvinciaWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class ProvinciaWS {
-   private final ProvinciaServiceImpl provinciaService;
+   private ProvinciaServiceImpl provinciaService;
     
     public ProvinciaWS(){
         provinciaService = new ProvinciaServiceImpl();
     }
     
-    @WebMethod(operationName = "listarDepasPorProvincia")
-    public List<Provincia> listarProvincia(int id) {
+    @WebMethod(operationName = "listarProvinciaPorDepa")
+    public List<Provincia> listarProvinciaPorDepa(@WebParam(name = "Id")int id) {
         try {
             return provinciaService.listarPorDepartamento(id);
         } catch (Exception ex) {

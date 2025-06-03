@@ -14,7 +14,7 @@ import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 
 @WebService(serviceName = "DepartamentoWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class DepartamentoWS {
-    private final DepartamentoServiceImpl departamentoService;
+    private DepartamentoServiceImpl departamentoService;
     
     public DepartamentoWS(){
         departamentoService = new DepartamentoServiceImpl();
