@@ -17,8 +17,8 @@ import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
  *
  * @author anac
  */
-//faltaria poner la continuacion de , targetNamespace = "pe.edu.pucp.sirgep" 
-@WebService(serviceName = "CompraWS")
+
+@WebService(serviceName = "CompraWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class CompraWS {
 
     //private IEntradaService iEntradaService;

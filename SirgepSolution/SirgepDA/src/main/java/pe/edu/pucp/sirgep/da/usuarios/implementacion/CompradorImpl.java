@@ -67,7 +67,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     @Override
     protected void setInsertParameters(PreparedStatement ps, Comprador comprador) {
         try{
-            ps.setBoolean(1, comprador.isRegistrado());
+            ps.setBoolean(1, (comprador.isRegistrado()==1?true:false));
             ps.setInt(2, comprador.getIdPersona());
         }catch(SQLException e){
             throw new RuntimeException(e);
@@ -87,7 +87,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             persona.setContrasenia(rs.getString("contrasenia"));
             persona.setNumDocumento(rs.getString("num_documento"));
             persona.setTipoDocumento(ETipoDocumento.valueOf(rs.getString("tipo_documento")));
-            persona.setEsRegistrado(rs.getBoolean("es_registrado"));
+            persona.setEsRegistrado(rs.getBoolean("es_registrado")?1:0);
             return persona;
         }catch(SQLException e){
             throw new RuntimeException(e);
@@ -215,10 +215,8 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                     "JOIN persona p ON c.id_persona_comprador = p.id_persona " +
                     "WHERE p.num_documento = ?"
                  )) {
-
-                ps.setString(1, dni); // ← Esto asigna el valor del parámetro "?" en la consulta
+                ps.setString(1, dni);
                 ResultSet rs = ps.executeQuery();
-
                 if (rs.next()) {
                     comprador = new Comprador();
                     comprador.setIdPersona(rs.getInt("id_persona"));
@@ -226,9 +224,8 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                     comprador.setPrimerApellido(rs.getString("primer_apellido"));
                     comprador.setSegundoApellido(rs.getString("segundo_apellido"));
                     comprador.setNumDocumento(rs.getString("num_documento"));
-                    
-                    comprador.setEsRegistrado(rs.getBoolean("es_registrado"));
-                    
+                    comprador.setMonto_billetera(rs.getDouble("monto_billetera"));
+                    comprador.setEsRegistrado(rs.getBoolean("es_registrado")?1:0);
                 }
 
             } catch (SQLException e) {
