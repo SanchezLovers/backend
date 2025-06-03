@@ -12,10 +12,10 @@ public class Comprador extends Persona{
     }
 
 	// Getter y Setter para esRegistrado
-    public int isRegistrado() {
+    public int getRegistrado() {
         return this.esRegistrado;
     }
-    public void setEsRegistrado(int esRegistrado) {
+    public void setRegistrado(int esRegistrado) {
         this.esRegistrado = esRegistrado;
     }
     // Metodos
@@ -25,11 +25,11 @@ public class Comprador extends Persona{
         //cadena += "Registrado: " + (this.esRegistrado ? "Sí" : "No");
         return cadena;
     }
-    public double getMonto_billetera() {
+    public double getMonto() {
         return monto;
     }
 
-    public void setMonto_billetera(double monto) {
+    public void setMonto(double monto) {
         this.monto = monto;
     }
 

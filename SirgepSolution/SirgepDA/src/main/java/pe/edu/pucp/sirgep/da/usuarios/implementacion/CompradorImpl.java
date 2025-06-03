@@ -67,7 +67,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     @Override
     protected void setInsertParameters(PreparedStatement ps, Comprador comprador) {
         try{
-            ps.setBoolean(1, (comprador.isRegistrado()==1?true:false));
+            ps.setBoolean(1, (comprador.getRegistrado()==1?true:false));
             ps.setInt(2, comprador.getIdPersona());
         }catch(SQLException e){
             throw new RuntimeException(e);
@@ -87,7 +87,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             persona.setContrasenia(rs.getString("contrasenia"));
             persona.setNumDocumento(rs.getString("num_documento"));
             persona.setTipoDocumento(ETipoDocumento.valueOf(rs.getString("tipo_documento")));
-            persona.setEsRegistrado(rs.getBoolean("es_registrado")?1:0);
+            persona.setRegistrado(rs.getBoolean("es_registrado")?1:0);
             return persona;
         }catch(SQLException e){
             throw new RuntimeException(e);
@@ -224,8 +224,8 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                     comprador.setPrimerApellido(rs.getString("primer_apellido"));
                     comprador.setSegundoApellido(rs.getString("segundo_apellido"));
                     comprador.setNumDocumento(rs.getString("num_documento"));
-                    comprador.setMonto_billetera(rs.getDouble("monto_billetera"));
-                    comprador.setEsRegistrado(rs.getBoolean("es_registrado")?1:0);
+                    comprador.setMonto(rs.getDouble("monto_billetera"));
+                    comprador.setRegistrado(rs.getBoolean("es_registrado")?1:0);
                 }
 
             } catch (SQLException e) {
