@@ -162,7 +162,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
 //            }finally {
 //                con.setAutoCommit(true);
 //            }
-        }catch(IOException|SQLException e) {
+        }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+entity.getClass().getSimpleName()+" ", e);
         }finally{
             if(idR>0)
