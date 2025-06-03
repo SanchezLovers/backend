@@ -3,7 +3,6 @@ package pe.edu.pucp.sirgep.ws.ventas;
 
 import jakarta.jws.WebService;
 import jakarta.jws.WebMethod;
-import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.EventoServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEventoService;
 import pe.edu.pucp.sirgep.business.usuarios.impl.CompradorServiceImpl;

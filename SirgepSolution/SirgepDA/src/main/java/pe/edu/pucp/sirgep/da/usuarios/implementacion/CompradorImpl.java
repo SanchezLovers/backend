@@ -122,7 +122,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             }finally {
                 conn.setAutoCommit(true);
             }
-        }catch(IOException|SQLException e) {
+        }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+entity.getClass().getSimpleName()+" ", e);
         }finally{
             return id;
@@ -148,7 +148,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al actualizar " + entity.getClass().getSimpleName(), e);
         }finally{
             return resultado;
@@ -173,7 +173,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar logicamente la entidad", e);
         }finally{
             return resultado;
@@ -198,7 +198,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar fisicamente la entidad", e);
         }finally{
             return resultado;
@@ -231,7 +231,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                     
                 }
 
-            } catch (IOException | SQLException e) {
+            } catch (SQLException e) {
                 throw new RuntimeException("Error al buscar por dni", e);
             }
             return comprador;

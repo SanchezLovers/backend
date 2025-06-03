@@ -12,7 +12,7 @@ import jakarta.jws.WebParam;
  *
  * @author LEGION
  */
-@WebService(serviceName = "UsuariosWS")
+@WebService(serviceName = "UsuariosWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class UsuariosWS {
 
     /**
