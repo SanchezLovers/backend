@@ -247,7 +247,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             seActualizoR = actualizarDerivada(entidad,con);
             if(!seActualizoR) throw new RuntimeException("No se actualizo la reserva correctamente");
         }
-        catch(SQLException|IOException e){
+        catch(SQLException e){
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
         }
         
@@ -271,7 +271,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             seEliminoLogR = eliminarLogicoDerivada(id,con);
             if(!seEliminoLogR) throw new RuntimeException("No se actualizo la reserva correctamente");
         }
-        catch(SQLException|IOException e){
+        catch(SQLException e){
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
         }
         
@@ -295,7 +295,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             seEliminoFisR = eliminarFisicoDerivada(id,con);
             if(!seEliminoFisR) throw new RuntimeException("No se ELIMINO de forma FISICA la reserva correctamente");
         }
-        catch(SQLException|IOException e){
+        catch(SQLException e){
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
         }
         
