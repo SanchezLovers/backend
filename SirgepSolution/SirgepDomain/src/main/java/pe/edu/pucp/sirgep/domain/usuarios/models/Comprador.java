@@ -5,6 +5,7 @@ import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
 public class Comprador extends Persona{
     //Atributos
     private boolean esRegistrado;
+    //private double monto_billetera;
 
     public Comprador(){
         esRegistrado = false;

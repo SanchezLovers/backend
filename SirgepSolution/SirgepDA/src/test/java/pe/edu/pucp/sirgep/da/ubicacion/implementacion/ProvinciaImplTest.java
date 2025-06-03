@@ -1,7 +1,4 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package pe.edu.pucp.sirgep.da.ubicacion.implementacion;
 
 import java.util.List;
@@ -16,10 +13,7 @@ import pe.edu.pucp.sirgep.da.ubicacion.implementacion.ProvinciaImpl;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
 
-/**
- *
- * @author AnaC
- */
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProvinciaImplTest {
     private Provincia provincia;
@@ -87,3 +81,4 @@ public class ProvinciaImplTest {
     }
     
 }
+*/

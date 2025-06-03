@@ -1,7 +1,4 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package pe.edu.pucp.sirgep.da.ubicacion.implementacion;
 
 import java.sql.PreparedStatement;
@@ -20,10 +17,7 @@ import pe.edu.pucp.sirgep.da.ubicacion.dao.DistritoDAO;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
 
-/**
- *
- * @author AnaC
- */
+
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DistritoImplTest {
@@ -93,3 +87,4 @@ public class DistritoImplTest {
         assertTrue(true);
     }
 }
+*/

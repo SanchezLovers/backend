@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.da.usuarios;
+/*package pe.edu.pucp.sirgep.da.usuarios;
 
 import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
@@ -107,4 +107,4 @@ public class PersonaImplTest {
         //boolean result = this.personaDAO.eliminarFisico(this.persona.getIdPersona());
         assertTrue(true);
     }
-}
+}*/

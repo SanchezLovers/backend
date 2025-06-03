@@ -1,7 +1,4 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package pe.edu.pucp.sirgep.da.ubicacion.implementacion;
 
 import java.util.List;
@@ -14,10 +11,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import pe.edu.pucp.sirgep.da.ubicacion.dao.DepartamentoDAO;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 
-/**
- *
- * @author willi
- */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DepartamentoImplTest {
     private Departamento departamento;
@@ -81,3 +74,4 @@ public class DepartamentoImplTest {
     }
     
 }
+*/

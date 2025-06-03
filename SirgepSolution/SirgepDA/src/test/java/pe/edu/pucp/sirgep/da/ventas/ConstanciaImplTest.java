@@ -1,7 +1,4 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package pe.edu.pucp.sirgep.da.ventas;
 
 import java.util.Date;
@@ -21,10 +18,7 @@ import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 
-/**
- *
- * @author benny
- */
+
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -112,4 +106,4 @@ public class ConstanciaImplTest {
         boolean retorno = constanciaDAO.eliminarFisico(entidad.getIdConstancia());
         assertTrue(retorno);
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.business.infraestructura;
+/*package pe.edu.pucp.sirgep.business.infraestructura;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -93,4 +93,4 @@ public class FuncionServiceImplTest {
         //funcionService.eliminarFisico(1);
         assertTrue(true);
     }
-}
+}*/

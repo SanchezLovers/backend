@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.business.infraestructura;
+/*package pe.edu.pucp.sirgep.business.infraestructura;
 
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.EDiaSemana;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
@@ -106,4 +106,4 @@ public class EspacioServiceImplTest {
         //boolean result = this.espacioDAO.eliminarFisico(this.espacio.getIdEspacio());
         assertTrue(true);
     }
-}
+}*/

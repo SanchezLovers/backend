@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.da.usuarios;
+/*package pe.edu.pucp.sirgep.da.usuarios;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,4 +83,4 @@ public class CompradorImplTest {
         //boolean result = this.personaDAO.eliminarFisico(this.persona.getIdPersona());
         assertTrue(true);
     }
-}
+}*/

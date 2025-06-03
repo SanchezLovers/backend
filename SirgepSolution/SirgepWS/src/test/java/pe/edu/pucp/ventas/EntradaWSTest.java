@@ -1,4 +1,4 @@
-//package pe.edu.pucp.ventas;
+/*package pe.edu.pucp.ventas;*/
 //
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Order;

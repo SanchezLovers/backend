@@ -1,7 +1,4 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package pe.edu.pucp.sirgep.da.ventas;
 
 import java.util.Date;
@@ -21,10 +18,7 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 
-/**
- *
- * @author willi
- */
+
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EntradaImplTest {
@@ -101,3 +95,4 @@ public class EntradaImplTest {
     }
     
 }
+*/

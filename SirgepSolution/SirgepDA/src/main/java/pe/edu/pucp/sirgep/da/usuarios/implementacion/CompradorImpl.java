@@ -205,6 +205,37 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         }
     }
     
+        
+    @Override
+        public Comprador buscarPorDni(String dni) {
+            Comprador comprador = null;
+            try (Connection con = DBManager.getInstance().getConnection();
+                 PreparedStatement ps = con.prepareStatement(
+                    "SELECT * FROM comprador c " +
+                    "JOIN persona p ON c.id_persona_comprador = p.id_persona " +
+                    "WHERE p.num_documento = ?"
+                 )) {
+
+                ps.setString(1, dni); // ← Esto asigna el valor del parámetro "?" en la consulta
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    comprador = new Comprador();
+                    comprador.setIdPersona(rs.getInt("id_persona"));
+                    comprador.setNombres(rs.getString("nombres"));
+                    comprador.setPrimerApellido(rs.getString("primer_apellido"));
+                    comprador.setSegundoApellido(rs.getString("segundo_apellido"));
+                    comprador.setNumDocumento(rs.getString("num_documento"));
+                    
+                    comprador.setEsRegistrado(rs.getBoolean("es_registrado"));
+                    
+                }
+
+            } catch (IOException | SQLException e) {
+                throw new RuntimeException("Error al buscar por dni", e);
+            }
+            return comprador;
+        }
     /*
     @Override
     public void insertar(Comprador comprador) throws SQLException, IOException {
@@ -315,4 +346,6 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         return comprador;
     }
     */
+
+    
 }

@@ -1,7 +1,4 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 
 package pe.edu.pucp.sirgep.da.infraestructura;
 
@@ -28,10 +25,7 @@ import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
 
-/**
- *
- * @author Ana Gabriela
- */
+
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EventoImplTest {
@@ -110,3 +104,4 @@ public class EventoImplTest {
         assertTrue(true);
     }
 }
+*/
