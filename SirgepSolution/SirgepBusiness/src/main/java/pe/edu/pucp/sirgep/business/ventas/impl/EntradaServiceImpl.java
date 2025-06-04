@@ -35,10 +35,12 @@ public class EntradaServiceImpl implements IEntradaService{
     public int cantidadDispo(int id, int cantEntradas) {
         int cant=0;
         List<Entrada> entradas = entradaDAO.listar();
-        for(int i = 0; i < entradas.size(); i++) {
-            Entrada eAux = entradas.get(id);
-            if (eAux.getFuncion().getIdFuncion() == id)
-                cant++;
+        if (entradas.size()>0){
+            for(int i = 0; i < entradas.size(); i++) {
+                Entrada eAux = entradas.get(i);
+                if (eAux.getFuncion().getIdFuncion() == id)
+                    cant++;
+            }
         }
 //        List<>
         return cantEntradas-cant;

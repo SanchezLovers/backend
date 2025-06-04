@@ -87,11 +87,11 @@ public class Funcion{
     @Override
     public String toString(){
             String cadena="---------------------------------------------------------------------"+ "\n";
-            cadena += this.evento.toString() + "\n";
+            cadena += this.evento.getIdEvento() + "\n";
             cadena+="Funcion:\nFecha: " +this.fecha +"Hora de Inicio: "+this.horaInicio+" Hora de fin: "+this.horaFin+"\nEntradas:\n";
-            for(Entrada e:this.entradas){
+            /*for(Entrada e:this.entradas){
                 cadena+=e.toString()+"\n";
-            }
+            }*/
             return cadena;
     }
 }

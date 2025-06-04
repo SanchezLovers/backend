@@ -18,6 +18,15 @@ public class Evento {
 //    private String urlImagen;
     private byte[] archivoImagen;
     private String descripcion;
+    
+//momentaneamente no implementado
+    public byte[] getArchivoImagen() {
+        return archivoImagen;
+    }
+
+    public void setArchivoImagen(byte[] archivoImagen) {
+        this.archivoImagen = archivoImagen;
+    }
 	
     //Relaciones
     private Distrito distrito;

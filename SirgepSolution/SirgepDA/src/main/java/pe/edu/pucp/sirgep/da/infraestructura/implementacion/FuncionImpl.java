@@ -9,8 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.time.Instant;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
 
@@ -77,8 +82,12 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
         try {
             Funcion f = new Funcion();
             f.setIdFuncion(rs.getInt("id_funcion"));
-            f.setHoraInicio(rs.getDate("hora_inicio"));
-            f.setHoraFin(rs.getDate("hora_fin"));
+            String fechaHoraStr = rs.getString("hora_inicio");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime ldt = LocalDateTime.parse(fechaHoraStr, formatter);
+//            System.out.println("hora_inicio como String: " + fechaHoraStr);
+            f.setHoraInicio(Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()));
+//            f.setHoraFin(rs.getTimestamp("hora_fin"));
             f.setFecha(rs.getDate("fecha"));
 
             Evento evento = new Evento();
