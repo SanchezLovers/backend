@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.io.IOException;
 import java.sql.SQLException;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 
 public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     private final ConstanciaDAO constanciaDAO;
@@ -90,6 +91,9 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             constancia.setTotal(rs.getDouble("total"));
             constancia.setDetallePago(rs.getString("detalle_pago"));
             constancia.setNumEntrada(rs.getInt("num_entrada"));
+             Funcion f = new Funcion();
+             f.setIdFuncion(rs.getInt("Funcion_id_funcion"));
+             constancia.setFuncion(f);
             return constancia;
         }catch(SQLException e){
             throw new RuntimeException(e);
