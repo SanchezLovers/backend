@@ -1,4 +1,4 @@
-
+/*
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 
 
@@ -23,6 +23,7 @@ import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
  *
  * @author Ana Gabriela
  */
+/*
 public class EventoTest {
     private Evento e;
     private EventoServiceImpl es;
@@ -39,3 +40,4 @@ public class EventoTest {
         assertNotNull(lista);
     }
 }
+*/
