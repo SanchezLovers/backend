@@ -1,10 +1,10 @@
 <discovery xmlns="http://schemas.xmlsoap.org/disco/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
- <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/EspacioWS?wsdl"/>
- <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/EntradaWS?wsdl"/>
- <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/DepartamentoWS?wsdl"/>
- <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/ProvinciaWS?wsdl"/>
- <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/DistritoWS?wsdl"/>
- <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/CompraWS?wsdl"/>
- <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/EventoWSAnaG?wsdl"/>
+    <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/EspacioWS?wsdl"/>
+    <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/EntradaWS?wsdl"/>
+    <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/DepartamentoWS?wsdl"/>
+    <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/ProvinciaWS?wsdl"/>
+    <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/DistritoWS?wsdl"/>
+    <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/CompraWS?wsdl"/>
+    <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/EventoWSAnaG?wsdl"/>
 
 </discovery>

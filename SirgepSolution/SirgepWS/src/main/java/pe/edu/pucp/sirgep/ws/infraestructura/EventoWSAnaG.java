@@ -31,7 +31,7 @@ public class EventoWSAnaG {
     }
 
     @WebMethod(operationName = "listarEventos")
-    public List<Evento> listarFuncionesDeEvento(){
+    public List<Evento> listarEventos(){
         return eService.listar();
         
     }
