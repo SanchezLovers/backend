@@ -4,5 +4,4 @@
  <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/DepartamentoWS?wsdl"/>
  <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/ProvinciaWS?wsdl"/>
  <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/DistritoWS?wsdl"/>
-
 </discovery>
