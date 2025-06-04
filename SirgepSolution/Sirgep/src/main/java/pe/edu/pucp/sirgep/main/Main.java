@@ -75,7 +75,8 @@ public class Main{
         evento.setPrecioEntrada(5.5);
         evento.setUbicacion("Avenida La Paz 123");
         evento.setReferencia("Anfiteatro San Miguel");
-        evento.setFecha(new Date());
+        evento.setFecha_inicio(new Date());
+        evento.setFecha_fin(new Date());
         
         //INSERTAR
         evSQL.insertar(evento);

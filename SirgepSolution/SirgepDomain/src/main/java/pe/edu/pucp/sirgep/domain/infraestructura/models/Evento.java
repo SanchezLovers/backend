@@ -6,151 +6,120 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Evento {
-    //Atributos
     private int idEvento;
     private String nombre;
+    private Date fecha_inicio;
+    private Date fecha_fin;
     private String ubicacion;
     private String referencia;
-    private String descripcion;
-//    private String urlImagen;
-    private byte[] archivoImagen;
     private int cantEntradasDispo;
     private int cantEntradasVendidas;
     private double precioEntrada;
-    private Date fecha;
+//    private String urlImagen;
+    private byte[] archivoImagen;
+    private String descripcion;
 	
     //Relaciones
-    private ArrayList<Funcion> funciones;
     private Distrito distrito;
 
     //Constructor
     public Evento(){
-        this.funciones = new ArrayList<Funcion>();
+        
     }
 
-    // Getter y Setter para idEvento
     public int getIdEvento() {
-        return this.idEvento;
+        return idEvento;
     }
 
     public void setIdEvento(int idEvento) {
         this.idEvento = idEvento;
     }
 
-    // Getter y Setter para nombre
     public String getNombre() {
-        return this.nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public byte[] getArchivo() {
-        return archivoImagen;
+
+    public Date getFecha_inicio() {
+        return fecha_inicio;
     }
 
-    public void setArchivo(byte[] archivo) {
-        this.archivoImagen = archivo;
+    public void setFecha_inicio(Date fecha_inicio) {
+        this.fecha_inicio = fecha_inicio;
     }
 
-    // Getter y Setter para ubicacion
+    public Date getFecha_fin() {
+        return fecha_fin;
+    }
+
+    public void setFecha_fin(Date fecha_fin) {
+        this.fecha_fin = fecha_fin;
+    }
+
     public String getUbicacion() {
-        return this.ubicacion;
+        return ubicacion;
     }
 
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
     }
 
-    // Getter y Setter para referencia
     public String getReferencia() {
-        return this.referencia;
+        return referencia;
     }
 
     public void setReferencia(String referencia) {
         this.referencia = referencia;
     }
-    // Getter y Setter para descripción
-    public String getDescripcion() {
-        return this.descripcion;
-    }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-    // Getter y Setter para url
-
-    // Getter y Setter para cantEntradasDispo
     public int getCantEntradasDispo() {
-        return this.cantEntradasDispo;
+        return cantEntradasDispo;
     }
 
     public void setCantEntradasDispo(int cantEntradasDispo) {
         this.cantEntradasDispo = cantEntradasDispo;
     }
 
-    // Getter y Setter para cantEntradasVendidas
     public int getCantEntradasVendidas() {
-        return this.cantEntradasVendidas;
+        return cantEntradasVendidas;
     }
 
     public void setCantEntradasVendidas(int cantEntradasVendidas) {
         this.cantEntradasVendidas = cantEntradasVendidas;
     }
 
-    // Getter y Setter para precioEntrada
     public double getPrecioEntrada() {
-        return this.precioEntrada;
+        return precioEntrada;
     }
-    
+
     public void setPrecioEntrada(double precioEntrada) {
         this.precioEntrada = precioEntrada;
     }
 
-    // Getter y Setter para fecha
-    public Date getFecha() {
-        return this.fecha;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-    // Getter y Setter para funciones
-    public ArrayList<Funcion> getFunciones() {
-        return new ArrayList<Funcion>(this.funciones);
-    }
-
-    public void setFunciones(ArrayList<Funcion> funciones) {
-        this.funciones = new ArrayList<Funcion>(funciones);
-    }
-
-    // Getter y Setter para distrito
     public Distrito getDistrito() {
-        return this.distrito;
+        return distrito;
     }
 
+    //Atributos
     public void setDistrito(Distrito distrito) {
         this.distrito = distrito;
     }
 
-    //Metodo
     @Override
     public String toString() {
-        String cadena="---------------------------------------------------------------------"+ "\n";
-        cadena += "Evento: " + this.nombre + "\n";
-        cadena += "Fecha: " + this.fecha + "\n";
-        cadena+=this.distrito.toString()+ "\n";
-        cadena += "Descripción: " + this.descripcion + "\n";
-        cadena += "Ubicación: " + this.ubicacion + "\n";
-        cadena += "Referencia: " + this.referencia + "\n";
-        cadena += "Precio entrada: " + this.precioEntrada + "\n";
-        cadena += "Entradas disponibles: " + this.cantEntradasDispo + "\n";
-        cadena += "Entradas vendidas: " + this.cantEntradasVendidas+ "\nFunciones:\n";
-        cadena += "\nFunciones:\n";
-        for(Funcion f:this.funciones){
-            cadena+=f.toString()+"\n";
-        }
-        return cadena;
+        return "Evento{" + "idEvento=" + idEvento + ", nombre=" + nombre + ", fecha_inicio=" + fecha_inicio + ", fecha_fin=" + fecha_fin + ", ubicacion=" + ubicacion + ", referencia=" + referencia + ", cantEntradasDispo=" + cantEntradasDispo + ", cantEntradasVendidas=" + cantEntradasVendidas + ", precioEntrada=" + precioEntrada + ", descripcion=" + descripcion + ", distrito=" + distrito + '}';
     }
+
+    
 }
