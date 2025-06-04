@@ -111,7 +111,7 @@ public class DepartamentoImpl extends BaseImpl<Departamento> implements Departam
             }finally {
                 con.setAutoCommit(true);
             }
-        }catch(IOException|SQLException e) {
+        }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+departamento.getClass().getSimpleName()+" ", e);
         }finally{
             return departamento.getIdDepartamento();

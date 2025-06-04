@@ -12,9 +12,10 @@ import java.util.List;
 import pe.edu.pucp.sirgep.business.ubicacion.service.DepartamentoServiceImpl;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 
+/**esto ya funciona y todo ubicación tmb**/
 @WebService(serviceName = "DepartamentoWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class DepartamentoWS {
-    private final DepartamentoServiceImpl departamentoService;
+    private DepartamentoServiceImpl departamentoService;
     
     public DepartamentoWS(){
         departamentoService = new DepartamentoServiceImpl();

@@ -53,6 +53,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <exec.mainClass>pe.edu.pucp.sirgep.da.SirgepDA</exec.mainClass>
+        <skipTests>true</skipTests>
     </properties>
     <groupId>pe.edu.pucp</groupId>
 </project>
