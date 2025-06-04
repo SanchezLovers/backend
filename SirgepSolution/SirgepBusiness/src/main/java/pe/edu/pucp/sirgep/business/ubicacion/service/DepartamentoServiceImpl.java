@@ -28,6 +28,7 @@ public class DepartamentoServiceImpl {
     public List<Departamento> listar() {
         return departamentoDAO.listar();
     }
+    
 
     public boolean actualizar(Departamento depa) {
         return departamentoDAO.actualizar(depa);
