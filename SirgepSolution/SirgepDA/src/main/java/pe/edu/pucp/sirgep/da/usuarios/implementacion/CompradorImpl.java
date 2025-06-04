@@ -47,7 +47,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     @Override
     protected String getUpdateQuery() {
         String sql = "UPDATE Comprador " +
-                    "SET es_registrado = ?, monto_billetera = ? " +
+                    "SET  monto_billetera = ?, es_registrado = ? " +
                     "WHERE id_persona_comprador = ?";
        return sql;
     }
@@ -97,7 +97,14 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
 
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Comprador comprador) {
-        setInsertParameters(ps, comprador);//son lo mismo
+        try{
+            ps.setDouble (1, comprador.getMonto());
+            ps.setBoolean(2, (comprador.getRegistrado()==1?true:false));
+            ps.setInt(3, comprador.getIdPersona());
+            
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -112,7 +119,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         try (Connection conn = DBManager.getInstance().getConnection()){
             conn.setAutoCommit(false);
             id = personaDAO.insertar(entity);//Insercion inicial de la persona
-            entity.setIdPersona(id);///////////////
+            
             
             if (entity.getMonto() == 0) {  
                 entity.setMonto(0);           
@@ -219,7 +226,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             Comprador comprador = null;
             String sql =
                 "SELECT p.id_persona, p.nombres, p.primer_apellido, p.segundo_apellido, " +
-                "       p.num_documento, c.es_registrado, c.monto_billetera " +   
+                "       p.num_documento, p.correo, p.usuario, p.contrasenia, p.tipo_documento, c.es_registrado, c.monto_billetera " +   
                 "FROM   Persona   p " +
                 "JOIN   Comprador c ON c.id_persona_comprador = p.id_persona " +
                 "WHERE  p.num_documento = ?";
@@ -236,6 +243,16 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                         comprador.setPrimerApellido(rs.getString("primer_apellido"));
                         comprador.setSegundoApellido(rs.getString("segundo_apellido"));
                         comprador.setNumDocumento(rs.getString("num_documento"));
+                        comprador.setCorreo(rs.getString("correo"));
+                        comprador.setUsuario(rs.getString("usuario"));
+                        comprador.setContrasenia(rs.getString("contrasenia"));
+                        String td = rs.getString("tipo_documento"); 
+                        if (td != null) {
+                            comprador.setTipoDocumento(
+                                ETipoDocumento.valueOf(td.toUpperCase()) 
+                            );
+                        }
+                        
                         comprador.setRegistrado (rs.getBoolean("es_registrado") ? 1 : 0);
                         comprador.setMonto      (rs.getDouble ("monto_billetera"));   // ahora sí existe
                     }
