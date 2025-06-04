@@ -9,29 +9,31 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.Instant;
+import java.sql.Date;
 
+public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
 
-public class FuncionImpl extends BaseImpl<Funcion>implements FuncionDAO{
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Funcion(hora_inicio, hora_fin, Evento_idEvento, activo)"
-                + " VALUES(?, ?, ?, 'A')";
+        return "INSERT INTO Funcion(hora_inicio, hora_fin, Evento_idEvento, fecha)"
+                + " VALUES(?, ?, ?, ?, 'A')";
     }
 
     @Override
     protected String getSelectByIdQuery() {
-        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento FROM "
+        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento, fecha FROM "
                 + "Funcion WHERE id_funcion = ?";
     }
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento FROM Funcion";
+        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento, fecha FROM Funcion";
     }
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE Funcion SET hora_inicio = ?, hora_fin = ?, "
+        return "UPDATE Funcion SET hora_inicio = ?, hora_fin = ?, fecha=? "
                 + "Evento_idEvento = ? WHERE id_funcion = ?";
     }
 
@@ -44,13 +46,14 @@ public class FuncionImpl extends BaseImpl<Funcion>implements FuncionDAO{
     protected String getDeleteFisicoQuery() {
         return "DELETE FROM Funcion WHERE id_funcion = ?";
     }
-    
+
     @Override
     protected void setInsertParameters(PreparedStatement ps, Funcion f) {
         try {
-            ps.setTime(1, Time.valueOf(f.getHoraInicio()));
-            ps.setTime(2, Time.valueOf(f.getHoraFin()));
+            ps.setDate(1, Date.valueOf(f.getHoraInicio().toString()));
+            ps.setDate(2, Date.valueOf(f.getHoraFin().toString()));
             ps.setInt(3, f.getEvento().getIdEvento());
+            ps.setDate(4, Date.valueOf(f.getFecha().toString()));
         } catch (SQLException ex) {
             throw new RuntimeException("Error al asignar parámetros de inserción para Funcion", ex);
         }
@@ -59,10 +62,11 @@ public class FuncionImpl extends BaseImpl<Funcion>implements FuncionDAO{
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Funcion f) {
         try {
-            ps.setTime(1, Time.valueOf(f.getHoraInicio()));
-            ps.setTime(2, Time.valueOf(f.getHoraFin()));
-            ps.setInt(3, f.getEvento().getIdEvento());
-            ps.setInt(4, f.getIdFuncion());
+            ps.setDate(1, Date.valueOf(f.getHoraInicio().toString()));
+            ps.setDate(2, Date.valueOf(f.getHoraFin().toString()));
+            ps.setDate(3, Date.valueOf(f.getFecha().toString()));
+            ps.setInt(4, f.getEvento().getIdEvento());
+            ps.setInt(5, f.getIdFuncion());
         } catch (SQLException ex) {
             throw new RuntimeException("Error al asignar parámetros de actualización para Funcion", ex);
         }
@@ -73,8 +77,9 @@ public class FuncionImpl extends BaseImpl<Funcion>implements FuncionDAO{
         try {
             Funcion f = new Funcion();
             f.setIdFuncion(rs.getInt("id_funcion"));
-            f.setHoraInicio(rs.getTime("hora_inicio").toLocalTime());
-            f.setHoraFin(rs.getTime("hora_fin").toLocalTime());
+            f.setHoraInicio(rs.getDate("hora_inicio"));
+            f.setHoraFin(rs.getDate("hora_fin"));
+            f.setFecha(rs.getDate("fecha"));
 
             Evento evento = new Evento();
             evento.setIdEvento(rs.getInt("Evento_idEvento"));

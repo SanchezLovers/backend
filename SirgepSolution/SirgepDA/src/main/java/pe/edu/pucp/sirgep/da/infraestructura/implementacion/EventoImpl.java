@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Date;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 
 public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     //añadiendo activo
@@ -119,6 +120,9 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             e.setCantEntradasVendidas(rs.getInt("cant_entradas_vendidas"));
             e.setPrecioEntrada(rs.getDouble("precio_entradas"));
             e.setDescripcion(rs.getString("descripcion"));
+            Distrito d =  new Distrito();
+            d.setIdDistrito(rs.getInt("Distrito_id_distrito"));
+            e.setDistrito(d);
             return e;
         }catch(SQLException e){
             throw new RuntimeException(e);

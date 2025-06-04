@@ -3,13 +3,32 @@ package pe.edu.pucp.sirgep.domain.infraestructura.models;
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Funcion{
     //Atributos
     private int idFuncion;
-    private LocalTime horaInicio;
-    private LocalTime horaFin;
+    private Date horaInicio;
+    private Date horaFin;
+    private Date fecha;
+    private boolean activo;
 
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+    
     //Relaciones
     private ArrayList<Entrada> entradas;
     private Evento evento;
@@ -29,20 +48,20 @@ public class Funcion{
     }
 
     // Getter y Setter para fechaHoraInicio
-    public LocalTime getHoraInicio() {
+    public Date getHoraInicio() {
             return this.horaInicio;
     }
 
-    public void setHoraInicio(LocalTime horaInicio) {
+    public void setHoraInicio(Date horaInicio) {
             this.horaInicio = horaInicio;
     }
 
     // Getter y Setter para fechaHoraFin
-    public LocalTime getHoraFin() {
+    public Date getHoraFin() {
             return this.horaFin;
     }
 
-    public void setHoraFin(LocalTime horaFin) {
+    public void setHoraFin(Date horaFin) {
             this.horaFin = horaFin;
     }
 
@@ -69,7 +88,7 @@ public class Funcion{
     public String toString(){
             String cadena="---------------------------------------------------------------------"+ "\n";
             cadena += this.evento.toString() + "\n";
-            cadena+="Funcion:\nHora de Inicio: "+this.horaInicio+" Hora de fin: "+this.horaFin+"\nEntradas:\n";
+            cadena+="Funcion:\nFecha: " +this.fecha +"Hora de Inicio: "+this.horaInicio+" Hora de fin: "+this.horaFin+"\nEntradas:\n";
             for(Entrada e:this.entradas){
                 cadena+=e.toString()+"\n";
             }

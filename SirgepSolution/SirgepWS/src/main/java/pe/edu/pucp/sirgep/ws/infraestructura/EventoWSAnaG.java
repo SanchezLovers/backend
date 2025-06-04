@@ -8,6 +8,7 @@ import jakarta.jws.WebService;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.EventoServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.FuncionServiceImpl;
@@ -31,7 +32,7 @@ public class EventoWSAnaG {
     }
 
     @WebMethod(operationName = "listarEventos")
-    public List<Evento> listarFuncionesDeEvento(){
+    public List<Evento> listarEventos(){
         return eService.listar();
         
     }
