@@ -110,6 +110,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     protected Evento createFromResultSet(ResultSet rs){
         try{
             Evento e=new Evento();
+            Distrito distrito=new Distrito();
             e.setIdEvento(rs.getInt("id_evento"));
             e.setNombre(rs.getString("nombre"));
             e.setFecha_inicio(rs.getDate("fecha_inicio"));
@@ -119,6 +120,8 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             e.setCantEntradasDispo(rs.getInt("cant_entradas_dispo"));
             e.setCantEntradasVendidas(rs.getInt("cant_entradas_vendidas"));
             e.setPrecioEntrada(rs.getDouble("precio_entradas"));
+            distrito.setIdDistrito(rs.getInt("Distrito_id_distrito"));
+            e.setDistrito(distrito);
             e.setDescripcion(rs.getString("descripcion"));
             Distrito d =  new Distrito();
             d.setIdDistrito(rs.getInt("Distrito_id_distrito"));

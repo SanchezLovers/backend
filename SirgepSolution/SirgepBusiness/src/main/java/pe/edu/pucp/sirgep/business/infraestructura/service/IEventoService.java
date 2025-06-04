@@ -10,4 +10,5 @@ public interface IEventoService {
     boolean actualizar(Evento evento);
     boolean eliminarLogico(int id);
     boolean eliminarFisico(int id);
+    List<Evento> listarPorDistrito(int id);
 }
