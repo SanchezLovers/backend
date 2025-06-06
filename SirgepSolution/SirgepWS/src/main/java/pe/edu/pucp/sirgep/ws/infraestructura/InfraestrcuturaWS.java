@@ -12,11 +12,13 @@ import jakarta.jws.WebParam;
  *
  * @author LEGION
  */
-@WebService(serviceName = "PersonaWS")
+@WebService(serviceName = "InfraestructuraWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class InfraestrcuturaWS {
 
     /**
      * This is a sample web service operation
+     * @param txt
+     * @return 
      */
     @WebMethod(operationName = "hello")
     public String hello(@WebParam(name = "name") String txt) {

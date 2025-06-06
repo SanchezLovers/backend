@@ -3,12 +3,14 @@ package pe.edu.pucp.sirgep.domain.infraestructura.models;
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Funcion{
     //Atributos
     private int idFuncion;
     private LocalTime horaInicio;
     private LocalTime horaFin;
+    private Date fecha;
 
     //Relaciones
     private ArrayList<Entrada> entradas;
@@ -64,11 +66,20 @@ public class Funcion{
             this.evento = evento;
     }
 
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
     //Metodos
     @Override
     public String toString(){
             String cadena="---------------------------------------------------------------------"+ "\n";
-            cadena += this.evento.toString() + "\n";
+            cadena += this.evento!=null?this.evento.toString():"null" ;
+            cadena+= "\n";
             cadena+="Funcion:\nHora de Inicio: "+this.horaInicio+" Hora de fin: "+this.horaFin+"\nEntradas:\n";
             for(Entrada e:this.entradas){
                 cadena+=e.toString()+"\n";

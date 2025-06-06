@@ -14,6 +14,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.io.IOException;
 import java.sql.SQLException;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
 public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     private final ConstanciaDAO constanciaDAO;
@@ -31,10 +33,10 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     
     @Override
     protected String getSelectByIdQuery(){
-        String sql = "SELECT id_constancia,fecha,metodo_pago,igv,total,detalle_pago,"
-                + "num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion "
+        String sql = "SELECT C.id_constancia,C.fecha,C.metodo_pago,C.igv,C.total,C.detalle_pago,E.num_entrada,"
+                + "E.Persona_id_persona,E.id_constancia_entrada,E.Funcion_id_funcion "
                 + "FROM Constancia C, Entrada E "
-                + "WHERE C.id_constancia = E.id_constancia_entrada AND num_entrada=?";
+                + "WHERE C.id_constancia = E.id_constancia_entrada AND E.num_entrada=?";
         return sql;
     }
     
@@ -83,13 +85,19 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     protected Entrada createFromResultSet(ResultSet rs){
          try{
             Entrada constancia = new Entrada();
-            constancia.setIdConstancia(rs.getInt("id_constancia"));
+            constancia.setIdConstancia(rs.getInt("id_constancia_entrada"));
             constancia.setFecha(rs.getDate("fecha"));
             constancia.setMetodoPago(EMetodoPago.valueOf(rs.getString("metodo_pago")));
             constancia.setIgv(rs.getDouble("igv"));
             constancia.setTotal(rs.getDouble("total"));
             constancia.setDetallePago(rs.getString("detalle_pago"));
             constancia.setNumEntrada(rs.getInt("num_entrada"));
+             Persona persona=new Persona();
+             persona.setIdPersona(rs.getInt("Persona_id_persona"));
+             constancia.setPersona(persona);
+             Funcion funcion=new Funcion();
+             funcion.setIdFuncion(rs.getInt("Funcion_id_funcion"));
+             constancia.setFuncion(funcion);
             return constancia;
         }catch(SQLException e){
             throw new RuntimeException(e);
@@ -120,7 +128,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             con.setAutoCommit(false);
             idC = constanciaDAO.insertar((Constancia)entrada);
             idE = super.insertar(entrada);
-        }catch(IOException|SQLException e) {
+        }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+entrada.getClass().getSimpleName()+" ", e);
         }finally{
             if(idE>0)
@@ -147,7 +155,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             } finally {
                 con.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al actualizar " + entrada.getClass().getSimpleName(), e);
         }finally{
             return resultado;
@@ -171,7 +179,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar logicamente la entidad", e);
         }finally{
             return resultado;
@@ -195,7 +203,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar fisicamente la entidad", e);
         }finally{
             return resultado;

@@ -43,7 +43,7 @@ public abstract class BaseImpl<T> implements BaseDAO<T> {
             }finally {
                 conn.setAutoCommit(true);
             }
-        }catch(IOException|SQLException e) {
+        }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+entity.getClass().getSimpleName()+" ", e);
         }finally{
             return id;
@@ -62,7 +62,7 @@ public abstract class BaseImpl<T> implements BaseDAO<T> {
                         System.out.println("Se busco un registro con ID="+id);
                     }
                 }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al buscar la entidad con ID=" + id + " ", e);
         }finally{
             return entity;
@@ -80,7 +80,7 @@ public abstract class BaseImpl<T> implements BaseDAO<T> {
                 entities.add(this.createFromResultSet(rs));
             }
             System.out.println("Se listo los registros");
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al listar las entidades", e);
         }finally{
             return entities;
@@ -104,7 +104,7 @@ public abstract class BaseImpl<T> implements BaseDAO<T> {
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al actualizar " + entity.getClass().getSimpleName(), e);
         }finally{
             return resultado;
@@ -128,7 +128,7 @@ public abstract class BaseImpl<T> implements BaseDAO<T> {
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar logicamente la entidad", e);
         }finally{
             return resultado;
@@ -152,7 +152,7 @@ public abstract class BaseImpl<T> implements BaseDAO<T> {
             } finally {
                 conn.setAutoCommit(true);
             }
-        } catch (IOException | SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar fisicamente la entidad", e);
         }finally{
             return resultado;

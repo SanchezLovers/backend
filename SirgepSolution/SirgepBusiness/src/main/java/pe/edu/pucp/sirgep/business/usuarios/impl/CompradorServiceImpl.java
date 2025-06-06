@@ -9,9 +9,11 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 public class CompradorServiceImpl implements ICompradorService{
 
     private final CompradorDAO compradorDAO;
+    
 
     public CompradorServiceImpl(){
         this.compradorDAO=new CompradorImpl();
+        
     }
     
     @Override
@@ -24,6 +26,12 @@ public class CompradorServiceImpl implements ICompradorService{
         return compradorDAO.buscar(id);
     }
 
+    //aqui
+    @Override
+    public Comprador buscarPorDni(String dni) {
+        return compradorDAO.buscarPorDni(dni);
+    }
+    
     @Override
     public List<Comprador> listar() {
         return compradorDAO.listar();

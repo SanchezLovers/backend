@@ -26,11 +26,20 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import pe.edu.pucp.sirgep.da.infraestructura.implementacion.FuncionImpl;
+import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
+import pe.edu.pucp.sirgep.da.ventas.implementacion.EntradaImpl;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
+import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 
 public class Main{
     public static void main(String[] args) throws Exception,SQLException, IOException{
         Connection con = DBManager.getInstance().getConnection();
         //Implementación de pruebas DAO y MySQL
+        Funcion funcion=new FuncionImpl().buscar(1);
+        System.out.println(funcion);
+        /*
         probarEspacio();
         
         probarAdministrador();
@@ -39,6 +48,7 @@ public class Main{
 
         probarDepartamento();
         probarConstancia();
+        */
     }
     
     static Distrito devuelveDistrito(){
@@ -75,7 +85,8 @@ public class Main{
         evento.setPrecioEntrada(5.5);
         evento.setUbicacion("Avenida La Paz 123");
         evento.setReferencia("Anfiteatro San Miguel");
-        evento.setFecha(new Date());
+        evento.setFecha_inicio(new Date());
+        evento.setFecha_fin(new Date());
         
         //INSERTAR
         evSQL.insertar(evento);
@@ -277,6 +288,7 @@ public class Main{
         depaMySQL.actualizar(departamento);
         System.out.println("Departamento "+ departamento.getNombre() +" actualizado.");
         // obtener por ID
+
         Departamento d = depaMySQL.buscar(departamento.getIdDepartamento());
         System.out.println("obtenido por ID: ");
         System.out.println(d);
@@ -289,6 +301,7 @@ public class Main{
         }
         
         //eliminar logico
+
         depaMySQL.eliminarLogico(departamento.getIdDepartamento());
         System.out.println("Departamento "+ departamento.getNombre() +" con estado E (Eliminado).");
     }
