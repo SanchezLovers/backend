@@ -17,6 +17,15 @@ public class DistritoServiceImpl {
     public DistritoServiceImpl(){
         this.distritoDAO=new DistritoImpl();
     }
+    
+    public Distrito buscarDistrito(int id) {
+        try {
+            return distritoDAO.buscar(id);
+        } catch (Exception ex) {
+            throw new RuntimeException("Errror al buscar distrito",ex);
+        }
+    }
+    
     public List<Distrito> listarPorDepartamento(int id) {
         List<Distrito> distritosGeneral = distritoDAO.listar();
         List<Distrito> distritosDelDepa;

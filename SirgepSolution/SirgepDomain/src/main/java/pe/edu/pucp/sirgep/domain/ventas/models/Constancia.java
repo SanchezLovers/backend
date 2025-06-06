@@ -3,6 +3,7 @@ package pe.edu.pucp.sirgep.domain.ventas.models;
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 
 import java.util.Date;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
 public class Constancia{
     //Atributos
@@ -12,9 +13,7 @@ public class Constancia{
     private String detallePago;
     private double igv = 0.18;
     private double total;
-
-    //Relaciones
-
+    
     //Constructor
     public Constancia(){
         

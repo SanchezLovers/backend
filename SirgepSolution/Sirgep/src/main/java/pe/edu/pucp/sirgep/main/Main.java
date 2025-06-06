@@ -26,11 +26,20 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import pe.edu.pucp.sirgep.da.infraestructura.implementacion.FuncionImpl;
+import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
+import pe.edu.pucp.sirgep.da.ventas.implementacion.EntradaImpl;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
+import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 
 public class Main{
     public static void main(String[] args) throws Exception,SQLException, IOException{
         Connection con = DBManager.getInstance().getConnection();
         //Implementación de pruebas DAO y MySQL
+        Funcion funcion=new FuncionImpl().buscar(1);
+        System.out.println(funcion);
+        /*
         probarEspacio();
         
         probarAdministrador();
@@ -39,6 +48,7 @@ public class Main{
 
         probarDepartamento();
         probarConstancia();
+        */
     }
     
     static Distrito devuelveDistrito(){

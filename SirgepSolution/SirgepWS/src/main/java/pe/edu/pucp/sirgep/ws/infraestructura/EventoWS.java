@@ -48,15 +48,15 @@ public class EventoWS {
             throw new WebServiceException("Error al listar distritos: " + ex.getMessage());
         }
     }
-//    @WebMethod(operationName = "buscarEvento")
-//    public Evento buscar(@WebParam(name = "id") int id) {
-//        try{
-//            return eventoService.buscar(id);
-//        }
-//        catch(Exception ex){
-//            throw new RuntimeException("Error al buscar el evento con id: " + id + " ... " + ex.getMessage());
-//        }
-//    }
+    @WebMethod(operationName = "buscarEvento")
+    public Evento buscarEvento(@WebParam(name = "id") int id) {
+        try{
+            return eventoService.buscar(id);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al buscar el evento con id: " + id + " ... " + ex.getMessage());
+        }
+    }
     /*
     @WebMethod(operationName = "actualizarEvento")
     public boolean actualizar(@WebParam(name = "evento") Evento evento) {

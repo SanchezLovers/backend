@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.edu.pucp.sirgep.ws.ubicacion;
 
 import jakarta.jws.WebMethod;
@@ -13,10 +8,6 @@ import java.util.List;
 import pe.edu.pucp.sirgep.business.ubicacion.service.DistritoServiceImpl;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 
-/**
- *
- * @author Ana Gabriela
- */
 @WebService(serviceName = "DistritoWS", targetNamespace = "pe.edu.pucp.sirgep")
 
 public class DistritoWS {
@@ -24,6 +15,15 @@ public class DistritoWS {
     
     public DistritoWS(){
         dService = new DistritoServiceImpl();
+    }
+    
+    @WebMethod(operationName = "buscarDistrito")
+    public Distrito buscarDistrito(@WebParam(name = "Id")int id) {
+        try {
+            return dService.buscarDistrito(id);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al buscar distrito: " + ex.getMessage());
+        }
     }
     
     @WebMethod(operationName = "listarDistritosFiltrados")
