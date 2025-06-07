@@ -115,8 +115,10 @@ public class Main{
         Distrito distrito = devuelveDistrito();
 
         espacio.setDistrito(distrito);
+        /*
         espacio.setHorarioInicioAtencion(LocalTime.NOON);
         espacio.setHorarioFinAtencion(LocalTime.MIDNIGHT);
+        */
         espacio.setNombre("PRUEBA 2 Cancha de Futbol Universitaria");
         espacio.setPrecioReserva(6);
         espacio.setSuperficie(400);
