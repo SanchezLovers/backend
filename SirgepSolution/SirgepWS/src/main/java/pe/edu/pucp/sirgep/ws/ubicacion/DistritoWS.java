@@ -34,4 +34,14 @@ public class DistritoWS {
             throw new WebServiceException("Error al listar distritos: " + ex.getMessage());
         }
     }
+	
+    @WebMethod(operationName = "buscarDistPorId")
+    public Distrito buscarDistPorId(@WebParam(name = "idDistrito") int idDistrito) {
+        try {
+            Distrito distrito = dService.buscar(idDistrito); 
+            return distrito;
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al buscar un distrito por su ID: " + idDistrito + ex.getMessage());
+        }
+    }
 }

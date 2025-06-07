@@ -1,5 +1,7 @@
 package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
@@ -9,9 +11,13 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import pe.edu.pucp.sirgep.dbmanager.DBManager;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 
 public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
-
+    
     @Override
     protected String getInsertQuery() {
         String query = "INSERT INTO Espacio(nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
@@ -29,7 +35,7 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
     @Override
     protected String getSelectAllQuery() {
         String query = "SELECT id_espacio, nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
-                + "ubicacion, superficie, precio_reserva FROM Espacio";
+                + "ubicacion, superficie, precio_reserva, Distrito_id_distrito FROM Espacio";
         return query;
     }
 
@@ -62,7 +68,7 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
             ps.setString(5, e.getUbicacion());
             ps.setDouble(6, e.getSuperficie());
             ps.setDouble(7, e.getPrecioReserva());
-            ps.setDouble(8, e.getDistrito().getIdDistrito());
+            ps.setInt(8, e.getDistrito().getIdDistrito());
         }catch(SQLException ex){
             throw new RuntimeException(ex);
         }
@@ -87,15 +93,23 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
     @Override
     protected Espacio createFromResultSet(ResultSet rs){
         try{
+            Time horaInicio = rs.getTime("horario_inicio_atencion");
+            Time horaFin = rs.getTime("horario_fin_atencion");
+
             Espacio e=new Espacio();
+            e.setHorarioInicioAtencion(horaInicio != null ? horaInicio.toString():null);
+            e.setHorarioFinAtencion(horaFin != null ? horaFin.toString():null);
             e.setIdEspacio(rs.getInt("id_espacio"));
             e.setNombre(rs.getString("nombre"));
             e.setTipoEspacio(ETipoEspacio.valueOf(rs.getString("tipo_espacio")));
-            e.setHorarioInicioAtencion(rs.getTime("horario_inicio_atencion").toLocalTime());
-            e.setHorarioFinAtencion(rs.getTime("horario_fin_atencion").toLocalTime());
             e.setUbicacion(rs.getString("ubicacion"));
             e.setSuperficie(rs.getDouble("superficie"));
             e.setPrecioReserva(rs.getDouble("precio_reserva"));
+            /* Necesario para realizar el filtro de Espacios mediante su Distrito */
+            Distrito d = new Distrito();
+            d.setIdDistrito(rs.getInt("Distrito_id_distrito"));
+            e.setDistrito(d);
+            /* ------------------------------------------------------------------- */
             return e;
         }catch(SQLException e){
             throw new RuntimeException(e);
@@ -105,6 +119,34 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
     @Override
     protected void setId(Espacio e, int id) {
         e.setIdEspacio(id);
+    }
+    
+    //__ STORED PROCEDURE __
+
+    public String getBuscarPorTexto(){
+        return "{CALL BUSCAR_ESPACIO_POR_TEXTO(?)}";
+    }
+
+    /*Buscar Espacios con cierto patrón de Texto*/
+    @Override
+    public List<Espacio> buscarPorTexto(String texto) {
+        List<Espacio> espacios = new ArrayList<>();
+
+        // Utilizaremos procedimientos almacenados
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+             CallableStatement cs = conn.prepareCall(this.getBuscarPorTexto())) {
+
+            cs.setString(1, texto); // asignamos el parámetro de texto
+
+            try (ResultSet rs = cs.executeQuery()) {
+                while (rs.next()) {
+                    espacios.add(createFromResultSet(rs));
+                }
+            }
+        }catch(SQLException e){
+            throw new RuntimeException("Error al obtener un espacio: ", e);
+        }
+        return espacios;
     }
     
 /*

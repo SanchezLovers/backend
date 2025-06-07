@@ -10,4 +10,5 @@ public interface IEspacioService {
     boolean actualizar(Espacio espacio);
     boolean eliminarLogico(int id);
     boolean eliminarFisico(int id);
+    List<Espacio> buscarPorTexto(String texto);
 }

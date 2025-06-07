@@ -43,4 +43,9 @@ public class EspacioServiceImpl implements IEspacioService {
     public boolean eliminarFisico(int id) {
         return espacioDAO.eliminarFisico(id);
     }
+    
+    @Override
+    public List<Espacio> buscarPorTexto(String texto) {
+        return espacioDAO.buscarPorTexto(texto);
+    }
 }
