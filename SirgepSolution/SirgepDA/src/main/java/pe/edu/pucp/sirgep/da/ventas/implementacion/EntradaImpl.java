@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.io.IOException;
 import java.sql.SQLException;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
 public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     private final ConstanciaDAO constanciaDAO;
@@ -94,6 +95,9 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
              Funcion f = new Funcion();
              f.setIdFuncion(rs.getInt("Funcion_id_funcion"));
              constancia.setFuncion(f);
+             Persona persona=new Persona();
+             persona.setIdPersona(rs.getInt("Persona_id_persona"));
+             constancia.setPersona(persona);
             return constancia;
         }catch(SQLException e){
             throw new RuntimeException(e);
