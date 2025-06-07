@@ -6,6 +6,7 @@
 package pe.edu.pucp.sirgep.ws.ubicacion;
 
 import jakarta.jws.WebMethod;
+import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceException;
 import java.util.List;
@@ -32,6 +33,16 @@ public class DepartamentoWS {
             return lista;
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar depas: " + ex.getMessage());
+        }
+    }
+	
+	@WebMethod(operationName = "buscarDepaPorId")
+    public Departamento buscarDepaPorId(@WebParam(name = "idDepartamento") int idDepartamento) {
+        try {
+            Departamento departamento = departamentoService.buscar(idDepartamento); 
+            return departamento;
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al buscar un departamento por su ID: " + idDepartamento + ex.getMessage());
         }
     }
 }

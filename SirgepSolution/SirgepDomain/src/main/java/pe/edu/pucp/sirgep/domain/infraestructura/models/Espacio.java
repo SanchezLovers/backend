@@ -5,7 +5,6 @@ import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.EDiaSemana;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class Espacio{
@@ -14,8 +13,8 @@ public class Espacio{
     private String nombre;
     private ETipoEspacio tipoEspacio;
     private ArrayList<EDiaSemana> listaDiasAtencion;
-    private LocalTime horarioInicioAtencion;
-    private LocalTime horarioFinAtencion;
+    private String horarioInicioAtencion;
+    private String horarioFinAtencion;
     private String ubicacion;
     private double superficie;
     private double precioReserva;
@@ -68,22 +67,23 @@ public class Espacio{
     }
 
     // Getter y Setter para horarioInicioAtencion
-    public LocalTime getHorarioInicioAtencion() {
+    public String getHorarioInicioAtencion() {
         return this.horarioInicioAtencion;
     }
 
-    public void setHorarioInicioAtencion(LocalTime horarioInicioAtencion) {
+    public void setHorarioInicioAtencion(String horarioInicioAtencion) {
         this.horarioInicioAtencion = horarioInicioAtencion;
     }
 
     // Getter y Setter para horarioFinAtencion
-    public LocalTime getHorarioFinAtencion() {
+    public String getHorarioFinAtencion() {
         return this.horarioFinAtencion;
     }
 
-    public void setHorarioFinAtencion(LocalTime horarioFinAtencion) {
+    public void setHorarioFinAtencion(String horarioFinAtencion) {
         this.horarioFinAtencion = horarioFinAtencion;
     }
+  
   
     // Getter y Setter para ubicacion
     public String getUbicacion() {

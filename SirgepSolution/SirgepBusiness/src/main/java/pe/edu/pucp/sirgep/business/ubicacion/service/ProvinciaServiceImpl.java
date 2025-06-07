@@ -28,5 +28,9 @@ public class ProvinciaServiceImpl {
         }
         return provinciasDelDepa;
     }
+    
+    public Provincia buscar(int id){
+        return provinciaDAO.buscar(id);
+    }
 
 }
