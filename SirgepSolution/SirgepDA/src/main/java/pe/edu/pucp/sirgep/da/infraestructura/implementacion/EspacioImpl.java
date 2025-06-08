@@ -28,7 +28,7 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
     @Override
     protected String getSelectByIdQuery() {
         String sql = "SELECT id_espacio, nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
-                + "ubicacion, superficie, precio_reserva FROM Espacio WHERE id_espacio=?";
+                + "ubicacion, superficie, precio_reserva, Distrito_id_distrito FROM Espacio WHERE id_espacio=?";
         return sql;
     }
 
