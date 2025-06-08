@@ -8,6 +8,7 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 
 public interface IEntradaService {
+    //Metodos CRUD
     int insertar(Entrada reserva);
     Entrada buscar(int id);
     List<Entrada> listar();
