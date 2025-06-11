@@ -1,5 +1,6 @@
 package pe.edu.pucp.sirgep.business.ventas.impl;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -257,6 +258,18 @@ public class EntradaServiceImpl implements IEntradaService{
     @Override
     public void exportarLibroEntradas(XSSFWorkbook libro,String nombreArchivo) {
         try{
+            String userHome = System.getProperty("user.home");
+            File downloads = new File(userHome, "Downloads");
+            File descargas = new File(userHome, "Descargas");
+            File carpetaDestino;
+            if (downloads.exists()) {
+                carpetaDestino = downloads;
+            } else if (descargas.exists()) {
+                carpetaDestino = descargas;
+            } else {
+                carpetaDestino = new File(userHome); // fallback: usa la carpeta del usuario
+            }
+            nombreArchivo = new File(carpetaDestino, nombreArchivo).getAbsolutePath();
             OutputStream output=new FileOutputStream(nombreArchivo);//Ruta y nombre
             libro.write(output);//Exporto los bytes
             libro.close();//Libero bytes
