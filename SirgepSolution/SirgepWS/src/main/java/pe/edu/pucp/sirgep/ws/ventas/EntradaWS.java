@@ -138,4 +138,14 @@ public class EntradaWS {
             throw new RuntimeException("Error al buscar el distrito de la entrada: " + ex.getMessage());
         }
     }
+
+    //Metodo para crear libro de Excel para las entradas
+    @WebMethod(operationName = "crearLibroExcelEntradas")
+    public void crearLibroExcelEntradas(@WebParam(name = "idComprador")int idComprador){
+        try {
+            entradaService.crearLibroExcelEntradas(idComprador);
+        }  catch (Exception ex) {
+            throw new RuntimeException("Error al exportar el libro excel de las entradas: : " + ex.getMessage());
+        }
+    }
 }

@@ -87,7 +87,7 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
             LocalDateTime ldt = LocalDateTime.parse(fechaHoraStr, formatter);
 //            System.out.println("hora_inicio como String: " + fechaHoraStr);
             f.setHoraInicio(Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()));
-//            f.setHoraFin(rs.getTimestamp("hora_fin"));
+            f.setHoraFin(rs.getTimestamp("hora_fin"));
             f.setFecha(rs.getDate("fecha"));
 
             Evento evento = new Evento();

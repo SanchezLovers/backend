@@ -1,6 +1,9 @@
 package pe.edu.pucp.sirgep.business.ventas.service;
 
 import java.util.List;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
@@ -21,4 +24,12 @@ public interface IEntradaService {
     public Funcion buscarFuncionDeEntrada(int idFuncion);
     public Evento buscarEventoDeEntrada(int idEntrada);
     public Distrito buscarDistritoDeEntrada(int idEntrada);
+    
+    //Metodos para crear libro de Excel para las entradas
+    public void crearLibroExcelEntradas(int idComprador);
+    public String crearHojalEntradas(XSSFWorkbook libro,int idComprador);
+    public String crearEncabezadoHojaEntradas(XSSFSheet hoja,int idComprador);
+    public void llenarTablaEntradas(XSSFSheet hoja,int idComprador);
+    public void llenarFilaEntrada(XSSFRow registro,Entrada entrada);
+    public void exportarLibroEntradas(XSSFWorkbook libro,String nombreArchivo);
 }

@@ -14,6 +14,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
@@ -207,6 +209,28 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             throw new RuntimeException("Error al eliminar fisicamente la entidad", e);
         }finally{
             return resultado;
+        }
+    }
+
+    @Override
+    public List<Entrada> listarEntradasPorComprador(int IdComprador) {
+        List<Entrada> listaEntradas=null;
+        String sql = "SELECT num_entrada,Funcion_id_funcion FROM Entrada WHERE Persona_id_persona = "+IdComprador;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            listaEntradas = new ArrayList<>();
+            while (rs.next()) {
+                Entrada entrada=new Entrada();
+                entrada.setNumEntrada(rs.getInt("num_entrada"));
+                Funcion funcion = new Funcion();
+                funcion.setIdFuncion(rs.getInt("Funcion_id_funcion"));
+                entrada.setFuncion(funcion);
+                listaEntradas.add(entrada);
+            }
+            System.out.println("Se listo las entradas correctamente");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las entidades", e);
+        } finally {
+            return listaEntradas;
         }
     }
 }
