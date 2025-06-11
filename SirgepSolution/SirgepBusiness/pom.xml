@@ -54,6 +54,18 @@
             <version>1.3</version>
             <scope>test</scope>
         </dependency>
+        <!-- Dependencia Apache Poi Excel -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.4.1</version>
+        </dependency>
+        <!-- Dependencia Apache Poi Excel -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.4.1</version>
+        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
