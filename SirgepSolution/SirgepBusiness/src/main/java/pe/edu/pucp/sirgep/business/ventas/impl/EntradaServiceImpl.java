@@ -4,10 +4,17 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;//Para crear libro de Excel
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;//Para crear libro de Excel
 
 import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
@@ -136,14 +143,14 @@ public class EntradaServiceImpl implements IEntradaService{
     //Metodos para crear libro de Excel para las entradas
     @Override
     public void crearLibroExcelEntradas(int idComprador) {
-        Workbook libro=new XSSFWorkbook();//Archivo.xlsx
+        XSSFWorkbook libro=new XSSFWorkbook();//Archivo.xlsx
         String nombreArchivo=crearHojalEntradas(libro,idComprador);
         exportarLibroEntradas(libro,nombreArchivo);
     }
     
     @Override
-    public String crearHojalEntradas(Workbook libro,int idComprador) {
-        Sheet hoja=libro.createSheet("Entradas");//Nombre
+    public String crearHojalEntradas(XSSFWorkbook libro,int idComprador) {
+        XSSFSheet hoja=libro.createSheet("Entradas");//Nombre
         try{
             String nombreArchivo=crearEncabezadoHojaEntradas(hoja,idComprador);
             llenarTablaEntradas(hoja,idComprador);
@@ -154,49 +161,79 @@ public class EntradaServiceImpl implements IEntradaService{
     }
 
     @Override
-    public String crearEncabezadoHojaEntradas(Sheet hoja,int idComprador) {
+    public String crearEncabezadoHojaEntradas(XSSFSheet hoja,int idComprador) {
         Comprador comprador=compradorDAO.buscar(idComprador);
         String nombreArchivo="Lista_Entradas_"+comprador.getNombres()+".xlsx";
-        Row fila=hoja.createRow(0);
-        Cell celda=fila.createCell(0);
+        //Configuracion de estilo
+        XSSFCellStyle estiloColorFondo = hoja.getWorkbook().createCellStyle();
+        XSSFFont fontBlanca = hoja.getWorkbook().createFont();
+        fontBlanca.setColor(IndexedColors.WHITE.getIndex());
+        fontBlanca.setBold(true);
+        estiloColorFondo.setFont(fontBlanca);
+        estiloColorFondo.setFillForegroundColor(IndexedColors.RED.getIndex());
+        estiloColorFondo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        estiloColorFondo.setAlignment(HorizontalAlignment.CENTER); //Centrado
+        //Configuracion de celda
+        XSSFRow fila=hoja.createRow(0);
+        XSSFCell celda=fila.createCell(0);
         celda.setCellValue("Lista de Entradas del Comprador "+comprador.getNombres()+" "+comprador.getSegundoApellido());
+        hoja.addMergedRegion(new CellRangeAddress(0, 0, 0, 6));//Combinar celdas
+        // Estilo centrado + negrita
+        XSSFCellStyle estilo = hoja.getWorkbook().createCellStyle();
+        XSSFFont fuente = hoja.getWorkbook().createFont();
+        fuente.setBold(true);
+        estilo.setFont(fuente);
+        estilo.setAlignment(HorizontalAlignment.CENTER);
+        estilo.setVerticalAlignment(VerticalAlignment.CENTER);
+        celda.setCellStyle(estilo);
+        //Tabla
         fila=hoja.createRow(2);
         celda=fila.createCell(0);
         celda.setCellValue("Nro Entrada");
+        celda.setCellStyle(estiloColorFondo);
         celda=fila.createCell(1);
         celda.setCellValue("Evento");
+        celda.setCellStyle(estiloColorFondo);
         celda=fila.createCell(2);
         celda.setCellValue("Ubicacion");
+        celda.setCellStyle(estiloColorFondo);
         celda=fila.createCell(3);
         celda.setCellValue("Distrito");
+        celda.setCellStyle(estiloColorFondo);
         celda=fila.createCell(4);
         celda.setCellValue("Fecha");
+        celda.setCellStyle(estiloColorFondo);
         celda=fila.createCell(5);
         celda.setCellValue("Hora Inicio");
+        celda.setCellStyle(estiloColorFondo);
         celda=fila.createCell(6);
         celda.setCellValue("Hora Fin");
+        celda.setCellStyle(estiloColorFondo);
         return nombreArchivo;
     }
     
     @Override
-    public void llenarTablaEntradas(Sheet hoja,int idComprador) {
+    public void llenarTablaEntradas(XSSFSheet hoja,int idComprador) {
         List<Entrada> listaEntradas=entradaDAO.listarEntradasPorComprador(idComprador);//Incompleto
-        int posicion=4;
+        int posicion=3;
         for (Entrada entreda: listaEntradas) {
-            Row registro=hoja.createRow(posicion++);
+            XSSFRow registro=hoja.createRow(posicion++);
             llenarFilaEntrada(registro,entreda);
+        }
+        for (int i = 0; i < 7; i++) {
+            hoja.autoSizeColumn(i);
         }
     }
 
     @Override
-    public void llenarFilaEntrada(Row registro, Entrada entrada) {
+    public void llenarFilaEntrada(XSSFRow registro, Entrada entrada) {
         Funcion funcion=funcionDAO.buscar(entrada.getFuncion().getIdFuncion());
         if(funcion!=null){
             Evento evento=eventoDAO.buscar(funcion.getEvento().getIdEvento());
             if(evento!=null){
                 Distrito distrito=distritoDAO.buscar(evento.getDistrito().getIdDistrito());
                 if(distrito!=null){
-                    Cell celda=registro.createCell(0);
+                    XSSFCell celda=registro.createCell(0);
                     celda.setCellValue(entrada.getNumEntrada());
                     celda=registro.createCell(1);
                     celda.setCellValue(evento.getNombre());
@@ -218,7 +255,7 @@ public class EntradaServiceImpl implements IEntradaService{
     }
 
     @Override
-    public void exportarLibroEntradas(Workbook libro,String nombreArchivo) {
+    public void exportarLibroEntradas(XSSFWorkbook libro,String nombreArchivo) {
         try{
             OutputStream output=new FileOutputStream(nombreArchivo);//Ruta y nombre
             libro.write(output);//Exporto los bytes
