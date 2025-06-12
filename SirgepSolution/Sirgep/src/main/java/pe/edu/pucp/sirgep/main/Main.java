@@ -34,7 +34,7 @@ public class Main{
         Connection con = DBManager.getInstance().getConnection();
         //Implementación de pruebas DAO y MySQL
         IReservaService reservaService=new ReservaServiceImpl();
-        reservaService.crearLibroExcelReservas(2);//Comprador con Id=2
+        //reservaService.crearLibroExcelReservas(2);//Comprador con Id=2
         /*
         probarEspacio();
         
