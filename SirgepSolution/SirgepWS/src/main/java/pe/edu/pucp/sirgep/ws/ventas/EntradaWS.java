@@ -8,6 +8,7 @@ import jakarta.xml.ws.WebServiceException;
 import java.util.List;
 
 import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntrada;
 import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
@@ -43,8 +44,8 @@ public class EntradaWS {
         }
     }
     
-    @WebMethod(operationName = "listarVentas")
-    public List<Entrada> listarEntrada() {
+    @WebMethod(operationName = "listarEntradasActivas")
+    public List<Entrada> listarEntradasActivas() {
         try {
             return entradaService.listar();
         } catch (Exception ex) {
@@ -139,6 +140,16 @@ public class EntradaWS {
         }
     }
 
+    //Metodo para crear libro de Excel para las entradas
+    @WebMethod(operationName = "listarDetalleEntradasPorComprador")
+    public List<DetalleEntrada> listarDetalleEntradasPorComprador(@WebParam(name = "idComprador")int idComprador){
+        try {
+            return entradaService.listarDetalleEntradasPorComprador(idComprador);
+        }  catch (Exception ex) {
+            throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
+        }
+    }
+    
     //Metodo para crear libro de Excel para las entradas
     @WebMethod(operationName = "crearLibroExcelEntradas")
     public void crearLibroExcelEntradas(@WebParam(name = "idComprador")int idComprador){
