@@ -87,6 +87,8 @@ public abstract class BaseImpl<T> implements BaseDAO<T> {
         }
     }
 
+    
+    
     @Override
     public boolean actualizar(T entity) {
         boolean resultado=false;

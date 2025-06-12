@@ -18,8 +18,8 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     
     @Override
     protected String getInsertQuery() {
-        String sql = "INSERT INTO Comprador(es_registrado,id_persona_comprador,activo)"
-                   + "VALUES (?,?,'A')";
+        String sql = "INSERT INTO Comprador(es_registrado,id_persona_comprador,monto_billetera,activo)"
+                   + "VALUES (?,?,?,'A')";
         return sql;    
     }
 
@@ -46,10 +46,10 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
 
     @Override
     protected String getUpdateQuery() {
-        String sql = "UPDATE Comprador "
-                   + "SET es_registrado=?"
-                   + "WHERE id_persona_comprador=?";
-        return sql;
+        String sql = "UPDATE Comprador " +
+                    "SET  monto_billetera = ?, es_registrado = ? " +
+                    "WHERE id_persona_comprador = ?";
+       return sql;
     }
 
     @Override
@@ -67,8 +67,9 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     @Override
     protected void setInsertParameters(PreparedStatement ps, Comprador comprador) {
         try{
-            ps.setBoolean(1, comprador.isRegistrado());
+            ps.setBoolean(1, (comprador.getRegistrado()==1?true:false));
             ps.setInt(2, comprador.getIdPersona());
+            ps.setDouble (3, comprador.getMonto());
         }catch(SQLException e){
             throw new RuntimeException(e);
         }
@@ -87,7 +88,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             persona.setContrasenia(rs.getString("contrasenia"));
             persona.setNumDocumento(rs.getString("num_documento"));
             persona.setTipoDocumento(ETipoDocumento.valueOf(rs.getString("tipo_documento")));
-            persona.setEsRegistrado(rs.getBoolean("es_registrado"));
+            persona.setRegistrado(rs.getBoolean("es_registrado")?1:0);
             return persona;
         }catch(SQLException e){
             throw new RuntimeException(e);
@@ -96,7 +97,14 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
 
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Comprador comprador) {
-        setInsertParameters(ps, comprador);//son lo mismo
+        try{
+            ps.setDouble (1, comprador.getMonto());
+            ps.setBoolean(2, (comprador.getRegistrado()==1?true:false));
+            ps.setInt(3, comprador.getIdPersona());
+            
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -111,6 +119,12 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         try (Connection conn = DBManager.getInstance().getConnection()){
             conn.setAutoCommit(false);
             id = personaDAO.insertar(entity);//Insercion inicial de la persona
+            
+            
+            if (entity.getMonto() == 0) {  
+                entity.setMonto(0);           
+            }
+            
             try(PreparedStatement pst=conn.prepareStatement(this.getInsertQuery(),Statement.RETURN_GENERATED_KEYS)){
                 this.setInsertParameters(pst, entity);
                 pst.executeUpdate();
@@ -205,6 +219,49 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         }
     }
     
+        
+    
+        @Override
+        public Comprador buscarPorDni(String dni) {
+            Comprador comprador = null;
+            String sql =
+                "SELECT p.id_persona, p.nombres, p.primer_apellido, p.segundo_apellido, " +
+                "       p.num_documento, p.correo, p.usuario, p.contrasenia, p.tipo_documento, c.es_registrado, c.monto_billetera " +   
+                "FROM   Persona   p " +
+                "JOIN   Comprador c ON c.id_persona_comprador = p.id_persona " +
+                "WHERE  p.num_documento = ?";
+
+            try (Connection con = DBManager.getInstance().getConnection();
+                 PreparedStatement ps = con.prepareStatement(sql)) {
+
+                ps.setString(1, dni);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        comprador = new Comprador();
+                        comprador.setIdPersona (rs.getInt   ("id_persona"));
+                        comprador.setNombres    (rs.getString("nombres"));
+                        comprador.setPrimerApellido(rs.getString("primer_apellido"));
+                        comprador.setSegundoApellido(rs.getString("segundo_apellido"));
+                        comprador.setNumDocumento(rs.getString("num_documento"));
+                        comprador.setCorreo(rs.getString("correo"));
+                        comprador.setUsuario(rs.getString("usuario"));
+                        comprador.setContrasenia(rs.getString("contrasenia"));
+                        String td = rs.getString("tipo_documento"); 
+                        if (td != null) {
+                            comprador.setTipoDocumento(
+                                ETipoDocumento.valueOf(td.toUpperCase()) 
+                            );
+                        }
+                        
+                        comprador.setRegistrado (rs.getBoolean("es_registrado") ? 1 : 0);
+                        comprador.setMonto      (rs.getDouble ("monto_billetera"));   // ahora sí existe
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Error al buscar por dni", e);
+            }
+            return comprador;
+}
     /*
     @Override
     public void insertar(Comprador comprador) throws SQLException, IOException {
@@ -315,4 +372,6 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         return comprador;
     }
     */
+
+    
 }

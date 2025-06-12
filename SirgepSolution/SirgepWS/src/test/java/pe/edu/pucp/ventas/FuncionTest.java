@@ -5,17 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer;
 
-
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
-import pe.edu.pucp.sirgep.ws.infraestructura.EventoWSAnaG;
+import pe.edu.pucp.sirgep.ws.infraestructura.EventoWS;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FuncionTest {
-    private EventoWSAnaG eWS;
+    private EventoWS eWS;
     //service sí funciona
     /*
     @Test
@@ -34,7 +32,7 @@ public class FuncionTest {
     @Test
     @Order(1)
     public void testCantDispo(){
-        this.eWS= new EventoWSAnaG();
+        this.eWS= new EventoWS();
         System.out.println("Ejecutando test CantDipo...");
         int cantDispo = this.eWS.cantEntradasDisponibles(1, 50);
         System.out.println("Hay " + cantDispo + " entradas en la función. ");
