@@ -26,14 +26,15 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
+import pe.edu.pucp.sirgep.business.ventas.impl.ReservaServiceImpl;
+import pe.edu.pucp.sirgep.business.ventas.service.IReservaService;
 
 public class Main{
     public static void main(String[] args) throws Exception,SQLException, IOException{
         Connection con = DBManager.getInstance().getConnection();
         //Implementación de pruebas DAO y MySQL
-        EntradaServiceImpl entradaService=new EntradaServiceImpl();
-        entradaService.crearLibroExcelEntradas(2);//Comprador con Id=2
+        IReservaService reservaService=new ReservaServiceImpl();
+        reservaService.crearLibroExcelReservas(2);//Comprador con Id=2
         /*
         probarEspacio();
         

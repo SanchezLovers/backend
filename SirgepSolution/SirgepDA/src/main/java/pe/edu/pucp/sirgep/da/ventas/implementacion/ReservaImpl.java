@@ -301,5 +301,30 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         
         return (seEliminoFisR && seEliminoFisC);
     }
-    
+
+    @Override
+    public List<Reserva> listarReservasPorComprador(int IdComprador) {
+        List<Reserva> listaReservas=null;
+        String sql="SELECT num_reserva, Espacio_id_espacio, fecha_reserva, horario_ini, horario_fin FROM Reserva "
+                + "WHERE Persona_id_persona = "+IdComprador;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            listaReservas = new ArrayList<>();
+            while (rs.next()) {
+                Reserva reserva=new Reserva();
+                reserva.setNumReserva(rs.getInt("num_reserva"));
+                reserva.setFecha(rs.getDate("fecha_reserva"));
+//                reserva.setHorarioIni(rs.getTimestamp("horario_ini"));//Cambiar el tipo de dato a Date
+//                reserva.setHorarioFin(rs.getTimestamp("horario_fin"));//Cambiar el tipo de dato a Date
+                Espacio espacio=new Espacio();
+                espacio.setIdEspacio(rs.getInt("Espacio_id_espacio"));
+                reserva.setEspacio(espacio);
+                listaReservas.add(reserva);
+            }
+            System.out.println("Se listo las reservas correctamente");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las reservas: ", e);
+        } finally {
+            return listaReservas;
+        }
+    }
 }
