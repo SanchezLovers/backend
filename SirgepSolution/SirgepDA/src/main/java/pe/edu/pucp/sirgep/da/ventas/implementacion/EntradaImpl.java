@@ -228,7 +228,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             }
             System.out.println("Se listo las entradas correctamente");
         } catch (SQLException e) {
-            throw new RuntimeException("Error al listar las entidades", e);
+            throw new RuntimeException("Error al listar las entradas: ", e);
         } finally {
             return listaEntradas;
         }
