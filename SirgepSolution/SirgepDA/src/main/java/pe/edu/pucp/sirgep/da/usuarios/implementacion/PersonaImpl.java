@@ -5,6 +5,7 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 
 import java.sql.*;
+import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoDocumento;
 
 public class PersonaImpl extends BaseImpl<Persona> implements PersonaDAO {
@@ -103,6 +104,34 @@ public class PersonaImpl extends BaseImpl<Persona> implements PersonaDAO {
     protected void setId(Persona entity, int id) {
         entity.setIdPersona(id);
     }
+    
+    
+    @Override
+    public int validarCuenta(String correo, String passcode) {
+        int devolver=-1;
+        try (Connection conn = DBManager.getInstance().getConnection()){
+            conn.setAutoCommit(false);
+            try(CallableStatement pst=conn.prepareCall("{Call verificar_usuario(?,?,?)}")){
+                pst.setString(1, correo);
+                pst.setString(2, passcode);
+                
+                pst.registerOutParameter(3, Types.INTEGER);
+                pst.execute();
+                
+                devolver=pst.getInt(3);
+            }catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el stored procedure", e);
+            }finally {
+                conn.setAutoCommit(true);
+            }
+        }catch(SQLException e) {
+            throw new RuntimeException("Error al ejectuar");
+        }finally{
+            return devolver;
+        }
+    }
+}
     /*
     @Override
     public void insertar(Persona persona) throws SQLException,IOException{
@@ -199,4 +228,3 @@ public class PersonaImpl extends BaseImpl<Persona> implements PersonaDAO {
         return persona;
     }
 */
-}
