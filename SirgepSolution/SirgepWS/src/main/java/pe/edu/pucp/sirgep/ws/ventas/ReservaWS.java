@@ -123,4 +123,14 @@ public class ReservaWS {
             throw new RuntimeException("Error al buscar el distrito de la reserva: " + ex.getMessage());
         }
     }
+    
+    //Metodo para crear libro de Excel para las reservas
+    @WebMethod(operationName = "crearLibroExcelReservas")
+    public void crearLibroExcelReservas(@WebParam(name = "idComprador")int idComprador){
+        try {
+            reservaService.crearLibroExcelReservas(idComprador);
+        }  catch (Exception ex) {
+            throw new RuntimeException("Error al exportar el libro excel de las reservas: : " + ex.getMessage());
+        }
+    }
 }
