@@ -3,9 +3,12 @@ package pe.edu.pucp.sirgep.business.ventas.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -217,29 +220,20 @@ public class EntradaServiceImpl implements IEntradaService{
     
     @Override
     public List<DetalleEntrada> listarDetalleEntradasPorComprador(int idComprador){
-        List<Entrada>listaEntradas=entradaDAO.listarEntradasPorComprador(idComprador);
-        List<DetalleEntrada> listaDetalleEntradas=new ArrayList<>();
-        for(Entrada entrada:listaEntradas){
-            Funcion funcion=funcionDAO.buscar(entrada.getFuncion().getIdFuncion());
-            if(funcion!=null){
-                Evento evento=eventoDAO.buscar(funcion.getEvento().getIdEvento());
-                if(evento!=null){
-                    Distrito distrito=distritoDAO.buscar(evento.getDistrito().getIdDistrito());
-                    if(distrito!=null){
-                        DetalleEntrada detalleEntrada=new DetalleEntrada();
-                        detalleEntrada.setNumEntrada(entrada.getNumEntrada());
-                        detalleEntrada.setNombreEvento(evento.getNombre());
-                        detalleEntrada.setUbicacion(evento.getUbicacion());
-                        detalleEntrada.setNombreDistrito(distrito.getNombre());
-                        detalleEntrada.setFecha(funcion.getFecha());
-                        detalleEntrada.setHoraFin(funcion.getHoraFin());
-                        detalleEntrada.setHoraInicio(funcion.getHoraInicio());
-                        listaDetalleEntradas.add(detalleEntrada);
-                    }
-                }
-            }
+        List<Map<String, Object>> listaRaw = entradaDAO.listarDetalleEntradasPorComprador(idComprador);
+        List<DetalleEntrada> listaFinal = new ArrayList<>();
+        for (Map<String, Object> fila : listaRaw) {
+            DetalleEntrada detalle = new DetalleEntrada();
+            detalle.setNumEntrada((int) fila.get("numEntrada"));
+            detalle.setNombreEvento((String) fila.get("nombreEvento"));
+            detalle.setUbicacion((String) fila.get("ubicacion"));
+            detalle.setNombreDistrito((String) fila.get("nombreDistrito"));
+            detalle.setFecha((Date) fila.get("fecha"));
+            detalle.setHoraInicio((Time) fila.get("horaInicio"));
+            detalle.setHoraFin((Time) fila.get("horaFin"));
+            listaFinal.add(detalle);
         }
-        return listaDetalleEntradas;
+        return listaFinal;
     }
     
     @Override
