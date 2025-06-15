@@ -15,7 +15,9 @@ import java.sql.ResultSet;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
@@ -213,24 +215,31 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     }
 
     @Override
-    public List<Entrada> listarEntradasPorComprador(int IdComprador) {
-        List<Entrada> listaEntradas=null;
-        String sql = "SELECT num_entrada,Funcion_id_funcion FROM Entrada WHERE Persona_id_persona = "+IdComprador;
+    public List<Map<String, Object>> listarDetalleEntradasPorComprador(int IdComprador) {
+    List<Map<String, Object>> listaDetalleEntradas = new ArrayList<>();
+    String sql = """
+                 SELECT e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion, d.nombre AS nombre_distrito, f.fecha, 
+                 f.hora_inicio, f.hora_fin FROM Entrada e JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
+                 JOIN Evento ev ON f.Evento_idEvento = ev.id_evento JOIN Distrito d ON ev.Distrito_id_distrito = d.id_distrito
+                 WHERE e.activo = 'A' AND e.Persona_id_persona = 
+                 """+IdComprador;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
-            listaEntradas = new ArrayList<>();
-            while (rs.next()) {
-                Entrada entrada=new Entrada();
-                entrada.setNumEntrada(rs.getInt("num_entrada"));
-                Funcion funcion = new Funcion();
-                funcion.setIdFuncion(rs.getInt("Funcion_id_funcion"));
-                entrada.setFuncion(funcion);
-                listaEntradas.add(entrada);
-            }
+        while (rs.next()) {
+            Map<String, Object> fila = new HashMap<>();
+            fila.put("numEntrada", rs.getInt("num_entrada"));
+            fila.put("nombreEvento", rs.getString("nombre_evento"));
+            fila.put("ubicacion", rs.getString("ubicacion"));
+            fila.put("nombreDistrito", rs.getString("nombre_distrito"));
+            fila.put("fecha", rs.getDate("fecha"));
+            fila.put("horaInicio", rs.getTime("hora_inicio"));
+            fila.put("horaFin", rs.getTime("hora_fin"));
+            listaDetalleEntradas.add(fila);
+        }
             System.out.println("Se listo las entradas correctamente");
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las entradas: ", e);
         } finally {
-            return listaEntradas;
+            return listaDetalleEntradas;
         }
     }
 }
