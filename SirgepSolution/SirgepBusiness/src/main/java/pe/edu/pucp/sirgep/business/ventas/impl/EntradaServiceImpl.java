@@ -219,26 +219,33 @@ public class EntradaServiceImpl implements IEntradaService{
     }
     
     @Override
-    public List<DetalleEntrada> listarDetalleEntradasPorComprador(int idComprador){
-        List<Map<String, Object>> listaRaw = entradaDAO.listarDetalleEntradasPorComprador(idComprador);
-        List<DetalleEntrada> listaFinal = new ArrayList<>();
-        for (Map<String, Object> fila : listaRaw) {
-            DetalleEntrada detalle = new DetalleEntrada();
-            detalle.setNumEntrada((int) fila.get("numEntrada"));
-            detalle.setNombreEvento((String) fila.get("nombreEvento"));
-            detalle.setUbicacion((String) fila.get("ubicacion"));
-            detalle.setNombreDistrito((String) fila.get("nombreDistrito"));
-            detalle.setFecha((Date) fila.get("fecha"));
-            detalle.setHoraInicio((Time) fila.get("horaInicio"));
-            detalle.setHoraFin((Time) fila.get("horaFin"));
-            listaFinal.add(detalle);
+    public List<DetalleEntrada> listarDetalleEntradasPorComprador(int idComprador) {
+        List<DetalleEntrada> listaFinal = null;
+        try {
+            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasPorComprador(idComprador);
+            if (lista != null) {
+                listaFinal = new ArrayList<>();
+                for (Map<String, Object> fila : lista) {
+                    DetalleEntrada detalle = new DetalleEntrada();
+                    detalle.setNumEntrada((int) fila.get("numEntrada"));
+                    detalle.setNombreEvento((String) fila.get("nombreEvento"));
+                    detalle.setUbicacion((String) fila.get("ubicacion"));
+                    detalle.setNombreDistrito((String) fila.get("nombreDistrito"));
+                    detalle.setFecha((Date) fila.get("fecha"));
+                    detalle.setHoraInicio((Time) fila.get("horaInicio"));
+                    detalle.setHoraFin((Time) fila.get("horaFin"));
+                    listaFinal.add(detalle);
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
+        } finally {
+            return listaFinal;
         }
-        return listaFinal;
     }
-    
+
     @Override
     public void llenarTablaEntradas(XSSFSheet hoja,int idComprador) {
-//        List<Entrada> listaEntradas=entradaDAO.listarEntradasPorComprador(idComprador);
         List<DetalleEntrada> listaDetalleEntradas=listarDetalleEntradasPorComprador(idComprador);
         int posicion=3;
         for (DetalleEntrada detalleEntrada: listaDetalleEntradas) {
@@ -266,7 +273,6 @@ public class EntradaServiceImpl implements IEntradaService{
         celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleEntrada.getHoraInicio()));
         celda=registro.createCell(6);
         celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleEntrada.getHoraFin()));
-        //celda.setCellValue(funcion.getHoraFin().toString());
     }
 
     @Override

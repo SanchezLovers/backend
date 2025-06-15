@@ -140,7 +140,7 @@ public class EntradaWS {
         }
     }
 
-    //Metodo para crear libro de Excel para las entradas
+    //Metodo para listar el detalle de las entradas
     @WebMethod(operationName = "listarDetalleEntradasPorComprador")
     public List<DetalleEntrada> listarDetalleEntradasPorComprador(@WebParam(name = "idComprador")int idComprador){
         try {
