@@ -1,36 +1,69 @@
 package pe.edu.pucp.sirgep.business.ventas.dtos;
 
-import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
-import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
-import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
+import java.util.Date;
 
 public class DetalleReserva {
     //Atributos
-    private Reserva reserva;
-    private Espacio espacio;
-    private Distrito distrito;
-    
+    private int numReserva;
+    private String nombreEspacio;
+    private String categoria;
+    private String ubicacion;
+    private String nombreDistrito;
+    private Date fecha;
+    private Date horaInicio;
+    private Date horaFin;
+
     //Constructor
     public DetalleReserva() {
     }
     
     //Propiedades
-    public Reserva getReserva() {
-        return reserva;
+    public int getNumReserva() {
+        return numReserva;
     }
-    public Espacio getEspacio() {
-        return espacio;
+    public String getNombreEspacio() {
+        return nombreEspacio;
     }
-    public Distrito getDistrito() {
-        return distrito;
+    public String getCategoria() {    
+        return categoria;
     }
-    public void setReserva(Reserva reserva) {
-        this.reserva = reserva;
+    public String getUbicacion() {
+        return ubicacion;
     }
-    public void setEspacio(Espacio espacio) {
-        this.espacio = espacio;
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
     }
-    public void setDistrito(Distrito distrito) {
-        this.distrito = distrito;
+    public String getNombreDistrito() {
+        return nombreDistrito;
+    }
+    public void setNombreDistrito(String nombreDistrito) {
+        this.nombreDistrito = nombreDistrito;
+    }
+    public Date getFecha() {
+        return fecha;
+    }
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+    public Date getHoraInicio() {
+        return horaInicio;
+    }
+    public void setHoraInicio(Date horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+    public Date getHoraFin() {
+        return horaFin;
+    }
+    public void setHoraFin(Date horaFin) {
+        this.horaFin = horaFin;
+    }
+    public void setNumReserva(int numReserva) {
+        this.numReserva = numReserva;
+    }
+    public void setNombreEspacio(String nombreEspacio) {
+        this.nombreEspacio = nombreEspacio;
+    }
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 }
