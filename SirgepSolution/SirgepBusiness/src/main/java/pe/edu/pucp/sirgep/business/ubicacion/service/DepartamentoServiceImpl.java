@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 
 package pe.edu.pucp.sirgep.business.ubicacion.service;
 
@@ -28,6 +25,7 @@ public class DepartamentoServiceImpl {
     public List<Departamento> listar() {
         return departamentoDAO.listar();
     }
+    
 
     public boolean actualizar(Departamento depa) {
         return departamentoDAO.actualizar(depa);

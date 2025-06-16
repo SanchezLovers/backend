@@ -36,4 +36,14 @@ public class ProvinciaWS {
             throw new WebServiceException("Error al listar depas: " + ex.getMessage());
         }
     }
+	
+	@WebMethod(operationName = "buscarProvinciaPorId")
+    public Provincia buscarProvPorId(@WebParam(name = "idProvincia") int idProvincia) {
+        try {
+            Provincia provincia = provinciaService.buscar(idProvincia); 
+            return provincia;
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al buscar una provincia por su ID: " + idProvincia + ex.getMessage());
+        }
+    }
 }

@@ -9,6 +9,7 @@
     <artifactId>SirgepDA</artifactId>
     <packaging>jar</packaging>
     <dependencies>
+        <!-- Dependencias de tu sistema -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SirgepDomain</artifactId>
@@ -24,18 +25,8 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>9.2.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>5.10.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.10.3</version>
-            <scope>test</scope>
-        </dependency>
+
+        <!-- SOLO JUnit 4 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -49,6 +40,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>

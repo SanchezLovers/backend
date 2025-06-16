@@ -18,6 +18,15 @@ public class Evento {
 //    private String urlImagen;
     private byte[] archivoImagen;
     private String descripcion;
+    
+//momentaneamente no implementado
+    public byte[] getArchivoImagen() {
+        return archivoImagen;
+    }
+
+    public void setArchivoImagen(byte[] archivoImagen) {
+        this.archivoImagen = archivoImagen;
+    }
 	
     //Relaciones
     private Distrito distrito;
@@ -118,7 +127,7 @@ public class Evento {
 
     @Override
     public String toString() {
-        return "Evento{" + "idEvento=" + idEvento + ", nombre=" + nombre + ", fecha_inicio=" + fecha_inicio + ", fecha_fin=" + fecha_fin + ", ubicacion=" + ubicacion + ", referencia=" + referencia + ", cantEntradasDispo=" + cantEntradasDispo + ", cantEntradasVendidas=" + cantEntradasVendidas + ", precioEntrada=" + precioEntrada + ", descripcion=" + descripcion + ", distrito=" + distrito + '}';
+        return "Evento{" + "idEvento=" + idEvento + ", nombre=" + nombre + ", fecha_inicio=" + fecha_inicio + ", fecha_fin=" + fecha_fin + ", ubicacion=" + ubicacion + ", referencia=" + referencia + ", cantEntradasDispo=" + cantEntradasDispo + ", cantEntradasVendidas=" + cantEntradasVendidas + ", precioEntrada=" + precioEntrada + ", descripcion=" + descripcion + ", distrito=" + distrito.getIdDistrito() + '}';
     }
 
     

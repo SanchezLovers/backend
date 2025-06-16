@@ -18,7 +18,7 @@ import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
  *
  * @author LEGION
  */
-@WebService(serviceName = "EventoWS", targetNamespace = "pe.edu.pucp.sirgep")
+@WebService(serviceName = "EventoWSAnaG", targetNamespace = "pe.edu.pucp.sirgep")
 public class EventoWSAnaG {
     private EventoServiceImpl eService;
     private FuncionServiceImpl fService;

@@ -14,6 +14,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
 public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     private final ConstanciaDAO constanciaDAO;
@@ -90,6 +96,12 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             constancia.setTotal(rs.getDouble("total"));
             constancia.setDetallePago(rs.getString("detalle_pago"));
             constancia.setNumEntrada(rs.getInt("num_entrada"));
+             Funcion f = new Funcion();
+             f.setIdFuncion(rs.getInt("Funcion_id_funcion"));
+             constancia.setFuncion(f);
+             Persona persona=new Persona();
+             persona.setIdPersona(rs.getInt("Persona_id_persona"));
+             constancia.setPersona(persona);
             return constancia;
         }catch(SQLException e){
             throw new RuntimeException(e);
@@ -199,6 +211,36 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             throw new RuntimeException("Error al eliminar fisicamente la entidad", e);
         }finally{
             return resultado;
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> listarDetalleEntradasPorComprador(int IdComprador) {
+    List<Map<String, Object>> listaDetalleEntradas = null;
+    String sql = """
+                 SELECT e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion, d.nombre AS nombre_distrito, f.fecha, 
+                 f.hora_inicio, f.hora_fin FROM Entrada e JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
+                 JOIN Evento ev ON f.Evento_idEvento = ev.id_evento JOIN Distrito d ON ev.Distrito_id_distrito = d.id_distrito
+                 WHERE e.activo = 'A' AND e.Persona_id_persona = 
+                 """+IdComprador;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            listaDetalleEntradas = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, Object> fila = new HashMap<>();
+                fila.put("numEntrada", rs.getInt("num_entrada"));
+                fila.put("nombreEvento", rs.getString("nombre_evento"));
+                fila.put("ubicacion", rs.getString("ubicacion"));
+                fila.put("nombreDistrito", rs.getString("nombre_distrito"));
+                fila.put("fecha", rs.getDate("fecha"));
+                fila.put("horaInicio", rs.getTime("hora_inicio"));
+                fila.put("horaFin", rs.getTime("hora_fin"));
+                listaDetalleEntradas.add(fila);
+            }
+            System.out.println("Se listo las entradas correctamente");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las entradas: ", e);
+        } finally {
+            return listaDetalleEntradas;
         }
     }
 }
