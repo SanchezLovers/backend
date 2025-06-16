@@ -60,27 +60,20 @@ public class EspacioWS {
         {
             throw new RuntimeException("Error al listar espacios con el filtro de Categoria: " + ex.getMessage());
         }
-	}
+    }
 	
 	@WebMethod(operationName = "listarEspacioPorDistrito")
     public List<Espacio> listarPorDistrito(@WebParam(name = "idDistrito") int idDist) {
         try{
-            List<Espacio> espacios = espacioService.listar();
-            List<Espacio> espaciosFiltrados = new ArrayList<>();
-
-            for(Espacio espacio : espacios){
-                int id = espacio.getDistrito().getIdDistrito();
-                if( id == idDist){
-                    espaciosFiltrados.add(espacio);
-                }
-            }
-            return espaciosFiltrados;
+            List<Espacio> espacios = espacioService.buscarPorDistrito(idDist);
+            return espacios;
         }
         catch(Exception ex)
         {
             throw new RuntimeException("Error al listar espacios con el filtro de Categoria: " + ex.getMessage());
         }
     }
+    
     @WebMethod(operationName = "listarEspacioDistyCat")
     public List<Espacio> listarPorDistyCat(@WebParam(name = "idDistrito") int idDist,
                                            @WebParam(name = "nombreCategoria") String cat) {

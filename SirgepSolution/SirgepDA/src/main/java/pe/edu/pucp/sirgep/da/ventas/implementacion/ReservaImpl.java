@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.HorarioEspacio;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 
@@ -302,4 +303,30 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         return (seEliminoFisR && seEliminoFisC);
     }
     
+    @Override
+    public List<Reserva> listarPorDiaYEspacio(int idEspacio, java.util.Date fecha){
+        List<Reserva> listaReserva=null;
+        String sql = "{CALL reservasPorDiaYEspacio(?, ?)}";
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            listaReserva = new ArrayList<>();
+            
+            CallableStatement pst = conn.prepareCall(sql);
+            pst.setInt(1, idEspacio);
+
+            // Convert java.util.Date to java.sql.Date
+            java.sql.Date sqlDate = new java.sql.Date(fecha.getTime());
+            pst.setDate(2, sqlDate);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Reserva r = createFromResultSet(rs);
+                listaReserva.add(r);
+            }
+            System.out.println("Se listo las entradas correctamente");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las entidades", e);
+        } finally {
+            return listaReserva;
+        }
+    }
+
 }
