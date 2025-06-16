@@ -6,6 +6,7 @@ import jakarta.jws.WebParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.xml.ws.WebServiceException;
 import java.util.List;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
 
 import pe.edu.pucp.sirgep.business.ventas.impl.ReservaServiceImpl;
 import pe.edu.pucp.sirgep.business.ventas.service.IReservaService;
@@ -121,6 +122,26 @@ public class ReservaWS {
             return resultado;
         }  catch (Exception ex) {
             throw new RuntimeException("Error al buscar el distrito de la reserva: " + ex.getMessage());
+        }
+    }
+    
+    //Metodo para crear libro de Excel para las reservas
+    @WebMethod(operationName = "crearLibroExcelReservas")
+    public void crearLibroExcelReservas(@WebParam(name = "idComprador")int idComprador){
+        try {
+            reservaService.crearLibroExcelReservas(idComprador);
+        }  catch (Exception ex) {
+            throw new RuntimeException("Error al exportar el libro excel de las reservas: : " + ex.getMessage());
+        }
+    }
+    
+    //Metodo para listar el detalle de las reservas
+    @WebMethod(operationName = "listarDetalleReservasPorComprador")
+    public List<DetalleReserva> listarDetalleReservasPorComprador(@WebParam(name = "idComprador")int idComprador){
+        try {
+            return reservaService.listarDetalleReservasPorComprador(idComprador);
+        }  catch (Exception ex) {
+            throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
         }
     }
 }

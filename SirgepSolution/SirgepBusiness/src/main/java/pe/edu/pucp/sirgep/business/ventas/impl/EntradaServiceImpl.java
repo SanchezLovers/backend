@@ -3,8 +3,12 @@ package pe.edu.pucp.sirgep.business.ventas.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -17,6 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;//Para crear libro de Excel
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntrada;
 
 import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EventoDAO;
@@ -214,12 +219,38 @@ public class EntradaServiceImpl implements IEntradaService{
     }
     
     @Override
+    public List<DetalleEntrada> listarDetalleEntradasPorComprador(int idComprador) {
+        List<DetalleEntrada> listaFinal = null;
+        try {
+            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasPorComprador(idComprador);
+            if (lista != null) {
+                listaFinal = new ArrayList<>();
+                for (Map<String, Object> fila : lista) {
+                    DetalleEntrada detalle = new DetalleEntrada();
+                    detalle.setNumEntrada((int) fila.get("numEntrada"));
+                    detalle.setNombreEvento((String) fila.get("nombreEvento"));
+                    detalle.setUbicacion((String) fila.get("ubicacion"));
+                    detalle.setNombreDistrito((String) fila.get("nombreDistrito"));
+                    detalle.setFecha((Date) fila.get("fecha"));
+                    detalle.setHoraInicio((Time) fila.get("horaInicio"));
+                    detalle.setHoraFin((Time) fila.get("horaFin"));
+                    listaFinal.add(detalle);
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
+        } finally {
+            return listaFinal;
+        }
+    }
+
+    @Override
     public void llenarTablaEntradas(XSSFSheet hoja,int idComprador) {
-        List<Entrada> listaEntradas=entradaDAO.listarEntradasPorComprador(idComprador);//Incompleto
+        List<DetalleEntrada> listaDetalleEntradas=listarDetalleEntradasPorComprador(idComprador);
         int posicion=3;
-        for (Entrada entreda: listaEntradas) {
+        for (DetalleEntrada detalleEntrada: listaDetalleEntradas) {
             XSSFRow registro=hoja.createRow(posicion++);
-            llenarFilaEntrada(registro,entreda);
+            llenarFilaDetalleEntrada(registro,detalleEntrada);
         }
         for (int i = 0; i < 7; i++) {
             hoja.autoSizeColumn(i);
@@ -227,32 +258,21 @@ public class EntradaServiceImpl implements IEntradaService{
     }
 
     @Override
-    public void llenarFilaEntrada(XSSFRow registro, Entrada entrada) {
-        Funcion funcion=funcionDAO.buscar(entrada.getFuncion().getIdFuncion());
-        if(funcion!=null){
-            Evento evento=eventoDAO.buscar(funcion.getEvento().getIdEvento());
-            if(evento!=null){
-                Distrito distrito=distritoDAO.buscar(evento.getDistrito().getIdDistrito());
-                if(distrito!=null){
-                    XSSFCell celda=registro.createCell(0);
-                    celda.setCellValue(entrada.getNumEntrada());
-                    celda=registro.createCell(1);
-                    celda.setCellValue(evento.getNombre());
-                    celda=registro.createCell(2);
-                    celda.setCellValue(evento.getUbicacion());
-                    celda=registro.createCell(3);
-                    celda.setCellValue(distrito.getNombre());
-                    celda=registro.createCell(4);
-                    celda.setCellValue(new SimpleDateFormat("dd-MM-yyyy").format(funcion.getFecha()));
-                    celda=registro.createCell(5);
-                    celda.setCellValue(funcion.getHoraInicio().toString());
-                    celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(funcion.getHoraInicio()));
-                    celda=registro.createCell(6);
-                    celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(funcion.getHoraFin()));
-                    //celda.setCellValue(funcion.getHoraFin().toString());
-                }
-            }
-        }
+    public void llenarFilaDetalleEntrada(XSSFRow registro, DetalleEntrada detalleEntrada) {
+        XSSFCell celda=registro.createCell(0);
+        celda.setCellValue(detalleEntrada.getNumEntrada());
+        celda=registro.createCell(1);
+        celda.setCellValue(detalleEntrada.getNombreEvento());
+        celda=registro.createCell(2);
+        celda.setCellValue(detalleEntrada.getUbicacion());
+        celda=registro.createCell(3);
+        celda.setCellValue(detalleEntrada.getNombreDistrito());
+        celda=registro.createCell(4);
+        celda.setCellValue(new SimpleDateFormat("dd-MM-yyyy").format(detalleEntrada.getFecha()));
+        celda=registro.createCell(5);
+        celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleEntrada.getHoraInicio()));
+        celda=registro.createCell(6);
+        celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleEntrada.getHoraFin()));
     }
 
     @Override

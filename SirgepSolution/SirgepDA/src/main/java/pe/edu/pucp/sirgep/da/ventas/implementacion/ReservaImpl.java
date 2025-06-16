@@ -12,7 +12,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.HorarioEspacio;
@@ -37,7 +39,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
 
     @Override
     protected String getSelectByIdQuery() {
-        return "SELECT horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva FROM Reserva WHERE num_reserva = ?";
+        return "SELECT num_reserva, horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva FROM Reserva WHERE num_reserva = ?";
     }
 
     @Override
@@ -91,6 +93,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         Persona per = new Persona();
         
         try{
+            aux.setNumReserva(rs.getInt("num_reserva"));
             aux.setHorarioIni(rs.getTime("horario_ini").toLocalTime());
             aux.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
@@ -329,4 +332,35 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         }
     }
 
+
+    @Override
+    public List<Map<String, Object>> listarDetalleReservasPorComprador(int IdComprador) {
+        List<Map<String, Object>> listaDetalleReservas = null;
+        String sql = """
+                         SELECT r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio, e.ubicacion, 
+                     d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio, r.horario_fin AS hora_fin
+                         FROM Reserva r JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON 
+                     e.Distrito_id_distrito = d.id_distrito WHERE r.activo = 'A' AND r.Persona_id_persona = 
+                 """ + IdComprador;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            listaDetalleReservas = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, Object> fila = new HashMap<>();
+                fila.put("numReserva", rs.getInt("num_reserva"));
+                fila.put("nombreEspacio", rs.getString("nombre_espacio"));
+                fila.put("categoria", rs.getString("categoria_espacio"));
+                fila.put("ubicacion", rs.getString("ubicacion"));
+                fila.put("nombreDistrito", rs.getString("nombre_distrito"));
+                fila.put("fecha", rs.getDate("fecha_reserva"));
+                fila.put("horaInicio", rs.getTime("hora_inicio"));
+                fila.put("horaFin", rs.getTime("hora_fin"));
+                listaDetalleReservas.add(fila);
+            }
+            System.out.println("Se listo las entradas correctamente");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las entradas: ", e);
+        } finally {
+            return listaDetalleReservas;
+        }
+    }
 }

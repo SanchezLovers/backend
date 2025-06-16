@@ -1,6 +1,10 @@
 package pe.edu.pucp.sirgep.business.ventas.service;
 
 import java.util.List;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
@@ -19,4 +23,13 @@ public interface IReservaService {
     public Comprador buscarCompradorDeReserva(int idComprador);
     public Espacio buscarEspacioDeReserva(int idEspacio);
     public Distrito buscarDistritoDeReserva(int idEntrada);
+    
+    //Metodos para crear libro de Excel para las entradas
+    public void crearLibroExcelReservas(int idComprador);
+    public String crearHojalReservas(XSSFWorkbook libro,int idComprador);
+    public String crearEncabezadoHojaReservas(XSSFSheet hoja,int idComprador);
+    public void llenarTablaReservas(XSSFSheet hoja,int idComprador);
+    public void llenarFilaReserva(XSSFRow registro,DetalleReserva detalleReserva);
+    public List<DetalleReserva> listarDetalleReservasPorComprador(int idComprador);
+    public void exportarLibroReservas(XSSFWorkbook libro,String nombreArchivo);
 }
