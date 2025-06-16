@@ -1,15 +1,24 @@
 package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EventoDAO;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
+import java.util.Date;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
+import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     //añadiendo activo
@@ -67,9 +76,16 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     @Override
     protected void setInsertParameters(PreparedStatement ps, Evento e){
         try{
+            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaInicioDate =  formato.parse(e.getFecha_inicio());
+            Date fechaFinDate =  formato.parse(e.getFecha_fin());
+
+            java.sql.Date fechaInicioSQL = new java.sql.Date(fechaInicioDate.getTime());
+            java.sql.Date fechaFinSQL = new java.sql.Date(fechaFinDate.getTime());
+
             ps.setString(1, e.getNombre());
-            ps.setDate(2, Date.valueOf(e.getFecha_inicio().toString()));
-            ps.setDate(3, Date.valueOf(e.getFecha_fin().toString()));
+            ps.setDate(2, fechaInicioSQL);
+            ps.setDate(3,fechaFinSQL);
             ps.setString(4, e.getUbicacion());
             ps.setString(5, e.getReferencia());
             ps.setInt(6, e.getCantEntradasDispo());
@@ -81,6 +97,8 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             
         }catch(SQLException ex){
             throw new RuntimeException(ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(EventoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 /*SET nombre=?, fecha=?, descripcion=?, ubicacion=?, "
@@ -90,8 +108,8 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     protected void setUpdateParameters(PreparedStatement ps, Evento e){
         try{
             ps.setString(1, e.getNombre());
-            ps.setDate(2, Date.valueOf(e.getFecha_inicio().toString()));
-            ps.setDate(3, Date.valueOf(e.getFecha_fin().toString()));
+            ps.setDate(2, java.sql.Date.valueOf(e.getFecha_inicio()));
+            ps.setDate(3, java.sql.Date.valueOf(e.getFecha_fin()));
             ps.setString(4, e.getUbicacion());
             ps.setString(5, e.getReferencia());
             ps.setInt(6, e.getCantEntradasDispo());
@@ -113,8 +131,13 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             Distrito distrito=new Distrito();
             e.setIdEvento(rs.getInt("id_evento"));
             e.setNombre(rs.getString("nombre"));
-            e.setFecha_inicio(rs.getDate("fecha_inicio"));
-            e.setFecha_fin(rs.getDate("fecha_fin"));
+            java.sql.Date fechaInicioSql = rs.getDate("fecha_inicio");
+            java.sql.Date fechaFinSql = rs.getDate("fecha_fin");
+
+            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+            e.setFecha_inicio(fechaInicioSql != null ? formato.format(fechaInicioSql) : null);
+            e.setFecha_fin(fechaFinSql != null ? formato.format(fechaFinSql) : null);
             e.setUbicacion(rs.getString("ubicacion"));
             e.setReferencia(rs.getString("referencia"));
             e.setCantEntradasDispo(rs.getInt("cant_entradas_dispo"));
@@ -135,6 +158,31 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     @Override
     protected void setId(Evento e, int id) {
         e.setIdEvento(id);
+    }
+    
+    public String getBuscarPorTexto(){
+        return "{CALL BUSCAR_EVENTO_POR_TEXTO(?)}";
+    }
+
+    @Override
+    public List<Evento> buscarPorTexto(String texto) {
+        List<Evento> espacios = new ArrayList<>();
+
+        // Utilizaremos procedimientos almacenados
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+             CallableStatement cs = conn.prepareCall(this.getBuscarPorTexto())) {
+
+            cs.setString(1, texto); // asignamos el parámetro de texto
+
+            try (ResultSet rs = cs.executeQuery()) {
+                while (rs.next()) {
+                    espacios.add(createFromResultSet(rs));
+                }
+            }
+        }catch(SQLException e){
+            throw new RuntimeException("Error al obtener un EVENTO: ", e);
+        }
+        return espacios;
     }
     
     

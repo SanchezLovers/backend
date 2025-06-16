@@ -19,7 +19,7 @@ public class EventoTest {
     public void testBuscar() {
         this.ds= new EventoWS();
         System.out.println("Ejecutando test buscar...");
-        Evento e =  ds.buscarPorID(1);
+        Evento e =  ds.buscarPorIDEvento(1);
         System.out.println("Se encontró el evento: ");
         System.out.println(e.toString());
     }

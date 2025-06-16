@@ -23,18 +23,18 @@ public class EventoWS {
         fService =  new FuncionServiceImpl();
         entradasService =  new EntradaServiceImpl();
     }
-//    @WebMethod(operationName = "insertarEvento")
-//    public int insertar(@WebParam(name = "espacio") Evento evento) {
-//        try{
-//            return eventoService.insertar(evento);
-//        }
-//        catch(Exception ex)
-//        {
-//            throw new RuntimeException("Error al insertar un evento: " + ex.getMessage());
-//        }
-//    }
+    @WebMethod(operationName = "insertarEvento")
+    public int insertarEvento(@WebParam(name = "evento") Evento evento) {
+        try{
+            return eService.insertar(evento);
+        }
+        catch(Exception ex)
+        {
+            throw new RuntimeException("Error al insertar un evento: " + ex.getMessage());
+        }
+    }
     @WebMethod(operationName = "listarEvento")
-    public List<Evento> listar() {
+    public List<Evento> listarEvento() {
         try{
             List<Evento> eventos = eService.listar();
             return eventos;
@@ -53,8 +53,18 @@ public class EventoWS {
             throw new WebServiceException("Error al listar distritos: " + ex.getMessage());
         }
     }
+    
+    @WebMethod(operationName = "buscarEventoPorTexto")
+    public List<Evento> buscarPorTextoEvento(@WebParam(name = "texto") String texto) {
+        try{
+            return eService.buscarPorTexto(texto);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("ERROR al buscar el EVENTO mediante un texto: "+ ex.getMessage());
+        }
+    }
 //    @WebMethod(operationName = "buscarEvento")
-//    public Evento buscar(@WebParam(name = "id") int id) {
+//    public Evento buscarEvento(@WebParam(name = "id") int id) {
 //        try{
 //            return eventoService.buscar(id);
 //        }
@@ -64,7 +74,7 @@ public class EventoWS {
 //    }
     /*
     @WebMethod(operationName = "actualizarEvento")
-    public boolean actualizar(@WebParam(name = "evento") Evento evento) {
+    public boolean actualizarEvento(@WebParam(name = "evento") Evento evento) {
         try{
 //            eventoService.
             return eventoService.actualizar(evento);
@@ -75,7 +85,7 @@ public class EventoWS {
     }
     */
 //    @WebMethod(operationName = "eliminarLogico")
-//    public boolean eliminar(@WebParam(name = "id") int id) {
+//    public boolean eliminarEvento(@WebParam(name = "id") int id) {
 //        try{
 //            return eventoService.eliminarLogico(id);
 //        }
@@ -85,7 +95,7 @@ public class EventoWS {
 //    }
     
     @WebMethod(operationName = "buscarPorID")
-    public Evento buscarPorID(@WebParam(name = "Id") int id) {
+    public Evento buscarPorIDEvento(@WebParam(name = "Id") int id) {
         Evento e =  eService.buscar(id);
         return e;
     }
