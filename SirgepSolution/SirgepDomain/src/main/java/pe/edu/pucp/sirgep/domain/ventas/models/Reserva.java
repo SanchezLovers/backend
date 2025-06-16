@@ -12,6 +12,7 @@ public class Reserva extends Constancia{
     private LocalTime horarioIni;
     private LocalTime horarioFin;
     private Date fechaReserva;
+    private char activo;
 
     //Relaciones
     private Espacio espacio;
@@ -82,6 +83,14 @@ public class Reserva extends Constancia{
     public Reserva setPersona(Persona persona) {
         this.persona = persona;
         return this;
+    }
+
+    public char getActivo() {
+        return activo;
+    }
+
+    public void setActivo(char activo) {
+        this.activo = activo;
     }
 
     @Override
