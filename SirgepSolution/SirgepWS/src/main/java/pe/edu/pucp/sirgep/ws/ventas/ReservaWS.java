@@ -5,6 +5,7 @@ import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.xml.ws.WebServiceException;
+import java.time.LocalTime;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
 
@@ -144,4 +145,5 @@ public class ReservaWS {
             throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
         }
     }
+   
 }

@@ -154,6 +154,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             con.setAutoCommit(false);
             // insertar la constancia
             idC = constanciaDAO.insertar((Constancia)entity);
+            entity.setIdConstancia(idC);
             idR = super.insertar(entity);
 //            try(PreparedStatement ps=con.prepareStatement(this.getInsertQuery(),Statement.RETURN_GENERATED_KEYS)){
 //                this.setInsertParameters(ps, entity); //armamos el ps con la entidad Reserva pasada
