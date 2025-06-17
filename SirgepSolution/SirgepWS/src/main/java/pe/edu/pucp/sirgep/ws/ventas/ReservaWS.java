@@ -148,7 +148,6 @@ public class ReservaWS {
         }
     }
 
-
     @WebMethod(operationName = "listarPorFecha")
     public List<Reserva> listarEventoPorFecha(@WebParam(name = "fecha")String fechaSt,
             @WebParam(name = "activo")boolean activo) {
