@@ -76,16 +76,23 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     @Override
     protected void setInsertParameters(PreparedStatement ps, Evento e){
         try{
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-            Date fechaInicioDate =  formato.parse(e.getFecha_inicio());
-            Date fechaFinDate =  formato.parse(e.getFecha_fin());
+            // Antes se utilizaba para insertar correctamente: (estoy probando si es que se puede sin esto)
+            String fechaIniEvento = e.getFecha_inicio();
+            String fechaFinEvento = e.getFecha_fin();
 
-            java.sql.Date fechaInicioSQL = new java.sql.Date(fechaInicioDate.getTime());
-            java.sql.Date fechaFinSQL = new java.sql.Date(fechaFinDate.getTime());
+            // Parsear la fecha desde dd/MM/yyyy
+            SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy");
+            Date fechaIniUtil = formatoEntrada.parse(fechaIniEvento); // java.util.Date
+            Date fechaFinUtil = formatoEntrada.parse(fechaFinEvento); // java.util.Date
 
+            // Convertir a java.sql.Date
+            java.sql.Date fechaIniSql = new java.sql.Date(fechaIniUtil.getTime());
+            java.sql.Date fechaFinSql = new java.sql.Date(fechaFinUtil.getTime());
+            
+            
             ps.setString(1, e.getNombre());
-            ps.setDate(2, fechaInicioSQL);
-            ps.setDate(3,fechaFinSQL);
+            ps.setDate(2, fechaIniSql);
+            ps.setDate(3, fechaFinSql);
             ps.setString(4, e.getUbicacion());
             ps.setString(5, e.getReferencia());
             ps.setInt(6, e.getCantEntradasDispo());
@@ -134,10 +141,13 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             java.sql.Date fechaInicioSql = rs.getDate("fecha_inicio");
             java.sql.Date fechaFinSql = rs.getDate("fecha_fin");
 
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-            e.setFecha_inicio(fechaInicioSql != null ? formato.format(fechaInicioSql) : null);
-            e.setFecha_fin(fechaFinSql != null ? formato.format(fechaFinSql) : null);
+            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+            
+            Date iniUtilDate = new Date(fechaInicioSql.getTime());
+            Date finUtilDate = new Date(fechaFinSql.getTime());
+            
+            e.setFecha_inicio(fechaInicioSql != null ? formato.format(iniUtilDate) : null);
+            e.setFecha_fin(fechaFinSql != null ? formato.format(finUtilDate) : null);
             e.setUbicacion(rs.getString("ubicacion"));
             e.setReferencia(rs.getString("referencia"));
             e.setCantEntradasDispo(rs.getInt("cant_entradas_dispo"));
@@ -146,9 +156,6 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             distrito.setIdDistrito(rs.getInt("Distrito_id_distrito"));
             e.setDistrito(distrito);
             e.setDescripcion(rs.getString("descripcion"));
-            Distrito d =  new Distrito();
-            d.setIdDistrito(rs.getInt("Distrito_id_distrito"));
-            e.setDistrito(d);
             return e;
         }catch(SQLException e){
             throw new RuntimeException(e);

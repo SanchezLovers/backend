@@ -63,41 +63,34 @@ public class EventoWS {
             throw new RuntimeException("ERROR al buscar el EVENTO mediante un texto: "+ ex.getMessage());
         }
     }
-//    @WebMethod(operationName = "buscarEvento")
-//    public Evento buscarEvento(@WebParam(name = "id") int id) {
-//        try{
-//            return eventoService.buscar(id);
-//        }
-//        catch(Exception ex){
-//            throw new RuntimeException("Error al buscar el evento con id: " + id + " ... " + ex.getMessage());
-//        }
-//    }
-    /*
+    @WebMethod(operationName = "buscarEventoPorID")
+    public Evento buscarEventoPorID(@WebParam(name = "id") int id) {
+        try{
+            return eService.buscar(id);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al buscar el evento con id: " + id + " ... " + ex.getMessage());
+        }
+    }
+    
     @WebMethod(operationName = "actualizarEvento")
     public boolean actualizarEvento(@WebParam(name = "evento") Evento evento) {
         try{
-//            eventoService.
-            return eventoService.actualizar(evento);
+            return eService.actualizar(evento);
         }
         catch(Exception ex){
-            throw new RuntimeException("Error al actualizar el evento " + ex.getMessage());
+            throw new RuntimeException("ERROR al actualizar el evento " + ex.getMessage());
         }
     }
-    */
-//    @WebMethod(operationName = "eliminarLogico")
-//    public boolean eliminarEvento(@WebParam(name = "id") int id) {
-//        try{
-//            return eventoService.eliminarLogico(id);
-//        }
-//        catch(Exception ex){
-//            throw new RuntimeException("Error al eliminar el evento con id: " + id + " ... " + ex.getMessage());
-//        }
-//    }
     
-    @WebMethod(operationName = "buscarPorID")
-    public Evento buscarPorIDEvento(@WebParam(name = "Id") int id) {
-        Evento e =  eService.buscar(id);
-        return e;
+    @WebMethod(operationName = "eliminarLogico")
+    public boolean eliminarEvento(@WebParam(name = "id") int id) {
+        try{
+            return eService.eliminarLogico(id);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al eliminar el evento con id: " + id + " ... " + ex.getMessage());
+        }
     }
     
     @WebMethod(operationName = "listarFuncionesDeEvento")
@@ -114,8 +107,8 @@ public class EventoWS {
         return funcionesEvento;
     }
     
-    public int cantEntradasDisponibles(@WebParam(name = "IdFuncion") int id,
-            @WebParam(name = "cantExFuncion") int cantEntradasPorFuncion){
+    public int obtenerCantEntradasDisponibles(@WebParam(name = "IdFuncion") int id,
+            @WebParam(name = "obtenerCantEDisponibles") int cantEntradasPorFuncion){
         return entradasService.cantidadDispo(id, cantEntradasPorFuncion);
     }
 }

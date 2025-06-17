@@ -8,4 +8,5 @@
  <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/CompraWS?wsdl"/>
  <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/ReservaWS?wsdl"/>
  <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/PersonaWS?wsdl"/>
+ <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/FuncionWS?wsdl"/>
 </discovery>
