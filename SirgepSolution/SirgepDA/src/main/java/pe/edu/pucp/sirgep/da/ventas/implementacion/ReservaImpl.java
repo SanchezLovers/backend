@@ -95,8 +95,11 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         
         try{
             aux.setNumReserva(rs.getInt("num_reserva"));
-            aux.setHorarioIni(rs.getTime("horario_ini").toLocalTime());
-            aux.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
+            //Convertimos los horarios a String
+            Time timeIni=rs.getTime("horario_ini");
+            Time timeFin=rs.getTime("horario_fin");
+            aux.setIniString(timeIni.toString());
+            aux.setFinString(timeFin.toString());
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
             per.setIdPersona(rs.getInt("Persona_id_persona"));
