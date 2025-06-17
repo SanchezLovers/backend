@@ -45,7 +45,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo FROM Reserva";
+        return "SELECT num_reserva, horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo FROM Reserva";
     }
 
     @Override
