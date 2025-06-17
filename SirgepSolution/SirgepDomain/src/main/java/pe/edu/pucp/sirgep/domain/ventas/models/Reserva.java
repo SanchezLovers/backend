@@ -12,6 +12,10 @@ public class Reserva extends Constancia{
     private LocalTime horarioIni;
     private LocalTime horarioFin;
     private Date fechaReserva;
+    private String iniString;
+    private String finString;
+
+    
 
     //Relaciones
     private Espacio espacio;
@@ -82,6 +86,22 @@ public class Reserva extends Constancia{
     public Reserva setPersona(Persona persona) {
         this.persona = persona;
         return this;
+    }
+    
+    public String getIniString() {
+        return iniString;
+    }
+
+    public void setIniString(String iniString) {
+        this.iniString = iniString;
+    }
+
+    public String getFinString() {
+        return finString;
+    }
+
+    public void setFinString(String finString) {
+        this.finString = finString;
     }
 
     @Override

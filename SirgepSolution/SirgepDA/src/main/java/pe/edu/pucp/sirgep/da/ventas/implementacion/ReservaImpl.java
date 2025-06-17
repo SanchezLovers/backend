@@ -97,6 +97,12 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             aux.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
+            
+            
+            aux.setIniString(aux.getHorarioIni().toString());
+            aux.setFinString(aux.getHorarioIni().toString());
+            
+            
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
             per.setIdPersona(rs.getInt("Persona_id_persona"));
             
@@ -152,8 +158,14 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         try (Connection con = DBManager.getInstance().getConnection()){
             con.setAutoCommit(false);
             // insertar la constancia
+            
             idC = constanciaDAO.insertar((Constancia)entity);
+            
+            entity.setIdConstancia(idC);
+            
             idR = super.insertar(entity);
+            
+            
 //            try(PreparedStatement ps=con.prepareStatement(this.getInsertQuery(),Statement.RETURN_GENERATED_KEYS)){
 //                this.setInsertParameters(ps, entity); //armamos el ps con la entidad Reserva pasada
 //                ps.executeUpdate(); // se inserta la Reserva ahora

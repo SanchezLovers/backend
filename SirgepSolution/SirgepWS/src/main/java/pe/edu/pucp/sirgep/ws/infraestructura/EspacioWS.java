@@ -10,6 +10,8 @@ import pe.edu.pucp.sirgep.business.infraestructura.impl.EspacioServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEspacioService;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
+import pe.edu.pucp.sirgep.ws.ventas.CompraWS;
+import pe.edu.pucp.sirgep.ws.ventas.ReservaWS;
 
 @WebService(serviceName = "EspacioWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class EspacioWS {
@@ -137,4 +139,6 @@ public class EspacioWS {
             throw new RuntimeException("Error al buscar el espacio mediante un texto: "+ ex.getMessage());
         }
     }
+    
+    
 }
