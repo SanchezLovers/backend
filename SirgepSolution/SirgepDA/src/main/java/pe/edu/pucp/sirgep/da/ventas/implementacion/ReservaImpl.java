@@ -131,6 +131,15 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
                 + " id_constancia_reserva=?"
                 + " WHERE num_reserva = ?";
             */
+            
+            /*
+            return "UPDATE Reserva SET horario_ini=?,"
+                + " horario_fin=?,"
+                + " fecha_reserva=?,"
+                + " Espacio_id_espacio=?,"
+                + " Persona_id_persona=?,"
+                + " id_constancia_reserva=?"
+                + " WHERE num_reserva = ?";*/
             ps.setTime(1, Time.valueOf(entity.getHorarioIni()));
             ps.setTime(2, Time.valueOf(entity.getHorarioFin()));
             ps.setDate(3, new Date(entity.getFechaReserva().getTime()));

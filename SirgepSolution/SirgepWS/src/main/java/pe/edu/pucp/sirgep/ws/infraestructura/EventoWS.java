@@ -62,9 +62,9 @@ public class EventoWS {
 //            throw new RuntimeException("Error al buscar el evento con id: " + id + " ... " + ex.getMessage());
 //        }
 //    }
-    /*
-    @WebMethod(operationName = "actualizarEvento")
-    public boolean actualizar(@WebParam(name = "evento") Evento evento) {
+    
+    /*@WebMethod(operationName = "actualizarEvento")
+    public boolean actualizarEvento(@WebParam(name = "evento") Evento evento) {
         try{
 //            eventoService.
             return eventoService.actualizar(evento);
@@ -72,8 +72,8 @@ public class EventoWS {
         catch(Exception ex){
             throw new RuntimeException("Error al actualizar el evento " + ex.getMessage());
         }
-    }
-    */
+    }*/
+    
 //    @WebMethod(operationName = "eliminarLogico")
 //    public boolean eliminar(@WebParam(name = "id") int id) {
 //        try{
