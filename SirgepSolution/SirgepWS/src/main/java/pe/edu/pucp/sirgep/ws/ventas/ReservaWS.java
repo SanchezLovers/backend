@@ -146,7 +146,18 @@ public class ReservaWS {
             throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
         }
     }
-
+    
+    @WebMethod(operationName = "obtenerPorNumReserva")
+    public Reserva obtenerPorNumReserva(@WebParam(name = "numReserva")int numReserva,
+            @WebParam(name = "activo")boolean activo) {
+        try {
+            //Convertimos la fecha obtenida de string a date
+            return reservaService.obtenerPorNumReserva(numReserva,activo);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por numReserva: " + ex.getMessage());
+        }
+    }
+    
     @WebMethod(operationName = "listarPorFecha")
     public List<Reserva> listarEventoPorFecha(@WebParam(name = "fecha")String fechaSt,
             @WebParam(name = "activo")boolean activo) {

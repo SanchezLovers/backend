@@ -26,6 +26,7 @@ public interface IReservaService {
     public Distrito buscarDistritoDeReserva(int idEntrada);
 
     //Metodos adicionales para el listado de reservas
+    public Reserva obtenerPorNumReserva(int numReserva, boolean activo);
     List<Reserva> listarPorFecha(Date fecha, boolean activo);
     List<Reserva> listarPorHorario(String horaInicio, String horaFin, Date fecha, boolean activo);
     List<Reserva> listarPorDistrito(int id_distrito, boolean activo);

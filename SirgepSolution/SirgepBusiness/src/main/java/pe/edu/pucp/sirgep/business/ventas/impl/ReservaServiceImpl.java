@@ -117,6 +117,16 @@ public class ReservaServiceImpl implements IReservaService {
     
     //Metodos adicionales para el listado de reservas por filtros
     @Override
+    public Reserva obtenerPorNumReserva(int numReserva, boolean activo){
+        Reserva reserva=buscar(numReserva);
+        if(!activo||activo&&reserva.getActivo()=='A'){
+            return reserva;
+        }else{
+            return null;
+        }
+    }
+    
+    @Override
     public List<Reserva> listarPorFecha(Date fecha, boolean activo){
         return reservaDAO.listarPorFecha(fecha, activo);
     }
