@@ -98,8 +98,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             aux.setHorarioIni(rs.getTime("horario_ini").toLocalTime());
             aux.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
-<<<<<<< HEAD
-=======
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
             
             
@@ -107,7 +105,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             aux.setFinString(aux.getHorarioIni().toString());
             
             
->>>>>>> ramaAnaG
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
             per.setIdPersona(rs.getInt("Persona_id_persona"));
             
