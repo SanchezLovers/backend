@@ -7,7 +7,6 @@ package pe.edu.pucp.sirgep.business.ventas.impl;
 
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.CalificacionImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Calificacion;
-import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 
 /**
  *

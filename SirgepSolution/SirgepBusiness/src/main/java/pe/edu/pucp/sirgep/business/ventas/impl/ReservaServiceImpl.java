@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +54,8 @@ public class ReservaServiceImpl implements IReservaService {
     //Metodos del CRUD
     @Override
     public int insertar(Reserva reserva) {
+        reserva.setHorarioIni(LocalTime.parse(reserva.getIniString()));
+        reserva.setHorarioFin(LocalTime.parse(reserva.getFinString()));
         return reservaDAO.insertar(reserva);
     }
 
@@ -113,6 +116,32 @@ public class ReservaServiceImpl implements IReservaService {
         } catch (Exception ex) {
             throw new RuntimeException("Error al buscar el distrito de la reserva: " + ex.getMessage());
         }
+    }
+    
+    //Metodos adicionales para el listado de reservas por filtros
+    @Override
+    public List<Reserva> listarPorFecha(Date fecha, boolean activo){
+        return reservaDAO.listarPorFecha(fecha, activo);
+    }
+    
+    @Override
+    public List<Reserva> listarPorHorario(String horaInicio, String horaFin, Date fecha, boolean activo){
+        return reservaDAO.listarPorHorario(horaInicio, horaFin, fecha, activo);
+    }
+    
+    @Override
+    public List<Reserva> listarPorDistrito(int id_distrito, boolean activo){
+        return reservaDAO.listarPorDistrito(id_distrito, activo);
+    }
+    
+    @Override
+    public List<Reserva> listarPorEspacio(int id_espacio, boolean activo){
+        return reservaDAO.listarPorEspacio(id_espacio, activo);
+    }
+    
+    @Override
+    public List<Reserva> listarPorPersona(int id_persona, boolean activo){
+        return reservaDAO.listarPorPersona(id_persona, activo);
     }
 
     //Metodos para crear libro de Excel para las reservas

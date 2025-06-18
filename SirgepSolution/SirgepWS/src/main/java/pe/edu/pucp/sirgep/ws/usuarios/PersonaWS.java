@@ -31,11 +31,11 @@ public class PersonaWS {
         if (n==0){
             return "Las credenciales están fallidas.";
         }
-        if(n==1){
-            return "cuenta administrador.";
+        if(n%10 == 1){
+            return "cuenta administrador. ID = " + n/10;
         }
-        if (n==2){
-            return "cuenta comprador registrado.";
+        if (n%10 ==2){
+            return "cuenta comprador registrado.ID = " + n/10;
         }
         if (n==-1){
             return "Las credenciales no pertenecen a una cuenta.";
