@@ -122,7 +122,13 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             String fechaFinEvento = e.getFecha_fin();
 
             // Parsear la fecha desde dd/MM/yyyy
-            SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat formatoEntrada = null;
+            
+            if(fechaFinEvento.charAt(4) == '-'){
+                formatoEntrada = new SimpleDateFormat("yyyy-MM-dd");
+            }
+            else formatoEntrada = new SimpleDateFormat("dd/MM/yyyy");
+            
             Date fechaIniUtil = formatoEntrada.parse(fechaIniEvento); // java.util.Date
             Date fechaFinUtil = formatoEntrada.parse(fechaFinEvento); // java.util.Date
 
