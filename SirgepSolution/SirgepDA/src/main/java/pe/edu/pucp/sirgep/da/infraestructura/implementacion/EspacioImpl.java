@@ -63,8 +63,8 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
         try{
             ps.setString(1, e.getNombre());
             ps.setString(2, e.getTipoEspacio().name());
-            ps.setTime(3,Time.valueOf(e.getHorarioInicioAtencion().toString()+":00"));
-            ps.setTime(4,Time.valueOf(e.getHorarioFinAtencion().toString() + ":00"));
+            ps.setTime(3,Time.valueOf(e.getHorarioInicioAtencion()));
+            ps.setTime(4,Time.valueOf(e.getHorarioFinAtencion()));
             ps.setString(5, e.getUbicacion());
             ps.setDouble(6, e.getSuperficie());
             ps.setDouble(7, e.getPrecioReserva());

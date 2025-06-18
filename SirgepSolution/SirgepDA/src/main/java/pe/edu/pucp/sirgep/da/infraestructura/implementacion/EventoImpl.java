@@ -36,7 +36,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     protected String getUpdateQuery(){
         String query = "UPDATE Evento SET nombre=?, fecha_inicio=?, fecha_fin=?, ubicacion=?, "
                 + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
-                + "precio_entradas=?, Distrito_id_distrito=?, descripcion=?, WHERE id_evento=?";
+                + "precio_entradas=?, Distrito_id_distrito=?, descripcion=? WHERE id_evento=?";
         return query;
     }
 
@@ -89,7 +89,6 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             java.sql.Date fechaIniSql = new java.sql.Date(fechaIniUtil.getTime());
             java.sql.Date fechaFinSql = new java.sql.Date(fechaFinUtil.getTime());
             
-            
             ps.setString(1, e.getNombre());
             ps.setDate(2, fechaIniSql);
             ps.setDate(3, fechaFinSql);
@@ -114,9 +113,22 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Evento e){
         try{
+            // Antes se utilizaba para insertar correctamente: (estoy probando si es que se puede sin esto)
+            String fechaIniEvento = e.getFecha_inicio();
+            String fechaFinEvento = e.getFecha_fin();
+
+            // Parsear la fecha desde dd/MM/yyyy
+            SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy");
+            Date fechaIniUtil = formatoEntrada.parse(fechaIniEvento); // java.util.Date
+            Date fechaFinUtil = formatoEntrada.parse(fechaFinEvento); // java.util.Date
+
+            // Convertir a java.sql.Date
+            java.sql.Date fechaIniSql = new java.sql.Date(fechaIniUtil.getTime());
+            java.sql.Date fechaFinSql = new java.sql.Date(fechaFinUtil.getTime());
+            
             ps.setString(1, e.getNombre());
-            ps.setDate(2, java.sql.Date.valueOf(e.getFecha_inicio()));
-            ps.setDate(3, java.sql.Date.valueOf(e.getFecha_fin()));
+            ps.setDate(2, fechaIniSql);
+            ps.setDate(3, fechaFinSql);
             ps.setString(4, e.getUbicacion());
             ps.setString(5, e.getReferencia());
             ps.setInt(6, e.getCantEntradasDispo());
@@ -128,6 +140,8 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             ps.setInt(11, e.getIdEvento());
         }catch(SQLException ex){
             throw new RuntimeException(ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(EventoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -229,8 +243,5 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         }
         return espacios;
     }
-    
-    
-    
-    
+
 }

@@ -135,7 +135,7 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
     }
 
     public String getListarPorIdEvento(){
-        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento, fecha FROM Funcion WHERE Evento_idEvento=?";
+        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento, fecha FROM Funcion WHERE Evento_idEvento=? AND activo='A'";
     }
 
     @Override
