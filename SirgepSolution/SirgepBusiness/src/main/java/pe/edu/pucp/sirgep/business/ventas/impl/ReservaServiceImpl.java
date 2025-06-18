@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +54,8 @@ public class ReservaServiceImpl implements IReservaService {
     //Metodos del CRUD
     @Override
     public int insertar(Reserva reserva) {
+        reserva.setHorarioIni(LocalTime.parse(reserva.getIniString()));
+        reserva.setHorarioFin(LocalTime.parse(reserva.getFinString()));
         return reservaDAO.insertar(reserva);
     }
 

@@ -98,6 +98,16 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             aux.setHorarioIni(rs.getTime("horario_ini").toLocalTime());
             aux.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
+<<<<<<< HEAD
+=======
+            aux.setFechaReserva(rs.getDate("fecha_reserva"));
+            
+            
+            aux.setIniString(aux.getHorarioIni().toString());
+            aux.setFinString(aux.getHorarioIni().toString());
+            
+            
+>>>>>>> ramaAnaG
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
             per.setIdPersona(rs.getInt("Persona_id_persona"));
             
@@ -126,6 +136,15 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
                 + " id_constancia_reserva=?"
                 + " WHERE num_reserva = ?";
             */
+            
+            /*
+            return "UPDATE Reserva SET horario_ini=?,"
+                + " horario_fin=?,"
+                + " fecha_reserva=?,"
+                + " Espacio_id_espacio=?,"
+                + " Persona_id_persona=?,"
+                + " id_constancia_reserva=?"
+                + " WHERE num_reserva = ?";*/
             ps.setTime(1, Time.valueOf(entity.getHorarioIni()));
             ps.setTime(2, Time.valueOf(entity.getHorarioFin()));
             ps.setDate(3, new java.sql.Date(entity.getFechaReserva().getTime()));
@@ -153,9 +172,12 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         try (Connection con = DBManager.getInstance().getConnection()){
             con.setAutoCommit(false);
             // insertar la constancia
+            
             idC = constanciaDAO.insertar((Constancia)entity);
             entity.setIdConstancia(idC);
             idR = super.insertar(entity);
+            
+            
 //            try(PreparedStatement ps=con.prepareStatement(this.getInsertQuery(),Statement.RETURN_GENERATED_KEYS)){
 //                this.setInsertParameters(ps, entity); //armamos el ps con la entidad Reserva pasada
 //                ps.executeUpdate(); // se inserta la Reserva ahora
