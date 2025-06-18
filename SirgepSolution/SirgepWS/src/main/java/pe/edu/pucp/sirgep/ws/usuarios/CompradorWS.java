@@ -8,7 +8,7 @@ import pe.edu.pucp.sirgep.business.usuarios.dtos.DetalleComprador;
 import pe.edu.pucp.sirgep.business.usuarios.impl.CompradorServiceImpl;
 import pe.edu.pucp.sirgep.business.usuarios.service.ICompradorService;
 
-@WebService(serviceName = "CompradorWS")
+@WebService(serviceName = "CompradorWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class CompradorWS {
     private final ICompradorService compradorService;
     

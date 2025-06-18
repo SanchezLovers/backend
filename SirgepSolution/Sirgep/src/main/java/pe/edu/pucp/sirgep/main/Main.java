@@ -1,4 +1,4 @@
-/*
+
 package pe.edu.pucp.sirgep.main;
 
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
@@ -27,15 +27,20 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import pe.edu.pucp.sirgep.business.usuarios.impl.CompradorServiceImpl;
+import pe.edu.pucp.sirgep.business.usuarios.service.ICompradorService;
 import pe.edu.pucp.sirgep.business.ventas.impl.ReservaServiceImpl;
 import pe.edu.pucp.sirgep.business.ventas.service.IReservaService;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 
 public class Main{
     public static void main(String[] args) throws Exception,SQLException, IOException{
         Connection con = DBManager.getInstance().getConnection();
         //Implementación de pruebas DAO y MySQL
-        IReservaService reservaService=new ReservaServiceImpl();
-        //reservaService.crearLibroExcelReservas(2);//Comprador con Id=2
+        ICompradorService compradorService=new CompradorServiceImpl();
+        compradorService.actualizarDistritoFavoritoPorIdComprador("San Miguel", 2);
+        Comprador comprador=compradorService.buscar(2);
+        comprador.getNombres();
 //        probarEspacio();
         
 //        probarAdministrador();
@@ -44,7 +49,7 @@ public class Main{
 
 //        probarDepartamento();
 //        probarConstancia();
-//    }
+    }
     
 //    static Distrito devuelveDistrito(){
 //
@@ -301,4 +306,3 @@ public class Main{
 //        System.out.println("Departamento "+ departamento.getNombre() +" con estado E (Eliminado).");
 //    }
 }
-*/

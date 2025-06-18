@@ -261,7 +261,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         }
         return comprador;
     }
-    
+
     //Metodos para el Perfil del Comprador
     @Override
     public Map<String, Object> buscarDetalleCompradorPorId(int idComprador) {
@@ -320,18 +320,11 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     @Override
     public boolean actualizarDistritoFavoritoPorIdComprador(String nuevoDistrito, int idComprador) {
         boolean resultado = false;
-        String sql = """
-                   UPDATE Comprador C
-                   JOIN Distrito D ON LOWER(D.nombre) LIKE LOWER('%
-                   """
-                + nuevoDistrito+
-                """
-                   %') SET C.id_distrito_favorito = D.id_distrito
-                   WHERE C.id_persona_comprador = 2;
-                   """ + idComprador;
+        String sql = "UPDATE Comprador C JOIN Distrito D ON D.nombre COLLATE utf8mb4_general_ci LIKE '%"+
+                nuevoDistrito+"%' SET C.id_distrito_favorito = D.id_distrito WHERE C.id_persona_comprador = " + idComprador;
         try (Connection conn = DBManager.getInstance().getConnection()) {
             conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(this.getUpdateQuery())) {
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.executeUpdate();
                 conn.commit();
                 System.out.println("Se actualizo el distrito favorito de un comprador");
