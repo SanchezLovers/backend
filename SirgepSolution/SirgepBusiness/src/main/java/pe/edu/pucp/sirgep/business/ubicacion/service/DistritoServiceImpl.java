@@ -29,6 +29,10 @@ public class DistritoServiceImpl {
         return distritosDelDepa;
     }
     
+    public List<Distrito> listar() {
+        return distritoDAO.listar();
+    }
+    
     public Distrito buscar(int id){
         return distritoDAO.buscar(id);
     }
