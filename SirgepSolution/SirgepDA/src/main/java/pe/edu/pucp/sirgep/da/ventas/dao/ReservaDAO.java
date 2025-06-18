@@ -1,4 +1,5 @@
 package pe.edu.pucp.sirgep.da.ventas.dao;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.xml.crypto.Data;
 import java.util.List;
@@ -17,4 +18,7 @@ public interface ReservaDAO extends BaseDAO<Reserva>{
     public List<Reserva> listarPorDistrito(int id_distrito, boolean activo);
     public List<Reserva> listarPorEspacio(int id_espacio, boolean activo);
     public List<Reserva> listarPorPersona(int id_persona, boolean activo);
+    public Reserva obtenerPorNumReserva(int num_reserva, boolean activo);
+    public List<Reserva> buscarReservasPorFecha(LocalDate fecha);
+    public List<Reserva> buscarReservasPorNombreEspacio(String nombre);
 }
