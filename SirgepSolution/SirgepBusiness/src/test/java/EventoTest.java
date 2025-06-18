@@ -1,4 +1,4 @@
-/*
+
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 
 
@@ -17,19 +17,28 @@ import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+ 
 
 /**
  *
  * @author Ana Gabriela
  */
-/*
+
 public class EventoTest {
     private Evento e;
     private EventoServiceImpl es;
     //service sí funciona
     @Test
     @Order(1)
+    public void testActualizar(){
+        this.es = new EventoServiceImpl();
+        System.out.println("Ejecutando test Actualizar...");
+        e = es.buscar(1);
+        e.setCantEntradasVendidas(e.getCantEntradasVendidas()+1);
+        es.actualizar(e);
+    }
+    
+    /*
     public void testListar() {
         this.es= new EventoServiceImpl();
         System.out.println("Ejecutando test listar...");
@@ -38,6 +47,5 @@ public class EventoTest {
             System.out.println(lista.get(i).toString());;
         }
         assertNotNull(lista);
-    }
+    }*/
 }
-*/

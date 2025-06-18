@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package pe.edu.pucp.sirgep.ws.infraestructura;
 
 import jakarta.jws.WebMethod;
@@ -14,6 +10,7 @@ import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 
 /**
  *
+<<<<<<< HEAD
  * @author benny
  */
 @WebService(serviceName = "FuncionWS", targetNamespace = "pe.edu.pucp.sirgep")
@@ -45,5 +42,9 @@ public class FuncionWS {
         catch(Exception ex){
             throw new RuntimeException("ERROR al listar funciones por idEvento " + ex.getMessage());
         }
+    }
+    @WebMethod(operationName = "buscarFuncionId")
+    public Funcion buscarFuncionId(@WebParam(name = "idFuncion") int idFuncion){
+        return funcionService.buscar(idFuncion);
     }
 }

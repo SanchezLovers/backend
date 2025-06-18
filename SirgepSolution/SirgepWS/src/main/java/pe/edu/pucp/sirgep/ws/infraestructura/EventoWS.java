@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.EventoServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.FuncionServiceImpl;
-import pe.edu.pucp.sirgep.business.infraestructura.service.IEventoService;
 import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
@@ -132,7 +131,7 @@ public class EventoWS {
 //        Evento e =  eService.buscar(id);
         return funcionesEvento;
     }
-    
+
     public int obtenerCantEntradasDisponibles(@WebParam(name = "IdFuncion") int id,
             @WebParam(name = "obtenerCantEDisponibles") int cantEntradasPorFuncion){
         return entradasService.cantidadDispo(id, cantEntradasPorFuncion);

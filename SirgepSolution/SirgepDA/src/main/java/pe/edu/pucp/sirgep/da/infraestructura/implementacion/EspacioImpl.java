@@ -148,6 +148,66 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
         }
         return espacios;
     }
+
+    @Override
+    public List<Espacio> buscarPorDistrito(int idDist) {
+        try{
+            List<Espacio> espacios = listar();
+            List<Espacio> espaciosFiltrados = new ArrayList<>();
+
+            for(Espacio espacio : espacios){
+                int id = espacio.getDistrito().getIdDistrito();
+                if( id == idDist){
+                    espaciosFiltrados.add(espacio);
+                }
+            }
+            return espaciosFiltrados;
+        }
+        catch(Exception ex)
+        {
+            throw new RuntimeException("Error al listar espacios con el filtro de Categoria: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<Espacio> buscarPorCategoria(String categ) {
+        try{
+            List<Espacio> espacios = listar();
+            List<Espacio> espaciosFiltrados = new ArrayList<>();
+            ETipoEspacio tipoEspacio = ETipoEspacio.valueOf(categ);
+            for(Espacio espacio : espacios){
+                if( espacio.getTipoEspacio() == tipoEspacio ){
+                    espaciosFiltrados.add(espacio);
+                }
+            }
+            return espaciosFiltrados;
+        }
+        catch(Exception ex)
+        {
+            throw new RuntimeException("Error al listar espacios con el filtro de Categoria: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<Espacio> buscarPorDistritoCategoria(int idDist, String categoria) {
+        try{
+            List<Espacio> espacios = buscarPorDistrito(idDist);
+            List<Espacio> espaciosFiltrados = new ArrayList<>();
+
+            for(Espacio espacio : espacios){
+                if( espacio.getTipoEspacio().toString().equals(categoria)){
+                    espaciosFiltrados.add(espacio);
+                }
+            }
+            return espaciosFiltrados;
+        }
+        catch(Exception ex)
+        {
+            throw new RuntimeException("Error al listar espacios con el filtro de Categoria y Distrito: " + ex.getMessage());
+        }
+    }
+    
+}
     
 /*
     @Override 
@@ -239,4 +299,3 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
         }
     }
 */
-}

@@ -24,6 +24,9 @@ public class CalificacionImpl {
                 + " texto) values (?,?,?)";
         return cadena;
     }
+
+    public CalificacionImpl() {
+    }
     
     protected void setInsertParameters(PreparedStatement ps, Calificacion c){
         try{

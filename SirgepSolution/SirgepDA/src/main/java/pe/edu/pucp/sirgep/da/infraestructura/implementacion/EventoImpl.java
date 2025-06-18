@@ -70,9 +70,9 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         
         return query;
     }
-/*(nombre, fecha, "
-                + "descripcion, ubicacion, referencia, cant_entradas_dispo, cant_entradas_vendidas, "
-                + "precio_entradas, Distrito_id_distrito, activo, url_imagen)*/
+/*"UPDATE Evento SET nombre=?, fecha_inicio=?, fecha_fin=?, ubicacion=?, "
+                + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
+                + "precio_entradas=?, Distrito_id_distrito=?, descripcion=?, WHERE id_evento=?";*/
     @Override
     protected void setInsertParameters(PreparedStatement ps, Evento e){
         try{
@@ -100,7 +100,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             ps.setInt(9, e.getDistrito().getIdDistrito());
             ps.setString(10, e.getDescripcion());
 //            ps.setString(10, e.getUrlImagen());
-            
+            ps.setInt(11, e.getIdEvento());
         }catch(SQLException ex){
             throw new RuntimeException(ex);
         } catch (ParseException ex) {
@@ -109,7 +109,11 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     }
 /*SET nombre=?, fecha=?, descripcion=?, ubicacion=?, "
                 + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
-                + "precio_entradas=?, Distrito_id_distrito=?, url_imagen=? */
+                + "precio_entradas=?, Distrito_id_distrito=?, url_imagen=?
+    
+    UPDATE Evento SET nombre=?, fecha_inicio=?, fecha_fin=?, ubicacion=?, "
+                + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
+                + "precio_entradas=?, Distrito_id_distrito=?, descripcion=? WHERE id_evento=?*/
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Evento e){
         try{
