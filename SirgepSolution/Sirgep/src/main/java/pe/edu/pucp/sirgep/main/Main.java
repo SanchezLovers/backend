@@ -1,3 +1,4 @@
+/*
 package pe.edu.pucp.sirgep.main;
 
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
@@ -35,17 +36,15 @@ public class Main{
         //Implementación de pruebas DAO y MySQL
         IReservaService reservaService=new ReservaServiceImpl();
         //reservaService.crearLibroExcelReservas(2);//Comprador con Id=2
-        /*
-        probarEspacio();
+//        probarEspacio();
         
-        probarAdministrador();
+//        probarAdministrador();
         
-        probarEvento();
+//        probarEvento();
 
-        probarDepartamento();
-        probarConstancia();
-        */
-    }
+//        probarDepartamento();
+//        probarConstancia();
+//    }
     
 //    static Distrito devuelveDistrito(){
 //
@@ -121,10 +120,8 @@ public class Main{
 //        Distrito distrito = devuelveDistrito();
 //
 //        espacio.setDistrito(distrito);
-//        /*
 //        espacio.setHorarioInicioAtencion(LocalTime.NOON);
 //        espacio.setHorarioFinAtencion(LocalTime.MIDNIGHT);
-//        */
 //        espacio.setNombre("PRUEBA 2 Cancha de Futbol Universitaria");
 //        espacio.setPrecioReserva(6);
 //        espacio.setSuperficie(400);
@@ -304,3 +301,4 @@ public class Main{
 //        System.out.println("Departamento "+ departamento.getNombre() +" con estado E (Eliminado).");
 //    }
 }
+*/

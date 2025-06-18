@@ -1,6 +1,5 @@
-
+/*
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
-
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -14,15 +13,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.EventoServiceImpl;
 import pe.edu.pucp.sirgep.business.ubicacion.service.DepartamentoServiceImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- 
-
-/**
- *
- * @author Ana Gabriela
- */
 
 public class EventoTest {
     private Evento e;
@@ -38,7 +28,6 @@ public class EventoTest {
         es.actualizar(e);
     }
     
-    /*
     public void testListar() {
         this.es= new EventoServiceImpl();
         System.out.println("Ejecutando test listar...");
@@ -47,5 +36,6 @@ public class EventoTest {
             System.out.println(lista.get(i).toString());;
         }
         assertNotNull(lista);
-    }*/
+    }
 }
+*/
