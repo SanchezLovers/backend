@@ -99,11 +99,11 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             ps.setDouble(8, e.getPrecioEntrada());
             ps.setInt(9, e.getDistrito().getIdDistrito());
             ps.setString(10, e.getDescripcion());
-//            ps.setString(10, e.getUrlImagen());
-            ps.setInt(11, e.getIdEvento());
-        }catch(SQLException ex){
+        }
+        catch(SQLException ex){
             throw new RuntimeException(ex);
-        } catch (ParseException ex) {
+        }
+        catch (ParseException ex) {
             Logger.getLogger(EventoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
