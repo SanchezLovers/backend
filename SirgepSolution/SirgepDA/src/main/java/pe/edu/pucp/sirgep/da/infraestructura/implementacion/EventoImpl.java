@@ -27,7 +27,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     protected String getUpdateQuery(){
         String query = "UPDATE Evento SET nombre=?, fecha_inicio=?, fecha_fin=?, ubicacion=?, "
                 + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
-                + "precio_entradas=?, Distrito_id_distrito=?, descripcion=?, WHERE id_evento=?";
+                + "precio_entradas=?, Distrito_id_distrito=?, descripcion=? WHERE id_evento=?";
         return query;
     }
 
@@ -61,9 +61,9 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         
         return query;
     }
-/*(nombre, fecha, "
-                + "descripcion, ubicacion, referencia, cant_entradas_dispo, cant_entradas_vendidas, "
-                + "precio_entradas, Distrito_id_distrito, activo, url_imagen)*/
+/*"UPDATE Evento SET nombre=?, fecha_inicio=?, fecha_fin=?, ubicacion=?, "
+                + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
+                + "precio_entradas=?, Distrito_id_distrito=?, descripcion=?, WHERE id_evento=?";*/
     @Override
     protected void setInsertParameters(PreparedStatement ps, Evento e){
         try{
@@ -78,20 +78,29 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             ps.setInt(9, e.getDistrito().getIdDistrito());
             ps.setString(10, e.getDescripcion());
 //            ps.setString(10, e.getUrlImagen());
-            
+            ps.setInt(11, e.getIdEvento());
         }catch(SQLException ex){
             throw new RuntimeException(ex);
         }
     }
 /*SET nombre=?, fecha=?, descripcion=?, ubicacion=?, "
                 + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
-                + "precio_entradas=?, Distrito_id_distrito=?, url_imagen=? */
+                + "precio_entradas=?, Distrito_id_distrito=?, url_imagen=?
+    
+    UPDATE Evento SET nombre=?, fecha_inicio=?, fecha_fin=?, ubicacion=?, "
+                + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
+                + "precio_entradas=?, Distrito_id_distrito=?, descripcion=? WHERE id_evento=?*/
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Evento e){
         try{
+//            Evento aux = buscar(e.getIdEvento());
+//            e.setFecha_fin(aux.getFecha_fin());
+//            e.setFecha_inicio(aux.getFecha_inicio());
             ps.setString(1, e.getNombre());
-            ps.setDate(2, Date.valueOf(e.getFecha_inicio().toString()));
-            ps.setDate(3, Date.valueOf(e.getFecha_fin().toString()));
+//            ps.setDate(2, Date.valueOf( e.getFecha_inicio().toString() ) );
+//            ps.setDate(3, Date.valueOf(e.getFecha_fin().toString()));
+            ps.setDate(2, new Date(e.getFecha_inicio().getTime()));
+            ps.setDate(3, new Date(e.getFecha_fin().getTime()));
             ps.setString(4, e.getUbicacion());
             ps.setString(5, e.getReferencia());
             ps.setInt(6, e.getCantEntradasDispo());

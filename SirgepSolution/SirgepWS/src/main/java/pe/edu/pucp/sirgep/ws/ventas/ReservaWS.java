@@ -5,6 +5,9 @@ import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.xml.ws.WebServiceException;
+import java.time.LocalTime;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
 
@@ -43,7 +46,7 @@ public class ReservaWS {
         }
     }
     
-    @WebMethod(operationName = "listarVentas")
+    @WebMethod(operationName = "listarReservas")
     public List<Reserva> listarReserva() {
         try {
             return reservaService.listar();
@@ -142,6 +145,63 @@ public class ReservaWS {
             return reservaService.listarDetalleReservasPorComprador(idComprador);
         }  catch (Exception ex) {
             throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
+        }
+    }
+
+    @WebMethod(operationName = "listarPorFecha")
+    public List<Reserva> listarEventoPorFecha(@WebParam(name = "fecha")String fechaSt,
+            @WebParam(name = "activo")boolean activo) {
+        try {
+            //Convertimos la fecha obtenida de string a date
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date fecha = sdf.parse(fechaSt);
+            return reservaService.listarPorFecha(fecha,activo);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por fecha: " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "listarReservaPorHorario")
+    public List<Reserva> listarPorHorario(@WebParam(name = "horaInicio")String horaInicio, 
+            @WebParam(name = "horaFin")String horaFin, @WebParam(name = "fecha")String fechaSt, 
+            @WebParam(name = "activo")boolean activo) {
+        try {
+            //Convertimos la fecha obtenida de string a date
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date fecha = sdf.parse(fechaSt);
+            return reservaService.listarPorHorario(horaInicio,horaFin,fecha,activo);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por horario: " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "listarReservaPorDistrito")
+    public List<Reserva> listarEventoPorDistrito(@WebParam(name = "idDistrito")int id,
+            @WebParam(name = "activo")boolean activo) {
+        try {
+            return reservaService.listarPorDistrito(id,activo);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por distritos: " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "listarReservaPorEspacio")
+    public List<Reserva> listarPorEspacio(@WebParam(name = "idEspacio")int id,
+            @WebParam(name = "activo")boolean activo) {
+        try {
+            return reservaService.listarPorEspacio(id,activo);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por espacios: " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "listarReservaPorPersona")
+    public List<Reserva> listarPorPersona(@WebParam(name = "idPersona")int id,
+            @WebParam(name = "activo")boolean activo) {
+        try {
+            return reservaService.listarPorPersona(id,activo);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por persona: " + ex.getMessage());
         }
     }
 }

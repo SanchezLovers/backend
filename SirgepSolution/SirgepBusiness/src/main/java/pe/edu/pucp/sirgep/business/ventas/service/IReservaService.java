@@ -1,5 +1,6 @@
 package pe.edu.pucp.sirgep.business.ventas.service;
 
+import java.util.Date;
 import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -23,7 +24,14 @@ public interface IReservaService {
     public Comprador buscarCompradorDeReserva(int idComprador);
     public Espacio buscarEspacioDeReserva(int idEspacio);
     public Distrito buscarDistritoDeReserva(int idEntrada);
-    
+
+    //Metodos adicionales para el listado de reservas
+    List<Reserva> listarPorFecha(Date fecha, boolean activo);
+    List<Reserva> listarPorHorario(String horaInicio, String horaFin, Date fecha, boolean activo);
+    List<Reserva> listarPorDistrito(int id_distrito, boolean activo);
+    List<Reserva> listarPorEspacio(int id_espacio, boolean activo);
+    List<Reserva> listarPorPersona(int id_persona, boolean activo);
+
     //Metodos para crear libro de Excel para las entradas
     public void crearLibroExcelReservas(int idComprador);
     public String crearHojalReservas(XSSFWorkbook libro,int idComprador);
