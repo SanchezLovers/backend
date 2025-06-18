@@ -66,7 +66,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     public String getSelectAllQuery(){
         String query = "SELECT e.*, d.id_distrito, d.nombre as nombre_distrito, "
                 + "d.Provincia_id_provincia, d.activo FROM Evento e JOIN Distrito d "
-                + "ON e.Distrito_id_distrito=d.id_distrito";
+                + "ON e.Distrito_id_distrito=d.id_distrito WHERE e.activo='A'";
         
         return query;
     }
@@ -191,6 +191,46 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         }
         return espacios;
     }
+    
+    public String getBuscarPorFechas(){
+        return "{CALL FILTRAR_EVENTOS_POR_FECHA(?, ?)}";
+    }
+
+    @Override
+    public List<Evento> buscarEventosPorFechas(String inicio, String fin){
+        List<Evento> espacios = new ArrayList<>();
+
+        // Utilizaremos procedimientos almacenados
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+             CallableStatement cs = conn.prepareCall(this.getBuscarPorFechas())) {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            // Convertimos a java.util.Date primero
+            java.util.Date fechaInicioUtil = sdf.parse(inicio);
+            java.util.Date fechaFinUtil = sdf.parse(fin);
+
+            // Luego a java.sql.Date
+            java.sql.Date fechaInicioSQL = new java.sql.Date(fechaInicioUtil.getTime());
+            java.sql.Date fechaFinSQL = new java.sql.Date(fechaFinUtil.getTime());
+
+            // Asignamos como DATE y no como String
+            cs.setDate(1, fechaInicioSQL);
+            cs.setDate(2, fechaFinSQL);
+
+            try (ResultSet rs = cs.executeQuery()) {
+                while (rs.next()) {
+                    espacios.add(createFromResultSet(rs));
+                }
+            }
+        }catch(SQLException e){
+            throw new RuntimeException("Error al obtener un EVENTO por FECHA: ", e);
+        } catch (ParseException ex) {
+            Logger.getLogger(EventoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return espacios;
+    }
+    
+    
     
     
 }

@@ -7,4 +7,5 @@ import pe.edu.pucp.sirgep.da.base.dao.BaseDAO;
 
 public interface EventoDAO extends BaseDAO<Evento>{
     List<Evento> buscarPorTexto(String texto);
+    List<Evento> buscarEventosPorFechas(String inicio, String fin);
 }

@@ -1,5 +1,6 @@
 package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
 
+import java.sql.Connection;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.FuncionDAO;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
@@ -18,8 +19,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import pe.edu.pucp.sirgep.dbmanager.DBManager;
 
 public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
 
@@ -128,5 +132,30 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
     @Override
     protected void setId(Funcion f, int id) {
         f.setIdFuncion(id);
+    }
+
+    public String getListarPorIdEvento(){
+        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento, fecha FROM Funcion WHERE Evento_idEvento=?";
+    }
+
+    @Override
+    public List<Funcion> listarPorIdEvento(int idEvento){
+        List<Funcion> funciones = new ArrayList<>();
+
+        // Utilizaremos procedimientos almacenados
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+            PreparedStatement ps = conn.prepareStatement(this.getListarPorIdEvento())) {
+
+            ps.setInt(1, idEvento);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    funciones.add(createFromResultSet(rs));
+                }
+            }
+        }catch(SQLException e){
+            throw new RuntimeException("ERROR al obtener FUNCIONES por idEvento: ", e);
+        }
+        return funciones;
     }
 }

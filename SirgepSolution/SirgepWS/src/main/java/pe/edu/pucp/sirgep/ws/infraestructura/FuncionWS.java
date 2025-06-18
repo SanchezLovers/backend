@@ -7,6 +7,7 @@ package pe.edu.pucp.sirgep.ws.infraestructura;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
+import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.FuncionServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IFuncionService;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
@@ -32,6 +33,17 @@ public class FuncionWS {
         catch(Exception ex)
         {
             throw new RuntimeException("ERROR al insertar una FUNCION: " + ex.getMessage());
+        }
+    }
+    
+    // lista funciones de un Evento mediante el idEvento
+    @WebMethod(operationName = "listarFuncionesPorIdEvento")
+    public List<Funcion> listarFuncionesPorIdEvento(@WebParam(name = "idEvento") int idEvento){
+        try{
+            return funcionService.listarPorIdEvento(idEvento);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("ERROR al listar funciones por idEvento " + ex.getMessage());
         }
     }
 }

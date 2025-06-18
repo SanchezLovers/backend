@@ -12,4 +12,5 @@ public interface IEventoService{
     boolean eliminarFisico(int id);
     List<Evento> listarPorDistrito(int id);
     List<Evento> buscarPorTexto(String texto);
+    List<Evento> buscarEventosPorFechas(String inicio, String fin);
 }

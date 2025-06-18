@@ -62,5 +62,10 @@ public class EventoServiceImpl implements IEventoService {
     public List<Evento> buscarPorTexto(String texto) {
         return eventoDAO.buscarPorTexto(texto);
     }
+
+    @Override
+    public List<Evento> buscarEventosPorFechas(String inicio, String fin) {
+        return eventoDAO.buscarEventosPorFechas(inicio, fin);
+    }
     
 }

@@ -63,6 +63,17 @@ public class EventoWS {
             throw new RuntimeException("ERROR al buscar el EVENTO mediante un texto: "+ ex.getMessage());
         }
     }
+    
+    @WebMethod(operationName = "buscarEventosPorFechas")
+    public List<Evento> buscarEventosPorFechas(@WebParam(name = "fecha_inicio") String inicio, @WebParam(name = "fecha_fin") String fin){
+        try{
+            return eService.buscarEventosPorFechas(inicio, fin);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("ERROR al LISTAR EVENTOS POR FECHAS: ... " + ex.getMessage());
+        }
+    }
+    
     @WebMethod(operationName = "buscarEventoPorID")
     public Evento buscarEventoPorID(@WebParam(name = "id") int id) {
         try{
@@ -83,10 +94,25 @@ public class EventoWS {
         }
     }
     
+    public boolean eliminarFuncionesDeEvento(int id){
+        List<Funcion> funcionesEvento = fService.listar();
+        for(Funcion f : funcionesEvento){
+            if(f.getEvento().getIdEvento() == id){
+                // pertenece al evento a eliminar
+                boolean eliminado = fService.eliminarLogico(f.getIdFuncion()); // eliminamos la función
+                if(!eliminado) return false;
+            }
+        }
+        return true;
+    }
+    
     @WebMethod(operationName = "eliminarLogico")
     public boolean eliminarEvento(@WebParam(name = "id") int id) {
         try{
-            return eService.eliminarLogico(id);
+            boolean eliminarFunciones = eliminarFuncionesDeEvento(id);
+            if(!eliminarFunciones) return false;
+            boolean eliminarEvento = eService.eliminarLogico(id);
+            return eliminarEvento;
         }
         catch(Exception ex){
             throw new RuntimeException("Error al eliminar el evento con id: " + id + " ... " + ex.getMessage());

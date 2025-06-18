@@ -34,7 +34,7 @@ public class FuncionTest {
     public void testCantDispo(){
         this.eWS= new EventoWS();
         System.out.println("Ejecutando test CantDipo...");
-        int cantDispo = this.eWS.cantEntradasDisponibles(1, 50);
+        int cantDispo = this.eWS.obtenerCantEntradasDisponibles(1, 50);
         System.out.println("Hay " + cantDispo + " entradas en la función. ");
 
         assertNotNull(cantDispo);
