@@ -37,7 +37,7 @@ public class DistritoWS {
     
     @WebMethod(operationName = "listarTodosDistritos")
     public List<Distrito> listarTodosDistritos() {
-        try {
+        try{
             return dService.listar();
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar distritos: " + ex.getMessage());

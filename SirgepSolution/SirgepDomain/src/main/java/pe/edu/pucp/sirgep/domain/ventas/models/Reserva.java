@@ -16,6 +16,7 @@ public class Reserva extends Constancia{
     private String iniString;
     private String finString;
 
+
     //Relaciones
     private Espacio espacio;
     private Persona persona;
@@ -86,15 +87,7 @@ public class Reserva extends Constancia{
         this.persona = persona;
         return this;
     }
-
-    public char getActivo() {
-        return activo;
-    }
-
-    public void setActivo(char activo) {
-        this.activo = activo;
-    }
-
+    
     public String getIniString() {
         return iniString;
     }
@@ -110,8 +103,14 @@ public class Reserva extends Constancia{
     public void setFinString(String finString) {
         this.finString = finString;
     }
-    
-    
+
+    public char getActivo() {
+        return activo;
+    }
+
+    public void setActivo(char activo) {
+        this.activo = activo;
+    }
 
     @Override
     public String toString(){

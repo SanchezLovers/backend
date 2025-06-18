@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +54,8 @@ public class ReservaServiceImpl implements IReservaService {
     //Metodos del CRUD
     @Override
     public int insertar(Reserva reserva) {
+        reserva.setHorarioIni(LocalTime.parse(reserva.getIniString()));
+        reserva.setHorarioFin(LocalTime.parse(reserva.getFinString()));
         return reservaDAO.insertar(reserva);
     }
 
@@ -116,16 +119,6 @@ public class ReservaServiceImpl implements IReservaService {
     }
     
     //Metodos adicionales para el listado de reservas por filtros
-    @Override
-    public Reserva obtenerPorNumReserva(int numReserva, boolean activo){
-        Reserva reserva=buscar(numReserva);
-        if(!activo||activo&&reserva.getActivo()=='A'){
-            return reserva;
-        }else{
-            return null;
-        }
-    }
-    
     @Override
     public List<Reserva> listarPorFecha(Date fecha, boolean activo){
         return reservaDAO.listarPorFecha(fecha, activo);

@@ -5,6 +5,7 @@ import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.xml.ws.WebServiceException;
+import java.time.LocalTime;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -146,18 +147,7 @@ public class ReservaWS {
             throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
         }
     }
-    
-    @WebMethod(operationName = "obtenerPorNumReserva")
-    public Reserva obtenerPorNumReserva(@WebParam(name = "numReserva")int numReserva,
-            @WebParam(name = "activo")boolean activo) {
-        try {
-            //Convertimos la fecha obtenida de string a date
-            return reservaService.obtenerPorNumReserva(numReserva,activo);
-        } catch (Exception ex) {
-            throw new WebServiceException("Error al listar por numReserva: " + ex.getMessage());
-        }
-    }
-    
+
     @WebMethod(operationName = "listarPorFecha")
     public List<Reserva> listarEventoPorFecha(@WebParam(name = "fecha")String fechaSt,
             @WebParam(name = "activo")boolean activo) {

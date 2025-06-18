@@ -131,6 +131,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         try(Connection con = DBManager.getInstance().getConnection()){
             con.setAutoCommit(false);
             idC = constanciaDAO.insertar((Constancia)entrada);
+            entrada.setIdConstancia(idC);
             idE = super.insertar(entrada);
         }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+entrada.getClass().getSimpleName()+" ", e);
