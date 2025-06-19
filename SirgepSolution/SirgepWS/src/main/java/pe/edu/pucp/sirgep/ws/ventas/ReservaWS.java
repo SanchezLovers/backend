@@ -162,20 +162,6 @@ public class ReservaWS {
         }
     }
     
-    @WebMethod(operationName = "listarReservaPorHorario")
-    public List<Reserva> listarPorHorario(@WebParam(name = "horaInicio")String horaInicio, 
-            @WebParam(name = "horaFin")String horaFin, @WebParam(name = "fecha")String fechaSt, 
-            @WebParam(name = "activo")boolean activo) {
-        try {
-            //Convertimos la fecha obtenida de string a date
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date fecha = sdf.parse(fechaSt);
-            return reservaService.listarPorHorario(horaInicio,horaFin,fecha,activo);
-        } catch (Exception ex) {
-            throw new WebServiceException("Error al listar por horario: " + ex.getMessage());
-        }
-    }
-    
     @WebMethod(operationName = "listarReservaPorDistrito")
     public List<Reserva> listarEventoPorDistrito(@WebParam(name = "idDistrito")int id,
             @WebParam(name = "activo")boolean activo) {
@@ -183,36 +169,6 @@ public class ReservaWS {
             return reservaService.listarPorDistrito(id,activo);
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar por distritos: " + ex.getMessage());
-        }
-    }
-    
-    @WebMethod(operationName = "listarReservaPorEspacio")
-    public List<Reserva> listarPorEspacio(@WebParam(name = "idEspacio")int id,
-            @WebParam(name = "activo")boolean activo) {
-        try {
-            return reservaService.listarPorEspacio(id,activo);
-        } catch (Exception ex) {
-            throw new WebServiceException("Error al listar por espacios: " + ex.getMessage());
-        }
-    }
-    
-    @WebMethod(operationName = "listarReservaPorPersona")
-    public List<Reserva> listarPorPersona(@WebParam(name = "idPersona")int id,
-            @WebParam(name = "activo")boolean activo) {
-        try {
-            return reservaService.listarPorPersona(id,activo);
-        } catch (Exception ex) {
-            throw new WebServiceException("Error al listar por persona: " + ex.getMessage());
-        }
-    }
-    
-    @WebMethod(operationName = "obtenerPorNumReserva")
-    public Reserva obtenerPorNumReserva(@WebParam(name = "num_reserva")int num_reserva,
-            @WebParam(name = "activo")boolean activo) {
-        try {
-            return reservaService.obtenerPorNumReserva(num_reserva,activo);
-        } catch (Exception ex) {
-            throw new WebServiceException("Error al listar por reserva: " + ex.getMessage());
         }
     }
     

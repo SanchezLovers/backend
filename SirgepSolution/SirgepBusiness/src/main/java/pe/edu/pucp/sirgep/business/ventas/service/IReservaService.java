@@ -28,11 +28,7 @@ public interface IReservaService {
 
     //Metodos adicionales para el listado de reservas
     List<Reserva> listarPorFecha(Date fecha, boolean activo);
-    List<Reserva> listarPorHorario(String horaInicio, String horaFin, Date fecha, boolean activo);
     List<Reserva> listarPorDistrito(int id_distrito, boolean activo);
-    List<Reserva> listarPorEspacio(int id_espacio, boolean activo);
-    List<Reserva> listarPorPersona(int id_persona, boolean activo);
-    Reserva obtenerPorNumReserva(int num_reserva, boolean activo);
     List<Reserva> buscarReservasPorFecha(LocalDate fecha);
     public List<Reserva> buscarReservasPorNombreEspacio(String nombre);
 
