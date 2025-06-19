@@ -60,6 +60,7 @@ public class Main {
   </body>
 </html>
 """;
+        /*
         String rutaLogo = "D:\\Local\\frontend\\Sirgep\\SirgepPresentacion\\Images\\grl\\Logo.png";
         listaCorreosCompradores.add("a20206234@pucp.edu.pe");
         listaCorreosCompradores.add("a20221299@pucp.edu.pe");
@@ -72,5 +73,6 @@ public class Main {
         if (resultado) {
             System.out.println("Correo enviado!");
         }
+        */
     }
 }
