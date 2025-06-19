@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.EventoServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.FuncionServiceImpl;
-import pe.edu.pucp.sirgep.business.infraestructura.service.IEventoService;
 import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
@@ -23,18 +22,18 @@ public class EventoWS {
         fService =  new FuncionServiceImpl();
         entradasService =  new EntradaServiceImpl();
     }
-//    @WebMethod(operationName = "insertarEvento")
-//    public int insertar(@WebParam(name = "espacio") Evento evento) {
-//        try{
-//            return eventoService.insertar(evento);
-//        }
-//        catch(Exception ex)
-//        {
-//            throw new RuntimeException("Error al insertar un evento: " + ex.getMessage());
-//        }
-//    }
+    @WebMethod(operationName = "insertarEvento")
+    public int insertarEvento(@WebParam(name = "evento") Evento evento) {
+        try{
+            return eService.insertar(evento);
+        }
+        catch(Exception ex)
+        {
+            throw new RuntimeException("Error al insertar un evento: " + ex.getMessage());
+        }
+    }
     @WebMethod(operationName = "listarEvento")
-    public List<Evento> listar() {
+    public List<Evento> listarEvento() {
         try{
             List<Evento> eventos = eService.listar();
             return eventos;
@@ -53,15 +52,36 @@ public class EventoWS {
             throw new WebServiceException("Error al listar distritos: " + ex.getMessage());
         }
     }
-//    @WebMethod(operationName = "buscarEvento")
-//    public Evento buscar(@WebParam(name = "id") int id) {
-//        try{
-//            return eventoService.buscar(id);
-//        }
-//        catch(Exception ex){
-//            throw new RuntimeException("Error al buscar el evento con id: " + id + " ... " + ex.getMessage());
-//        }
-//    }
+    
+    @WebMethod(operationName = "buscarEventoPorTexto")
+    public List<Evento> buscarPorTextoEvento(@WebParam(name = "texto") String texto) {
+        try{
+            return eService.buscarPorTexto(texto);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("ERROR al buscar el EVENTO mediante un texto: "+ ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "buscarEventosPorFechas")
+    public List<Evento> buscarEventosPorFechas(@WebParam(name = "fecha_inicio") String inicio, @WebParam(name = "fecha_fin") String fin){
+        try{
+            return eService.buscarEventosPorFechas(inicio, fin);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("ERROR al LISTAR EVENTOS POR FECHAS: ... " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "buscarEventoPorID")
+    public Evento buscarEventoPorID(@WebParam(name = "id") int id) {
+        try{
+            return eService.buscar(id);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al buscar el evento con id: " + id + " ... " + ex.getMessage());
+        }
+    }
     
     @WebMethod(operationName = "actualizarEvento")
     public boolean actualizarEvento(@WebParam(name = "evento") Evento evento) {
@@ -69,23 +89,33 @@ public class EventoWS {
             return eService.actualizar(evento);
         }
         catch(Exception ex){
-            throw new RuntimeException("Error al actualizar el evento " + ex.getMessage());
+            throw new RuntimeException("ERROR al actualizar el evento " + ex.getMessage());
         }
     }
-//    @WebMethod(operationName = "eliminarLogico")
-//    public boolean eliminar(@WebParam(name = "id") int id) {
-//        try{
-//            return eventoService.eliminarLogico(id);
-//        }
-//        catch(Exception ex){
-//            throw new RuntimeException("Error al eliminar el evento con id: " + id + " ... " + ex.getMessage());
-//        }
-//    }
     
-    @WebMethod(operationName = "buscarPorID")
-    public Evento buscarPorID(@WebParam(name = "Id") int id) {
-        Evento e =  eService.buscar(id);
-        return e;
+    public boolean eliminarFuncionesDeEvento(int id){
+        List<Funcion> funcionesEvento = fService.listar();
+        for(Funcion f : funcionesEvento){
+            if(f.getEvento().getIdEvento() == id){
+                // pertenece al evento a eliminar
+                boolean eliminado = fService.eliminarLogico(f.getIdFuncion()); // eliminamos la función
+                if(!eliminado) return false;
+            }
+        }
+        return true;
+    }
+    
+    @WebMethod(operationName = "eliminarLogico")
+    public boolean eliminarEvento(@WebParam(name = "id") int id) {
+        try{
+            boolean eliminarFunciones = eliminarFuncionesDeEvento(id);
+            if(!eliminarFunciones) return false;
+            boolean eliminarEvento = eService.eliminarLogico(id);
+            return eliminarEvento;
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al eliminar el evento con id: " + id + " ... " + ex.getMessage());
+        }
     }
     
     @WebMethod(operationName = "listarFuncionesDeEvento")
@@ -101,10 +131,9 @@ public class EventoWS {
 //        Evento e =  eService.buscar(id);
         return funcionesEvento;
     }
-    
-    @WebMethod(operationName = "cantEntradasDisponibles")
-    public int cantEntradasDisponibles(@WebParam(name = "IdFuncion") int id,
-            @WebParam(name = "cantExFuncion") int cantEntradasPorFuncion){
+
+    public int obtenerCantEntradasDisponibles(@WebParam(name = "IdFuncion") int id,
+            @WebParam(name = "obtenerCantEDisponibles") int cantEntradasPorFuncion){
         return entradasService.cantidadDispo(id, cantEntradasPorFuncion);
     }
 }

@@ -115,6 +115,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             
             dis.setIdDistrito(rs.getInt("id_distrito"));
             dis.setNombre("D.nombre");
+
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
             esp.setNombre("E.nombre");
             esp.setDistrito(dis);

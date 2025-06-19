@@ -35,7 +35,7 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
     @Override
     protected String getSelectAllQuery() {
         String query = "SELECT id_espacio, nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
-                + "ubicacion, superficie, precio_reserva, Distrito_id_distrito FROM Espacio";
+                + "ubicacion, superficie, precio_reserva, Distrito_id_distrito FROM Espacio WHERE activo = 'A' ";
         return query;
     }
 
@@ -63,8 +63,8 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
         try{
             ps.setString(1, e.getNombre());
             ps.setString(2, e.getTipoEspacio().name());
-            ps.setTime(3,Time.valueOf(e.getHorarioInicioAtencion().toString()+":00"));
-            ps.setTime(4,Time.valueOf(e.getHorarioFinAtencion().toString() + ":00"));
+            ps.setTime(3,Time.valueOf(e.getHorarioInicioAtencion()));
+            ps.setTime(4,Time.valueOf(e.getHorarioFinAtencion()));
             ps.setString(5, e.getUbicacion());
             ps.setDouble(6, e.getSuperficie());
             ps.setDouble(7, e.getPrecioReserva());
@@ -79,8 +79,8 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
         try{
             ps.setString(1, e.getNombre());
             ps.setString(2, e.getTipoEspacio().name());
-            ps.setTime(3,Time.valueOf(e.getHorarioInicioAtencion().toString()+":00"));
-            ps.setTime(4,Time.valueOf(e.getHorarioFinAtencion().toString() + ":00"));
+            ps.setTime(3,Time.valueOf(e.getHorarioInicioAtencion()));
+            ps.setTime(4,Time.valueOf(e.getHorarioFinAtencion()));
             ps.setString(5, e.getUbicacion());
             ps.setDouble(6, e.getSuperficie());
             ps.setDouble(7, e.getPrecioReserva());

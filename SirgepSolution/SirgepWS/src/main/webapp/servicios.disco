@@ -10,4 +10,5 @@
  <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/PersonaWS?wsdl"/>
  <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/FuncionWS?wsdl"/>
  <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/HorarioEspacioWS?wsdl"/>
+<contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/CalificacionWS?wsdl"/>
 </discovery>
