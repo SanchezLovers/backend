@@ -7,7 +7,9 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 
@@ -261,7 +263,25 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         }
         return comprador;
     }
-
+    
+    @Override
+    public List<String> listarPorDistritoFavorito(int idDistrito){
+        List<String>listaCompradores=null;
+        String sql = "SELECT P.correo FROM Comprador C JOIN Persona P ON C.id_persona_comprador=P.id_persona "
+                + "WHERE id_distrito_favorito="+idDistrito;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            listaCompradores=new ArrayList<>();
+            while (rs.next()) {
+                listaCompradores.add(rs.getString("correo"));
+            }
+            System.out.println("Se listo los correos de los compradores por distrito favorito");
+        }catch(Exception ex){
+            throw new RuntimeException("Error al listar los correos de los compradores por distrito favorito: "+ ex.getMessage());
+        }finally{
+            return listaCompradores;
+        }
+    }
+    
     //Metodos para el Perfil del Comprador
     @Override
     public Map<String, Object> buscarDetalleCompradorPorId(int idComprador) {

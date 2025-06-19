@@ -33,6 +33,7 @@ public class EspacioWS {
             throw new RuntimeException("Error al insertar un espacio: " + ex.getMessage());
         }
     }
+    
     @WebMethod(operationName = "listarEspacio")
     public List<Espacio> listar() {
         try{
@@ -44,8 +45,8 @@ public class EspacioWS {
             throw new RuntimeException("Error al listar espacios: " + ex.getMessage());
         }
     }
-	
-	@WebMethod(operationName = "listarEspacioPorCategoria")
+    
+    @WebMethod(operationName = "listarEspacioPorCategoria")
     public List<Espacio> listarPorCategoria(@WebParam(name = "nombreCategoria") String categ) {
         try{
             List<Espacio> espacios = espacioService.listar();
@@ -63,8 +64,8 @@ public class EspacioWS {
             throw new RuntimeException("Error al listar espacios con el filtro de Categoria: " + ex.getMessage());
         }
     }
-	
-	@WebMethod(operationName = "listarEspacioPorDistrito")
+    
+    @WebMethod(operationName = "listarEspacioPorDistrito")
     public List<Espacio> listarPorDistrito(@WebParam(name = "idDistrito") int idDist) {
         try{
             List<Espacio> espacios = espacioService.buscarPorDistrito(idDist);
@@ -104,6 +105,7 @@ public class EspacioWS {
             throw new RuntimeException("Error al buscar el espacio con id: " + id + " ... " + ex.getMessage());
         }
     }
+    
     @WebMethod(operationName = "actualizarEspacio")
     public boolean actualizar(@WebParam(name = "espacio") Espacio espacio) {
         try{
@@ -113,6 +115,7 @@ public class EspacioWS {
             throw new RuntimeException("Error al actualizar el espacio " + ex.getMessage());
         }
     }
+    
     @WebMethod(operationName = "eliminarLogico")
     public boolean eliminar(@WebParam(name = "id") int id) {
         try{
@@ -133,5 +136,20 @@ public class EspacioWS {
         }
     }
     
-    
+    //Metodo para el envio de correo a los compradores registrados con el mismo distrito
+    @WebMethod(operationName = "enviarCorreosCompradoresPorDistritoDeEspacio")
+    public boolean enviarCorreosCompradoresPorDistritoDeEspacio(@WebParam(name = "espacio") Espacio espacio) {
+        boolean resultado=false;
+        try{
+            resultado=espacioService.enviarCorreosCompradoresPorDistritoDeEspacio(espacio);
+            if(!resultado){
+                throw new RuntimeException("No se enviaron los correos");
+            }
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del espacio: "+ ex.getMessage());
+        }finally{
+            return resultado;
+        }
+    }
 }
