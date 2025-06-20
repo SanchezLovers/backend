@@ -130,16 +130,6 @@ public class ReservaServiceImpl implements IReservaService {
         return reservaDAO.listarPorDistrito(id_distrito, activo);
     }
     
-    @Override
-    public List<Reserva> buscarReservasPorFecha(LocalDate fecha){
-        return reservaDAO.buscarReservasPorFecha(fecha);
-    }
-    
-    @Override
-    public List<Reserva> buscarReservasPorNombreEspacio(String nombre){
-        return reservaDAO.buscarReservasPorNombreEspacio(nombre);
-    }
-
     //Metodos para crear libro de Excel para las reservas
     @Override
     public void crearLibroExcelReservas(int idComprador) {

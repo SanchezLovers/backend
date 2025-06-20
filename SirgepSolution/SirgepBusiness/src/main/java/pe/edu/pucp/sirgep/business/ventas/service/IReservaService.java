@@ -29,8 +29,6 @@ public interface IReservaService {
     //Metodos adicionales para el listado de reservas
     List<Reserva> listarPorFecha(Date fecha, boolean activo);
     List<Reserva> listarPorDistrito(int id_distrito, boolean activo);
-    List<Reserva> buscarReservasPorFecha(LocalDate fecha);
-    public List<Reserva> buscarReservasPorNombreEspacio(String nombre);
 
     //Metodos para crear libro de Excel para las entradas
     public void crearLibroExcelReservas(int idComprador);

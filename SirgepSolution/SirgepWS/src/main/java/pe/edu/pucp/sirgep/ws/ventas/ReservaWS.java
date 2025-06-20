@@ -171,22 +171,4 @@ public class ReservaWS {
             throw new WebServiceException("Error al listar por distritos: " + ex.getMessage());
         }
     }
-    
-    @WebMethod(operationName = "buscarReservasPorFecha")
-    public List<Reserva> buscarReservasPorFecha(@WebParam(name = "nombre")String fecha) {
-        try {
-            return reservaService.buscarReservasPorFecha(LocalDate.parse(fecha));
-        } catch (Exception ex) {
-            throw new WebServiceException("Error al listar por fecha: " + ex.getMessage());
-        }
-    }
-    
-    @WebMethod(operationName = "buscarReservasPorNombreEspacio")
-    public List<Reserva> buscarReservasPorNombreEspacio(@WebParam(name = "nombre")String nombre) {
-        try {
-            return reservaService.buscarReservasPorNombreEspacio(nombre);
-        } catch (Exception ex) {
-            throw new WebServiceException("Error al listar por nombre de espacio: " + ex.getMessage());
-        }
-    }
 }
