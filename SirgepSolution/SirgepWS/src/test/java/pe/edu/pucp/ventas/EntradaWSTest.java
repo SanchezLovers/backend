@@ -1,13 +1,10 @@
-/*package pe.edu.pucp.ventas;*/
+/*package pe.edu.pucp.ventas;
 //
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Order;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.TestMethodOrder;
 //import org.junit.jupiter.api.MethodOrderer;
-//
-//
-//
 //import java.time.LocalTime;
 //import java.util.ArrayList;
 //import java.util.Date;
@@ -92,3 +89,4 @@
 //        //assertTrue(result);
 //    }
 //}
+*/

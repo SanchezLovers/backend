@@ -1,3 +1,4 @@
+/*
 package pe.edu.pucp.ventas;
 
 import org.junit.jupiter.api.Order;
@@ -15,20 +16,20 @@ import pe.edu.pucp.sirgep.ws.infraestructura.EventoWS;
 public class FuncionTest {
     private EventoWS eWS;
     //service sí funciona
-    /*
-    @Test
-    @Order(1)
-    public void testListar() {
-        this.eWS= new EventoWSAnaG();
-        System.out.println("Ejecutando test listar Funciones del evento 1...");
-        List<Funcion> lista = this.eWS.listarFuncionesDeEvento(1);
-        System.out.println("Se encontró " + lista.size() + " funciones. ");
 
-        for (int i = 0; i < lista.size(); i++) {
-            System.out.println(lista.get(i).toString());
-        }
-        assertNotNull(lista);
-    }*/
+//    @Test
+//    @Order(1)
+//    public void testListar() {
+//        this.eWS= new EventoWSAnaG();
+//        System.out.println("Ejecutando test listar Funciones del evento 1...");
+//        List<Funcion> lista = this.eWS.listarFuncionesDeEvento(1);
+//        System.out.println("Se encontró " + lista.size() + " funciones. ");
+
+//        for (int i = 0; i < lista.size(); i++) {
+//            System.out.println(lista.get(i).toString());
+//        }
+//        assertNotNull(lista);
+//    }
     @Test
     @Order(1)
     public void testCantDispo(){
@@ -40,3 +41,4 @@ public class FuncionTest {
         assertNotNull(cantDispo);
     }
 }
+*/

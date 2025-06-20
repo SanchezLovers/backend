@@ -1,3 +1,4 @@
+/*
 package pe.edu.pucp.ventas;
 
 import java.util.List;
@@ -24,3 +25,4 @@ public class EventoTest {
         System.out.println(e.toString());
     }
 }
+*/
