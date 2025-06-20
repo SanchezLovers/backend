@@ -1,27 +1,22 @@
 package pe.edu.pucp.sirgep.da.ventas.implementacion;
 
+import java.util.Date;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
+import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
+import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.da.ventas.dao.ReservaDAO;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
-
-import java.io.IOException;
-import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
-import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
-import pe.edu.pucp.sirgep.domain.infraestructura.models.HorarioEspacio;
-import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
-import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
-import java.util.Date;
-import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 
 public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
@@ -171,31 +166,19 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     protected void setId(Reserva entity, int id) {
         entity.setNumReserva(id);
     }
-
-    // SOBRECARGAS NECESARIAS para considerar la herencia con la clase CONSTANCIA
-    // Siempre que se quiera hacer un CRUD sobre RESERVA se hace en CONSTANCIA primero
+    
+    //Metodos CRUD
     @Override
     public int insertar(Reserva entity) {
+        // SOBRECARGAS NECESARIAS para considerar la herencia con la clase CONSTANCIA
+        // Siempre que se quiera hacer un CRUD sobre RESERVA se hace en CONSTANCIA primero
         int idC = -1, idR = -1;
         try (Connection con = DBManager.getInstance().getConnection()) {
             con.setAutoCommit(false);
             // insertar la constancia
-
             idC = constanciaDAO.insertar((Constancia) entity);
             entity.setIdConstancia(idC);
             idR = super.insertar(entity);
-
-//            try(PreparedStatement ps=con.prepareStatement(this.getInsertQuery(),Statement.RETURN_GENERATED_KEYS)){
-//                this.setInsertParameters(ps, entity); //armamos el ps con la entidad Reserva pasada
-//                ps.executeUpdate(); // se inserta la Reserva ahora
-//                con.commit();
-//                System.out.println("Se inserto un registro de "+entity.getClass().getSimpleName()+" con ID="+id);
-//            }catch (SQLException e) {
-//                con.rollback();
-//                throw new RuntimeException("Error al insertar la entidad" + e.getMessage());
-//            }finally {
-//                con.setAutoCommit(true);
-//            }
         } catch (SQLException e) {
             throw new RuntimeException("Error al insertar " + entity.getClass().getSimpleName() + " ", e);
         } finally {
@@ -205,9 +188,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             return -1;
         }
     }
-//    T buscar(int id);
-//    List<T> listar();
-
+    
     public boolean actualizarDerivada(Reserva entity, Connection con) throws SQLException {
         try (PreparedStatement ps = con.prepareStatement(this.getUpdateQuery(), Statement.RETURN_GENERATED_KEYS)) {
             this.setUpdateParameters(ps, entity);
@@ -218,7 +199,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         } catch (SQLException e) {
             con.rollback();
             return false; // si algo falló, la respuesta será falsa
-
         } finally {
             // el finally siempre se ejecuta... asi hayan returns antes
             con.setAutoCommit(true);
@@ -235,7 +215,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         } catch (SQLException e) {
             con.rollback();
             return false; // si algo falló, la respuesta será falsa
-
         } finally {
             // el finally siempre se ejecuta... asi hayan returns antes
             con.setAutoCommit(true);
@@ -243,8 +222,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     }
 
     public boolean eliminarFisicoDerivada(int id, Connection con) throws SQLException {
-        // primero, debemos eliminar la constancia
-
+        // Primero, debemos eliminar la constancia
         try (PreparedStatement ps = con.prepareStatement(this.getDeleteLogicoQuery(), Statement.RETURN_GENERATED_KEYS)) {
             if (!constanciaDAO.eliminarFisico(id)) {
                 return false;
@@ -257,7 +235,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         } catch (SQLException e) {
             con.rollback();
             return false; // si algo falló, la respuesta será falsa
-
         } finally {
             // el finally siempre se ejecuta... asi hayan returns antes
             con.setAutoCommit(true);
@@ -268,18 +245,15 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     public boolean actualizar(Reserva entidad) {
         // Reserva: Constancia + algo más, entonces puede utilizar todo lo de constancia
         boolean seActualizoC = false, seActualizoR = false;
-
         // intento realizar el procedimiento: actualizar Constancia y, luego, Reserva:
         try (Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
         {
             con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
-
             // intentamos insertar constancia
             seActualizoC = constanciaDAO.actualizar(entidad);
             if (!seActualizoC) {
                 throw new RuntimeException("No se actualizo la constancia correctamente");
             }
-
             // ahora, necesito insertar la reserva como tal
             seActualizoR = actualizarDerivada(entidad, con);
             if (!seActualizoR) {
@@ -288,25 +262,21 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
         }
-
         return (seActualizoR && seActualizoC);
     }
 
     @Override
     public boolean eliminarLogico(int id) {
         boolean seEliminoLogC = false, seEliminoLogR = false;
-
         // intento realizar el procedimiento: actualizar Constancia y, luego, Reserva:
         try (Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
         {
             con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
-
             // intentamos insertar constancia
             seEliminoLogC = constanciaDAO.eliminarLogico(id);
             if (!seEliminoLogC) {
                 throw new RuntimeException("No se actualizo la constancia correctamente");
             }
-
             // ahora, necesito insertar la reserva como tal
             seEliminoLogR = eliminarLogicoDerivada(id, con);
             if (!seEliminoLogR) {
@@ -315,25 +285,21 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
         }
-
         return (seEliminoLogR && seEliminoLogC);
     }
 
     @Override
     public boolean eliminarFisico(int id) {
         boolean seEliminoFisC = false, seEliminoFisR = false;
-
         // intento realizar el procedimiento: actualizar Constancia y, luego, Reserva:
         try (Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
         {
             con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
-
             // intentamos insertar constancia
             seEliminoFisC = constanciaDAO.eliminarLogico(id);
             if (!seEliminoFisC) {
                 throw new RuntimeException("No se ELIMINO de forma FISICA la constancia correctamente");
             }
-
             // ahora, necesito insertar la reserva como tal
             seEliminoFisR = eliminarFisicoDerivada(id, con);
             if (!seEliminoFisR) {
@@ -342,7 +308,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
         }
-
         return (seEliminoFisR && seEliminoFisC);
     }
 
@@ -352,10 +317,8 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         String sql = "{CALL reservasPorDiaYEspacio(?, ?)}";
         try (Connection conn = DBManager.getInstance().getConnection()) {
             listaReserva = new ArrayList<>();
-
             CallableStatement pst = conn.prepareCall(sql);
             pst.setInt(1, idEspacio);
-
             // Convert java.util.Date to java.sql.Date
             java.sql.Date sqlDate = new java.sql.Date(fecha.getTime());
             pst.setDate(2, sqlDate);
@@ -417,13 +380,9 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
         """;
-
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
-
             ResultSet rs = pst.executeQuery();
-
             listaReservas = new ArrayList<>();
-
             while (rs.next()) {
                 Map<String, Object> fila = new HashMap<>();
                 fila.put("codigo", rs.getInt("num_reserva"));
@@ -434,9 +393,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
                 fila.put("activo", rs.getString("activo").charAt(0));
                 listaReservas.add(fila);
             }
-
             System.out.println("Se listaron las reservas por distrito correctamente");
-
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las reservas por distrito: ", e);
         } finally {
@@ -447,9 +404,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     @Override
     public List<Map<String, Object>> listarDetalleReservasPorFecha(Date fecha, boolean activo) {
         List<Map<String, Object>> listaDetalleReservas = null;
-
         String sql;
-
         if (activo) {
             sql = """
             SELECT r.num_reserva, r.fecha_reserva, d.nombre AS nombre_distrito,
@@ -471,14 +426,10 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             WHERE r.fecha_reserva = ?
         """;
         }
-
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
-
             pst.setDate(1, new java.sql.Date(fecha.getTime()));
             ResultSet rs = pst.executeQuery();
-
             listaDetalleReservas = new ArrayList<>();
-
             while (rs.next()) {
                 Map<String, Object> fila = new HashMap<>();
                 fila.put("codigo", rs.getInt("num_reserva"));
@@ -489,13 +440,10 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
                 fila.put("activo", rs.getString("activo").charAt(0));
                 listaDetalleReservas.add(fila);
             }
-
             System.out.println("Se listaron las reservas por fecha correctamente");
-
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las reservas por fecha: ", e);
         }
-
         return listaDetalleReservas;
     }
 
@@ -503,7 +451,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     public List<Map<String, Object>> listarPorDistrito(int idDistrito, boolean activo) {
         List<Map<String, Object>> listaReservas = null;
         String sql;
-
         if (activo) {
             sql = """
             SELECT r.num_reserva, r.fecha_reserva, r.activo,
@@ -529,14 +476,10 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             WHERE d.id_distrito = ?
         """;
         }
-
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
-
             pst.setInt(1, idDistrito);
             ResultSet rs = pst.executeQuery();
-
             listaReservas = new ArrayList<>();
-
             while (rs.next()) {
                 Map<String, Object> fila = new HashMap<>();
                 fila.put("codigo", rs.getInt("num_reserva"));
@@ -547,13 +490,55 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
                 fila.put("activo", rs.getString("activo").charAt(0));
                 listaReservas.add(fila);
             }
-
             System.out.println("Se listaron las reservas por distrito correctamente");
-
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las reservas por distrito: ", e);
         } finally {
             return listaReservas;
+        }
+    }
+    //Metodos para buscar el detalle de la constancia de la reserva
+    @Override
+    public void llenarMapaDetalleReserva(Map<String, Object>detalleReserva,ResultSet rs){
+        try{
+            detalleReserva.put("numReserva", rs.getInt("num_reserva"));
+            detalleReserva.put("nombreEspacio", rs.getString("nombre_espacio"));
+            detalleReserva.put("categoria", rs.getString("categoria_espacio"));
+            detalleReserva.put("ubicacion", rs.getString("ubicacion"));
+            detalleReserva.put("nombreDistrito", rs.getString("nombre_distrito"));
+            detalleReserva.put("fecha", rs.getDate("fecha_reserva"));
+            detalleReserva.put("horaInicio", rs.getTime("hora_inicio"));
+            detalleReserva.put("horaFin", rs.getTime("hora_fin"));
+            detalleReserva.put("superficie", rs.getDouble("superficie"));
+            detalleReserva.put("estado", rs.getString("activo").charAt(0));
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al llenar el mapa del detalle de la reserva: " + ex.getMessage());
+        }
+    }
+    @Override
+    public Map<String, Object> buscarConstanciaReserva(int numReserva){
+        Map<String, Object> constanciaReserva = null;
+        String sql = """
+                     SELECT r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio, e.ubicacion, 
+                     e.superficie, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio, r.horario_fin AS 
+                     hora_fin, r.activo, c.fecha, c.metodo_pago, c.total, c.detalle_pago, p.nombres AS nombres_comprador, 
+                     p.primer_apellido, p.segundo_apellido, p.correo, p.tipo_documento, p.num_documento
+                     FROM Reserva r JOIN Constancia c ON c.id_constancia=r.id_constancia_reserva JOIN Espacio e ON 
+                     r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito JOIN Persona p 
+                     ON p.id_persona=r.Persona_id_persona WHERE r.num_reserva = 
+                 """ + numReserva;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            if(rs.next()){
+                constanciaReserva = new HashMap<>();
+                this.llenarMapaDetalleReserva(constanciaReserva,rs);
+                constanciaDAO.llenarMapaDetalleConstancia(constanciaReserva,rs);
+                System.out.println("Se busco la constancia de la reserva correctamente");
+                return constanciaReserva;
+            }else{
+                throw new RuntimeException("Constancia de la reserva no encontrada");
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
     }
 }
