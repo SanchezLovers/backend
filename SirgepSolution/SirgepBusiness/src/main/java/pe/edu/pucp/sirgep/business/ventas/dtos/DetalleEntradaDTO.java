@@ -2,30 +2,36 @@ package pe.edu.pucp.sirgep.business.ventas.dtos;
 
 import java.util.Date;
 
-public class DetalleReserva {
+public class DetalleEntradaDTO {
     //Atributos
-    private int numReserva;
-    private String nombreEspacio;
-    private String categoria;
+    private int numEntrada;
+    private String nombreEvento;
     private String ubicacion;
     private String nombreDistrito;
     private Date fecha;
     private Date horaInicio;
     private Date horaFin;
+    private char estado;
 
     //Constructor
-    public DetalleReserva() {
+    public DetalleEntradaDTO() {
     }
     
     //Propiedades
-    public int getNumReserva() {
-        return numReserva;
+    public int getNumEntrada() {
+        return numEntrada;
     }
-    public String getNombreEspacio() {
-        return nombreEspacio;
+    public char getEstado() {
+        return estado;
     }
-    public String getCategoria() {    
-        return categoria;
+    public void setNumEntrada(int numEntrada) {
+        this.numEntrada = numEntrada;
+    }
+    public String getNombreEvento() {
+        return nombreEvento;
+    }
+    public void setNombreEvento(String nombreEvento) {
+        this.nombreEvento = nombreEvento;
     }
     public String getUbicacion() {
         return ubicacion;
@@ -57,13 +63,7 @@ public class DetalleReserva {
     public void setHoraFin(Date horaFin) {
         this.horaFin = horaFin;
     }
-    public void setNumReserva(int numReserva) {
-        this.numReserva = numReserva;
-    }
-    public void setNombreEspacio(String nombreEspacio) {
-        this.nombreEspacio = nombreEspacio;
-    }
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setEstado(char estado) {
+        this.estado = estado;
     }
 }

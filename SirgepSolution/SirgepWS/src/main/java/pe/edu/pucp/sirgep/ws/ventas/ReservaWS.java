@@ -10,7 +10,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ReservaDTO;
 
 import pe.edu.pucp.sirgep.business.ventas.impl.ReservaServiceImpl;
@@ -143,7 +144,7 @@ public class ReservaWS {
 
     //Metodo para listar el detalle de las reservas
     @WebMethod(operationName = "listarDetalleReservasPorComprador")
-    public List<DetalleReserva> listarDetalleReservasPorComprador(@WebParam(name = "idComprador") int idComprador) {
+    public List<DetalleReservaDTO> listarDetalleReservasPorComprador(@WebParam(name = "idComprador") int idComprador) {
         try {
             return reservaService.listarDetalleReservasPorComprador(idComprador);
         } catch (Exception ex) {
@@ -180,6 +181,23 @@ public class ReservaWS {
             return reservaService.listarPorDistrito(id, activo);
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar por distritos: " + ex.getMessage());
+        }
+    }
+
+    //Metodos para buscar la constancia de una reserva
+    @WebMethod(operationName = "buscarConstanciaReserva")
+    public ConstanciaReservaDTO buscarConstanciaReserva(@WebParam(name = "numReserva") int numReserva){
+        ConstanciaReservaDTO resultado=null;
+        try {
+            resultado= reservaService.buscarConstanciaReserva(numReserva);
+            if(resultado!=null){
+                System.out.println("Se busco la constancia de la reserva correctamente");
+                return resultado;
+            }else{
+                throw new RuntimeException("Constancia de la reserva no encontrada");
+            }
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
     }
 }

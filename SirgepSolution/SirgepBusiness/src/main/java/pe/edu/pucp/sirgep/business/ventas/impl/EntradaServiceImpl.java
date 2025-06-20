@@ -21,7 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;//Para crear libro de Excel
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntrada;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
 
 import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EventoDAO;
@@ -219,14 +219,14 @@ public class EntradaServiceImpl implements IEntradaService{
     }
     
     @Override
-    public List<DetalleEntrada> listarDetalleEntradasPorComprador(int idComprador) {
-        List<DetalleEntrada> listaFinal = null;
+    public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(int idComprador) {
+        List<DetalleEntradaDTO> listaFinal = null;
         try {
             List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasPorComprador(idComprador);
             if (lista != null) {
                 listaFinal = new ArrayList<>();
                 for (Map<String, Object> fila : lista) {
-                    DetalleEntrada detalle = new DetalleEntrada();
+                    DetalleEntradaDTO detalle = new DetalleEntradaDTO();
                     detalle.setNumEntrada((int) fila.get("numEntrada"));
                     detalle.setNombreEvento((String) fila.get("nombreEvento"));
                     detalle.setUbicacion((String) fila.get("ubicacion"));
@@ -246,9 +246,9 @@ public class EntradaServiceImpl implements IEntradaService{
 
     @Override
     public void llenarTablaEntradas(XSSFSheet hoja,int idComprador) {
-        List<DetalleEntrada> listaDetalleEntradas=listarDetalleEntradasPorComprador(idComprador);
+        List<DetalleEntradaDTO> listaDetalleEntradas=listarDetalleEntradasPorComprador(idComprador);
         int posicion=3;
-        for (DetalleEntrada detalleEntrada: listaDetalleEntradas) {
+        for (DetalleEntradaDTO detalleEntrada: listaDetalleEntradas) {
             XSSFRow registro=hoja.createRow(posicion++);
             llenarFilaDetalleEntrada(registro,detalleEntrada);
         }
@@ -258,7 +258,7 @@ public class EntradaServiceImpl implements IEntradaService{
     }
 
     @Override
-    public void llenarFilaDetalleEntrada(XSSFRow registro, DetalleEntrada detalleEntrada) {
+    public void llenarFilaDetalleEntrada(XSSFRow registro, DetalleEntradaDTO detalleEntrada) {
         XSSFCell celda=registro.createCell(0);
         celda.setCellValue(detalleEntrada.getNumEntrada());
         celda=registro.createCell(1);
