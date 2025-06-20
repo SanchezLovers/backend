@@ -44,7 +44,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         return "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r "
                 + "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio "
                 + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
-                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona"
+                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona "
                 + "WHERE r.num_reserva = ?";
     }
 
