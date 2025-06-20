@@ -13,6 +13,7 @@ public interface ReservaDAO extends BaseDAO<Reserva>{
 
     List<Map<String, Object>>listarDetalleReservasPorComprador(int IdComprador);
 
-    public List<Reserva> listarPorFecha(Date fecha, boolean activo);
-    public List<Reserva> listarPorDistrito(int id_distrito, boolean activo);
+    List<Map<String, Object>> listarTodos();
+    List<Map<String, Object>> listarDetalleReservasPorFecha(Date fecha, boolean activo);
+    List<Map<String, Object>> listarPorDistrito(int idDistrito, boolean activo);
 }

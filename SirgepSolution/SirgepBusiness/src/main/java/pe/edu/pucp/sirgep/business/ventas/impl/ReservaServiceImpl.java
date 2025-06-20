@@ -1,4 +1,4 @@
- package pe.edu.pucp.sirgep.business.ventas.impl;
+package pe.edu.pucp.sirgep.business.ventas.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,6 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.service.IReservaService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioImpl;
@@ -118,18 +119,96 @@ public class ReservaServiceImpl implements IReservaService {
             throw new RuntimeException("Error al buscar el distrito de la reserva: " + ex.getMessage());
         }
     }
-    
+
     //Metodos adicionales para el listado de reservas por filtros
     @Override
-    public List<Reserva> listarPorFecha(Date fecha, boolean activo){
-        return reservaDAO.listarPorFecha(fecha, activo);
+    public List<ReservaDTO> listarTodos() {
+        List<ReservaDTO> listaFinal = null;
+
+        try {
+            // Llamas al DAO que devuelve List<Map<String, Object>>
+            List<Map<String, Object>> lista = reservaDAO.listarTodos();
+
+            if (lista != null) {
+                listaFinal = new ArrayList<>();
+                for (Map<String, Object> fila : lista) {
+                    ReservaDTO reservaDTO = new ReservaDTO();
+
+                    reservaDTO.setCodigo((int) fila.get("codigo"));           // ojo, clave 'codigo' según tu DAO
+                    reservaDTO.setFecha((Date) fila.get("fecha"));
+                    reservaDTO.setDistrito((String) fila.get("distrito"));
+                    reservaDTO.setEspacio((String) fila.get("espacio"));
+                    reservaDTO.setCorreo((String) fila.get("correo"));
+                    reservaDTO.setActivo((char) fila.get("activo"));
+
+                    listaFinal.add(reservaDTO);
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las reservas por fecha: " + ex.getMessage(), ex);
+        }
+        return listaFinal;
     }
     
     @Override
-    public List<Reserva> listarPorDistrito(int id_distrito, boolean activo){
-        return reservaDAO.listarPorDistrito(id_distrito, activo);
+    public List<ReservaDTO> listarDetalleReservasPorFecha(Date fecha, boolean activo) {
+        List<ReservaDTO> listaFinal = null;
+
+        try {
+            // Llamas al DAO que devuelve List<Map<String, Object>>
+            List<Map<String, Object>> lista = reservaDAO.listarDetalleReservasPorFecha(fecha, activo);
+
+            if (lista != null) {
+                listaFinal = new ArrayList<>();
+                for (Map<String, Object> fila : lista) {
+                    ReservaDTO reservaDTO = new ReservaDTO();
+
+                    reservaDTO.setCodigo((int) fila.get("codigo"));           // ojo, clave 'codigo' según tu DAO
+                    reservaDTO.setFecha((Date) fila.get("fecha"));
+                    reservaDTO.setDistrito((String) fila.get("distrito"));
+                    reservaDTO.setEspacio((String) fila.get("espacio"));
+                    reservaDTO.setCorreo((String) fila.get("correo"));
+                    reservaDTO.setActivo((char) fila.get("activo"));
+
+                    listaFinal.add(reservaDTO);
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las reservas por fecha: " + ex.getMessage(), ex);
+        }
+        return listaFinal;
     }
-    
+
+    @Override
+    public List<ReservaDTO> listarPorDistrito(int id_distrito, boolean activo) {
+        List<ReservaDTO> listaFinal = null;
+
+        try {
+            // Llamas al DAO que devuelve List<Map<String, Object>>
+            List<Map<String, Object>> lista = reservaDAO.listarPorDistrito(id_distrito, activo);
+
+            if (lista != null) {
+                listaFinal = new ArrayList<>();
+                for (Map<String, Object> fila : lista) {
+                    ReservaDTO reservaDTO = new ReservaDTO();
+
+                    reservaDTO.setCodigo((int) fila.get("codigo"));           // ojo, clave 'codigo' según tu DAO
+                    reservaDTO.setFecha((Date) fila.get("fecha"));
+                    reservaDTO.setDistrito((String) fila.get("distrito"));
+                    reservaDTO.setEspacio((String) fila.get("espacio"));
+                    reservaDTO.setCorreo((String) fila.get("correo"));
+                    reservaDTO.setActivo((char) fila.get("activo"));
+
+                    listaFinal.add(reservaDTO);
+                }
+            }
+
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las reservas por fecha: " + ex.getMessage(), ex);
+        }
+        return listaFinal;
+    }
+
     //Metodos para crear libro de Excel para las reservas
     @Override
     public void crearLibroExcelReservas(int idComprador) {

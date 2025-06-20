@@ -7,6 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ReservaDTO;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
@@ -27,8 +28,9 @@ public interface IReservaService {
     public Distrito buscarDistritoDeReserva(int idEntrada);
 
     //Metodos adicionales para el listado de reservas
-    List<Reserva> listarPorFecha(Date fecha, boolean activo);
-    List<Reserva> listarPorDistrito(int id_distrito, boolean activo);
+    public List<ReservaDTO> listarTodos();
+    public List<ReservaDTO> listarDetalleReservasPorFecha(Date fecha, boolean activo);
+    public List<ReservaDTO> listarPorDistrito(int id_distrito, boolean activo);
 
     //Metodos para crear libro de Excel para las entradas
     public void crearLibroExcelReservas(int idComprador);
