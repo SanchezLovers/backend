@@ -114,10 +114,10 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             aux.setFinString(aux.getHorarioIni().toString());
             
             dis.setIdDistrito(rs.getInt("id_distrito"));
-            dis.setNombre("D.nombre");
+            dis.setNombre(rs.getString("D.nombre"));
 
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
-            esp.setNombre("E.nombre");
+            esp.setNombre(rs.getString("E.nombre"));
             esp.setDistrito(dis);
             per.setIdPersona(rs.getInt("Persona_id_persona"));
             per.setCorreo(rs.getString("P.correo"));
@@ -406,13 +406,13 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             sql= "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r "
                 + "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio "
                 + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
-                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona"
+                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona "
                 + "WHERE r.fecha_reserva = ? and r.activo = 'A'";
         }else{
             sql= "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r "
                 + "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio "
                 + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
-                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona"
+                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona "
                 + "WHERE r.fecha_reserva = ?";
         }
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -441,13 +441,13 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             sql= "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r "
                 + "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio "
                 + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
-                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona"
-                + "WHERE d.id_distrito = " +id_distrito+ " and r.activo = ?";
+                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona "
+                + "WHERE d.id_distrito = " +id_distrito+ " and r.activo = 'A'";
         }else{
             sql= "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r "
                 + "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio "
                 + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
-                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona"
+                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona "
                 + "WHERE d.id_distrito = " +id_distrito;
         }
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
@@ -462,52 +462,4 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             return listaReservas;
         }
     }
-        
-    @Override
-    public List<Reserva> buscarReservasPorFecha(LocalDate fecha) {
-        List<Reserva> reservas = new ArrayList<>();
-        String query = "{CALL reservaPorFecha(?)}";
-
-        try (
-            Connection conn = DBManager.getInstance().getConnection();
-            CallableStatement stmt = conn.prepareCall(query)
-        ) {
-            stmt.setDate(1, java.sql.Date.valueOf(fecha));
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    reservas.add(this.createFromResultSet(rs));
-                }
-            }
-
-        } catch (SQLException ex) {
-            throw new RuntimeException("Error al buscar reservas por fecha", ex);
-        }
-
-        return reservas;
-    }
-    
-    @Override
-    public List<Reserva> buscarReservasPorNombreEspacio(String nombre) {
-        List<Reserva> reservas = new ArrayList<>();
-        String query = "{CALL buscarReservasPorNombreEspacio(?)}";
-
-        try (
-            Connection conn = DBManager.getInstance().getConnection();
-            CallableStatement stmt = conn.prepareCall(query)
-        ) {
-            stmt.setString(1, nombre);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    reservas.add(this.createFromResultSet(rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar reservas por nombre de espacio", e);
-        }
-
-        return reservas;
-    }
-
 }

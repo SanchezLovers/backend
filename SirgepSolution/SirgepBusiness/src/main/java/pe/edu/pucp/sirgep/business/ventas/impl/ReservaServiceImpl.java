@@ -1,4 +1,4 @@
-package pe.edu.pucp.sirgep.business.ventas.impl;
+ package pe.edu.pucp.sirgep.business.ventas.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
