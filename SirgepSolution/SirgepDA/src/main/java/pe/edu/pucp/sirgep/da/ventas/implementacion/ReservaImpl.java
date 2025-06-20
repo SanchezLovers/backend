@@ -1,36 +1,32 @@
 package pe.edu.pucp.sirgep.da.ventas.implementacion;
 
+import java.util.Date;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
+import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
+import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.da.ventas.dao.ReservaDAO;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
 
-import java.io.IOException;
-import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
-import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
-import pe.edu.pucp.sirgep.domain.infraestructura.models.HorarioEspacio;
-import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
-import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
-import java.util.Date;
-
-public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
+public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
     // necesario para insertar la constancia:
     private ConstanciaDAO constanciaDAO;
-    
-    public ReservaImpl(){
+
+    public ReservaImpl() {
         constanciaDAO = new ConstanciaImpl();
     }
-    
+
     @Override
     protected String getInsertQuery() {
         // primero debemos insertar a CONSTANCIA --> se hará en la sobrecarga del insertar
@@ -40,12 +36,19 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
 
     @Override
     protected String getSelectByIdQuery() {
-        return "SELECT num_reserva, horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva FROM Reserva WHERE num_reserva = ?";
+        return "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r "
+                + "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio "
+                + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
+                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona "
+                + "WHERE r.num_reserva = ?";
     }
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT num_reserva, horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo FROM Reserva";
+        return "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r "
+                + "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio "
+                + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
+                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona";
     }
 
     @Override
@@ -71,7 +74,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
 
     @Override
     protected void setInsertParameters(PreparedStatement ps, Reserva entity) {
-        try{
+        try {
             // return "INSERT INTO Reserva(horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona,
             // id_constancia_reserva, activo) "
             // + "VALUES(?,?,?,?,?,?,?)";
@@ -82,7 +85,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             ps.setInt(5, entity.getPersona().getIdPersona());
             ps.setInt(6, entity.getIdConstancia());
             ps.setString(7, String.valueOf('A')); // es activo
-        }catch(SQLException e){
+        } catch (SQLException e) {
             System.out.println("Se encontro un error a la hora de insertar reserva parametros: " + e.getMessage());
         }
     }
@@ -91,30 +94,33 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
     protected Reserva createFromResultSet(ResultSet rs) {
         Reserva aux = new Reserva();
         Espacio esp = new Espacio();
+        Distrito dis = new Distrito();
         Persona per = new Persona();
-        
-        try{
+
+        try {
             aux.setNumReserva(rs.getInt("num_reserva"));
             aux.setHorarioIni(rs.getTime("horario_ini").toLocalTime());
             aux.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
-            
-            
+
             aux.setIniString(aux.getHorarioIni().toString());
             aux.setFinString(aux.getHorarioIni().toString());
-            
+            dis.setIdDistrito(rs.getInt("id_distrito"));
+            dis.setNombre(rs.getString("D.nombre"));
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
+            esp.setNombre(rs.getString("E.nombre"));
+            esp.setDistrito(dis);
             per.setIdPersona(rs.getInt("Persona_id_persona"));
-            
+            per.setCorreo(rs.getString("P.correo"));
+
             aux.setEspacio(esp);
             aux.setPersona(per);
-            
+
             aux.setIdConstancia(rs.getInt("id_constancia_reserva"));
-            String activo=rs.getString("activo");
+            String activo = rs.getString("activo");
             aux.setActivo(activo.charAt(0));
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             System.out.println("Se encontro un error a la hora de crear Reserva desde RS: " + e.getMessage());
         }
         return aux;
@@ -122,7 +128,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
 
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Reserva entity) {
-        try{
+        try {
             /*
             "UPDATE Reserva SET horario_ini=?,"
                 + " horario_fin=?,"
@@ -131,9 +137,9 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
                 + " Persona_id_persona=?,"
                 + " id_constancia_reserva=?"
                 + " WHERE num_reserva = ?";
-            */
-            
-            /*
+             */
+
+ /*
             return "UPDATE Reserva SET horario_ini=?,"
                 + " horario_fin=?,"
                 + " fecha_reserva=?,"
@@ -148,8 +154,8 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             ps.setInt(5, entity.getPersona().getIdPersona());
             ps.setInt(6, entity.getIdConstancia());
             ps.setInt(7, entity.getNumReserva());
-            
-        }catch(SQLException e){
+
+        } catch (SQLException e) {
             System.out.println("Se encontro un error a la hora de MODIFICAR tabla RESERVA: " + e.getMessage());
         }
     }
@@ -159,182 +165,158 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         entity.setNumReserva(id);
     }
     
-    // SOBRECARGAS NECESARIAS para considerar la herencia con la clase CONSTANCIA
-    // Siempre que se quiera hacer un CRUD sobre RESERVA se hace en CONSTANCIA primero
-    
+    //Metodos CRUD
     @Override
-    public int insertar(Reserva entity){
-        int idC=-1, idR=-1;
-        try (Connection con = DBManager.getInstance().getConnection()){
+    public int insertar(Reserva entity) {
+        // SOBRECARGAS NECESARIAS para considerar la herencia con la clase CONSTANCIA
+        // Siempre que se quiera hacer un CRUD sobre RESERVA se hace en CONSTANCIA primero
+        int idC = -1, idR = -1;
+        try (Connection con = DBManager.getInstance().getConnection()) {
             con.setAutoCommit(false);
             // insertar la constancia
-            
-            idC = constanciaDAO.insertar((Constancia)entity);
+            idC = constanciaDAO.insertar((Constancia) entity);
             entity.setIdConstancia(idC);
             idR = super.insertar(entity);
-            
-            
-//            try(PreparedStatement ps=con.prepareStatement(this.getInsertQuery(),Statement.RETURN_GENERATED_KEYS)){
-//                this.setInsertParameters(ps, entity); //armamos el ps con la entidad Reserva pasada
-//                ps.executeUpdate(); // se inserta la Reserva ahora
-//                con.commit();
-//                System.out.println("Se inserto un registro de "+entity.getClass().getSimpleName()+" con ID="+id);
-//            }catch (SQLException e) {
-//                con.rollback();
-//                throw new RuntimeException("Error al insertar la entidad" + e.getMessage());
-//            }finally {
-//                con.setAutoCommit(true);
-//            }
-        }catch(SQLException e) {
-            throw new RuntimeException("Error al insertar "+entity.getClass().getSimpleName()+" ", e);
-        }finally{
-            if(idR>0)
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al insertar " + entity.getClass().getSimpleName() + " ", e);
+        } finally {
+            if (idR > 0) {
                 return idR;
+            }
             return -1;
         }
     }
-//    T buscar(int id);
-//    List<T> listar();
-    public boolean actualizarDerivada(Reserva entity, Connection con) throws SQLException{
-        try(PreparedStatement ps = con.prepareStatement(this.getUpdateQuery(), Statement.RETURN_GENERATED_KEYS)){
+    
+    public boolean actualizarDerivada(Reserva entity, Connection con) throws SQLException {
+        try (PreparedStatement ps = con.prepareStatement(this.getUpdateQuery(), Statement.RETURN_GENERATED_KEYS)) {
             this.setUpdateParameters(ps, entity);
             ps.executeUpdate();
             con.commit();
-            System.out.println("Se actualizo un registro de "+entity.getClass().getSimpleName());
+            System.out.println("Se actualizo un registro de " + entity.getClass().getSimpleName());
             return true; // si todo fue bien, la respuesta será verdadera
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             con.rollback();
             return false; // si algo falló, la respuesta será falsa
-            
-        } finally{
+        } finally {
             // el finally siempre se ejecuta... asi hayan returns antes
             con.setAutoCommit(true);
         }
     }
-    
-    public boolean eliminarLogicoDerivada(int id, Connection con) throws SQLException{
-        try(PreparedStatement ps = con.prepareStatement(this.getDeleteLogicoQuery(), Statement.RETURN_GENERATED_KEYS)){
+
+    public boolean eliminarLogicoDerivada(int id, Connection con) throws SQLException {
+        try (PreparedStatement ps = con.prepareStatement(this.getDeleteLogicoQuery(), Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, id);
             ps.executeUpdate();
             con.commit();
             System.out.println("Se elimino un registro LOGICAMENTE de forma correcta");
             return true; // si todo fue bien, la respuesta será verdadera
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             con.rollback();
             return false; // si algo falló, la respuesta será falsa
-            
-        } finally{
+        } finally {
             // el finally siempre se ejecuta... asi hayan returns antes
             con.setAutoCommit(true);
         }
     }
-    
-    public boolean eliminarFisicoDerivada(int id, Connection con) throws SQLException{
-        // primero, debemos eliminar la constancia
-        
-        try(PreparedStatement ps = con.prepareStatement(this.getDeleteLogicoQuery(), Statement.RETURN_GENERATED_KEYS)){
-            if(!constanciaDAO.eliminarFisico(id)) return false;
+
+    public boolean eliminarFisicoDerivada(int id, Connection con) throws SQLException {
+        // Primero, debemos eliminar la constancia
+        try (PreparedStatement ps = con.prepareStatement(this.getDeleteLogicoQuery(), Statement.RETURN_GENERATED_KEYS)) {
+            if (!constanciaDAO.eliminarFisico(id)) {
+                return false;
+            }
             ps.setInt(1, id);
             ps.executeUpdate();
             con.commit();
             System.out.println("Se elimino un registro FISICAMENTE de forma correcta");
             return true; // si todo fue bien, la respuesta será verdadera
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             con.rollback();
             return false; // si algo falló, la respuesta será falsa
-            
-        } finally{
+        } finally {
             // el finally siempre se ejecuta... asi hayan returns antes
             con.setAutoCommit(true);
         }
     }
-    
+
     @Override
-    public boolean actualizar(Reserva entidad){
+    public boolean actualizar(Reserva entidad) {
         // Reserva: Constancia + algo más, entonces puede utilizar todo lo de constancia
-        boolean seActualizoC=false, seActualizoR=false;
-        
+        boolean seActualizoC = false, seActualizoR = false;
         // intento realizar el procedimiento: actualizar Constancia y, luego, Reserva:
-        try(Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
+        try (Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
         {
             con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
-            
             // intentamos insertar constancia
             seActualizoC = constanciaDAO.actualizar(entidad);
-            if(!seActualizoC) throw new RuntimeException("No se actualizo la constancia correctamente");
-            
+            if (!seActualizoC) {
+                throw new RuntimeException("No se actualizo la constancia correctamente");
+            }
             // ahora, necesito insertar la reserva como tal
-            seActualizoR = actualizarDerivada(entidad,con);
-            if(!seActualizoR) throw new RuntimeException("No se actualizo la reserva correctamente");
-        }
-        catch(SQLException e){
+            seActualizoR = actualizarDerivada(entidad, con);
+            if (!seActualizoR) {
+                throw new RuntimeException("No se actualizo la reserva correctamente");
+            }
+        } catch (SQLException e) {
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
         }
-        
         return (seActualizoR && seActualizoC);
     }
-    
+
     @Override
-    public boolean eliminarLogico(int id){
-        boolean seEliminoLogC=false, seEliminoLogR=false;
-        
+    public boolean eliminarLogico(int id) {
+        boolean seEliminoLogC = false, seEliminoLogR = false;
         // intento realizar el procedimiento: actualizar Constancia y, luego, Reserva:
-        try(Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
+        try (Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
         {
             con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
-            
             // intentamos insertar constancia
             seEliminoLogC = constanciaDAO.eliminarLogico(id);
-            if(!seEliminoLogC) throw new RuntimeException("No se actualizo la constancia correctamente");
-            
+            if (!seEliminoLogC) {
+                throw new RuntimeException("No se actualizo la constancia correctamente");
+            }
             // ahora, necesito insertar la reserva como tal
-            seEliminoLogR = eliminarLogicoDerivada(id,con);
-            if(!seEliminoLogR) throw new RuntimeException("No se actualizo la reserva correctamente");
-        }
-        catch(SQLException e){
+            seEliminoLogR = eliminarLogicoDerivada(id, con);
+            if (!seEliminoLogR) {
+                throw new RuntimeException("No se actualizo la reserva correctamente");
+            }
+        } catch (SQLException e) {
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
         }
-        
         return (seEliminoLogR && seEliminoLogC);
     }
-    
+
     @Override
-    public boolean eliminarFisico(int id){
-        boolean seEliminoFisC=false, seEliminoFisR=false;
-        
+    public boolean eliminarFisico(int id) {
+        boolean seEliminoFisC = false, seEliminoFisR = false;
         // intento realizar el procedimiento: actualizar Constancia y, luego, Reserva:
-        try(Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
+        try (Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
         {
             con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
-            
             // intentamos insertar constancia
             seEliminoFisC = constanciaDAO.eliminarLogico(id);
-            if(!seEliminoFisC) throw new RuntimeException("No se ELIMINO de forma FISICA la constancia correctamente");
-            
+            if (!seEliminoFisC) {
+                throw new RuntimeException("No se ELIMINO de forma FISICA la constancia correctamente");
+            }
             // ahora, necesito insertar la reserva como tal
-            seEliminoFisR = eliminarFisicoDerivada(id,con);
-            if(!seEliminoFisR) throw new RuntimeException("No se ELIMINO de forma FISICA la reserva correctamente");
-        }
-        catch(SQLException e){
+            seEliminoFisR = eliminarFisicoDerivada(id, con);
+            if (!seEliminoFisR) {
+                throw new RuntimeException("No se ELIMINO de forma FISICA la reserva correctamente");
+            }
+        } catch (SQLException e) {
             throw new RuntimeException("Sucedio un error al actualizar la reserva: " + e.getMessage());
         }
-        
         return (seEliminoFisR && seEliminoFisC);
     }
-    
+
     @Override
-    public List<Reserva> listarPorDiaYEspacio(int idEspacio, java.util.Date fecha){
-        List<Reserva> listaReserva=null;
+    public List<Reserva> listarPorDiaYEspacio(int idEspacio, java.util.Date fecha) {
+        List<Reserva> listaReserva = null;
         String sql = "{CALL reservasPorDiaYEspacio(?, ?)}";
         try (Connection conn = DBManager.getInstance().getConnection()) {
             listaReserva = new ArrayList<>();
-            
             CallableStatement pst = conn.prepareCall(sql);
             pst.setInt(1, idEspacio);
-
             // Convert java.util.Date to java.sql.Date
             java.sql.Date sqlDate = new java.sql.Date(fecha.getTime());
             pst.setDate(2, sqlDate);
@@ -350,7 +332,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             return listaReserva;
         }
     }
-
 
     @Override
     public List<Map<String, Object>> listarDetalleReservasPorComprador(int IdComprador) {
@@ -382,219 +363,180 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
             return listaDetalleReservas;
         }
     }
-    
+
     @Override
-    public List<Reserva> listarPorFecha(Date fecha, boolean activo){
-        List<Reserva> listaReservas=null;
+    public List<Map<String, Object>> listarTodos() {
+        List<Map<String, Object>> listaReservas = null;
         String sql;
-        if(activo){
-            sql = "SELECT * FROM Reserva WHERE fecha_reserva = ? AND activo = 'A'";
-        }else{
-            sql = "SELECT * FROM Reserva WHERE fecha_reserva = ?";
-        }
+        sql = """
+            SELECT r.num_reserva, r.fecha_reserva, r.activo,
+                   e.nombre AS nombre_espacio,
+                   d.nombre AS nombre_distrito,
+                   p.correo
+            FROM Reserva r
+            JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
+            JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
+            JOIN Persona p ON p.id_persona = r.Persona_id_persona
+        """;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
-            listaReservas = new ArrayList<>();
-            //Conversion de java.util.Date a java.sql.Date
-            java.sql.Date sqlDate = new java.sql.Date(fecha.getTime());
-            pst.setDate(1, sqlDate);  // Seteamos la fecha en el primer parámetro
-            try(ResultSet rs = pst.executeQuery()){
-                while (rs.next()) {
-                    listaReservas.add(createFromResultSet(rs));
-                }
-            }
-            System.out.println("Se listo las reservas por fecha correctamente");
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar las reservas por fecha: ", e);
-        } finally {
-            return listaReservas;
-        }
-    }
-    
-    @Override
-    public List<Reserva> listarPorHorario(String horaInicio, String horaFin, Date fecha, boolean activo){
-        List<Reserva> listaReservas=null;
-        String sql;
-        if(activo){
-            sql = "SELECT * FROM Reserva "
-            + "WHERE fecha_reserva = ? AND horario_ini >= ? AND horario_fin <= ? AND activo = 'A'";
-        }else{
-            sql = "SELECT * FROM Reserva "
-            + "WHERE fecha_reserva = ? AND horario_ini >= ? AND horario_fin <= ?";
-        }
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
-            listaReservas = new ArrayList<>();
-            
-            // Conversion de fechas y tiempos
-            java.sql.Date sqlFecha = new java.sql.Date(fecha.getTime());
-            LocalTime horaIni = LocalTime.parse(horaInicio);
-            LocalTime horaF = LocalTime.parse(horaFin);
-            
-            pst.setDate(1, sqlFecha);
-            pst.setTime(2, java.sql.Time.valueOf(horaIni));
-            pst.setTime(3, java.sql.Time.valueOf(horaF));
-            
-            try(ResultSet rs = pst.executeQuery()){
-                while (rs.next()) {
-                    listaReservas.add(createFromResultSet(rs));
-                }
-            }
-            System.out.println("Se listo las reservas por horarios correctamente");
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar las reservas por horarios: ", e);
-        } finally {
-            return listaReservas;
-        }
-    }
-    
-    @Override
-    public List<Reserva> listarPorDistrito(int id_distrito, boolean activo){
-        List<Reserva> listaReservas=null;
-        String sql;
-        if(activo){
-            sql="SELECT r.* FROM Reserva r "
-                    + "JOIN  Espacio e ON r.Espacio_id_espacio = e.id_espacio "
-                    + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
-                    + "WHERE d.id_distrito=" + id_distrito + " and r.activo='A'";
-        }else{
-            sql="SELECT r.* FROM Reserva r "
-                    + "JOIN  Espacio e ON r.Espacio_id_espacio = e.id_espacio "
-                    + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
-                    + "WHERE d.id_distrito=" + id_distrito;
-        }
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            ResultSet rs = pst.executeQuery();
             listaReservas = new ArrayList<>();
             while (rs.next()) {
-                listaReservas.add(createFromResultSet(rs));
+                Map<String, Object> fila = new HashMap<>();
+                fila.put("codigo", rs.getInt("num_reserva"));
+                fila.put("fecha", rs.getDate("fecha_reserva"));
+                fila.put("distrito", rs.getString("nombre_distrito"));
+                fila.put("espacio", rs.getString("nombre_espacio"));
+                fila.put("correo", rs.getString("correo"));
+                fila.put("activo", rs.getString("activo").charAt(0));
+                listaReservas.add(fila);
             }
-            System.out.println("Se listo las reservas por distrito correctamente");
+            System.out.println("Se listaron las reservas por distrito correctamente");
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las reservas por distrito: ", e);
         } finally {
             return listaReservas;
         }
     }
-    
-    @Override
-    public List<Reserva> listarPorEspacio(int id_espacio, boolean activo){
-        List<Reserva> listaReservas=null;
-        String sql;
-        if(activo){
-            sql="SELECT * FROM Reserva "
-                + "WHERE Espacio_id_espacio=" + id_espacio + " and activo='A'";
-        }else{
-            sql="SELECT * FROM Reserva "
-                + "WHERE Espacio_id_espacio=" + id_espacio;
-        }
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
-            listaReservas = new ArrayList<>();
-            while (rs.next()) {
-                listaReservas.add(createFromResultSet(rs));
-            }
-            System.out.println("Se listo las reservas por espacio correctamente");
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar las reservas por espacio: ", e);
-        } finally {
-            return listaReservas;
-        }
-    }
-    
-    @Override
-    public List<Reserva> listarPorPersona(int id_persona, boolean activo){
-        List<Reserva> listaReservas=null;
-        String sql;
-        if(activo){
-            sql="SELECT * FROM Reserva "
-                + "WHERE Persona_id_persona=" + id_persona + " and activo='A'";
-        }else{
-            sql="SELECT * FROM Reserva "
-                + "WHERE Persona_id_persona=" + id_persona;
-        }
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
-            listaReservas = new ArrayList<>();
-            while (rs.next()) {
-                listaReservas.add(createFromResultSet(rs));
-            }
-            System.out.println("Se listo las reservas por persona correctamente");
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar las reservas por persona: ", e);
-        } finally {
-            return listaReservas;
-        }
-    }
 
     @Override
-    public Reserva obtenerPorNumReserva(int num_reserva, boolean activo) {
+    public List<Map<String, Object>> listarDetalleReservasPorFecha(Date fecha, boolean activo) {
+        List<Map<String, Object>> listaDetalleReservas = null;
         String sql;
-        Reserva reserva = null;
-
         if (activo) {
-            sql = "SELECT * FROM Reserva WHERE num_reserva = ? AND activo = 'A'";
+            sql = """
+            SELECT r.num_reserva, r.fecha_reserva, d.nombre AS nombre_distrito,
+                   e.nombre AS nombre_espacio, p.correo, r.activo
+            FROM Reserva r
+            JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
+            JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
+            JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            WHERE r.fecha_reserva = ? AND r.activo = 'A'
+        """;
         } else {
-            return buscar(num_reserva); // Si no está activo, se usa otro método
+            sql = """
+            SELECT r.num_reserva, r.fecha_reserva, d.nombre AS nombre_distrito,
+                   e.nombre AS nombre_espacio, p.correo, r.activo
+            FROM Reserva r
+            JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
+            JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
+            JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            WHERE r.fecha_reserva = ?
+        """;
         }
-
-        try (
-            Connection conn = DBManager.getInstance().getConnection();
-            PreparedStatement pst = conn.prepareStatement(sql)
-        ) {
-            pst.setInt(1, num_reserva); // Evitamos inyección SQL usando parámetros
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    reserva = createFromResultSet(rs); // Solo una reserva
-                    System.out.println("Reserva encontrada con num_reserva: " + num_reserva);
-                }
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setDate(1, new java.sql.Date(fecha.getTime()));
+            ResultSet rs = pst.executeQuery();
+            listaDetalleReservas = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, Object> fila = new HashMap<>();
+                fila.put("codigo", rs.getInt("num_reserva"));
+                fila.put("fecha", rs.getDate("fecha_reserva"));
+                fila.put("distrito", rs.getString("nombre_distrito"));
+                fila.put("espacio", rs.getString("nombre_espacio"));
+                fila.put("correo", rs.getString("correo"));
+                fila.put("activo", rs.getString("activo").charAt(0));
+                listaDetalleReservas.add(fila);
             }
+            System.out.println("Se listaron las reservas por fecha correctamente");
         } catch (SQLException e) {
-            throw new RuntimeException("Error al obtener la reserva por num_reserva: ", e);
+            throw new RuntimeException("Error al listar las reservas por fecha: ", e);
         }
-
-        return reserva;
+        return listaDetalleReservas;
     }
 
     @Override
-    public List<Reserva> buscarReservasPorFecha(LocalDate fecha) {
-        List<Reserva> reservas = new ArrayList<>();
-        String query = "{CALL reservaPorFecha(?)}";
-
-        try (
-            Connection conn = DBManager.getInstance().getConnection();
-            CallableStatement stmt = conn.prepareCall(query)
-        ) {
-            stmt.setDate(1, java.sql.Date.valueOf(fecha));
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    reservas.add(this.createFromResultSet(rs));
-                }
+    public List<Map<String, Object>> listarPorDistrito(int idDistrito, boolean activo) {
+        List<Map<String, Object>> listaReservas = null;
+        String sql;
+        if (activo) {
+            sql = """
+            SELECT r.num_reserva, r.fecha_reserva, r.activo,
+                   e.nombre AS nombre_espacio,
+                   d.nombre AS nombre_distrito,
+                   p.correo
+            FROM Reserva r
+            JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
+            JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
+            JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            WHERE d.id_distrito = ? AND r.activo = 'A'
+        """;
+        } else {
+            sql = """
+            SELECT r.num_reserva, r.fecha_reserva, r.activo,
+                   e.nombre AS nombre_espacio,
+                   d.nombre AS nombre_distrito,
+                   p.correo
+            FROM Reserva r
+            JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
+            JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
+            JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            WHERE d.id_distrito = ?
+        """;
+        }
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, idDistrito);
+            ResultSet rs = pst.executeQuery();
+            listaReservas = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, Object> fila = new HashMap<>();
+                fila.put("codigo", rs.getInt("num_reserva"));
+                fila.put("fecha", rs.getDate("fecha_reserva"));
+                fila.put("distrito", rs.getString("nombre_distrito"));
+                fila.put("espacio", rs.getString("nombre_espacio"));
+                fila.put("correo", rs.getString("correo"));
+                fila.put("activo", rs.getString("activo").charAt(0));
+                listaReservas.add(fila);
             }
-
+            System.out.println("Se listaron las reservas por distrito correctamente");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las reservas por distrito: ", e);
+        } finally {
+            return listaReservas;
+        }
+    }
+    //Metodos para buscar el detalle de la constancia de la reserva
+    @Override
+    public void llenarMapaDetalleReserva(Map<String, Object>detalleReserva,ResultSet rs){
+        try{
+            detalleReserva.put("numReserva", rs.getInt("num_reserva"));
+            detalleReserva.put("nombreEspacio", rs.getString("nombre_espacio"));
+            detalleReserva.put("categoria", rs.getString("categoria_espacio"));
+            detalleReserva.put("ubicacion", rs.getString("ubicacion"));
+            detalleReserva.put("nombreDistrito", rs.getString("nombre_distrito"));
+            detalleReserva.put("fecha", rs.getDate("fecha_reserva"));
+            detalleReserva.put("horaInicio", rs.getTime("hora_inicio"));
+            detalleReserva.put("horaFin", rs.getTime("hora_fin"));
+            detalleReserva.put("superficie", rs.getDouble("superficie"));
+            detalleReserva.put("estado", rs.getString("activo").charAt(0));
         } catch (SQLException ex) {
-            throw new RuntimeException("Error al buscar reservas por fecha", ex);
+            throw new RuntimeException("Error al llenar el mapa del detalle de la reserva: " + ex.getMessage());
         }
-
-        return reservas;
     }
-
     @Override
-    public List<Reserva> buscarReservasPorNombreEspacio(String nombre) {
-        List<Reserva> reservas = new ArrayList<>();
-        String query = "{CALL buscarReservasPorNombreEspacio(?)}";
-
-        try (
-            Connection conn = DBManager.getInstance().getConnection();
-            CallableStatement stmt = conn.prepareCall(query)
-        ) {
-            stmt.setString(1, nombre);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    reservas.add(this.createFromResultSet(rs));
-                }
+    public Map<String, Object> buscarConstanciaReserva(int numReserva){
+        Map<String, Object> constanciaReserva = null;
+        String sql = """
+                     SELECT r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio, e.ubicacion, 
+                     e.superficie, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio, r.horario_fin AS 
+                     hora_fin, r.activo, c.fecha, c.metodo_pago, c.total, c.detalle_pago, p.nombres AS nombres_comprador, 
+                     p.primer_apellido, p.segundo_apellido, p.correo, p.tipo_documento, p.num_documento
+                     FROM Reserva r JOIN Constancia c ON c.id_constancia=r.id_constancia_reserva JOIN Espacio e ON 
+                     r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito JOIN Persona p 
+                     ON p.id_persona=r.Persona_id_persona WHERE r.num_reserva = 
+                 """ + numReserva;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            if(rs.next()){
+                constanciaReserva = new HashMap<>();
+                this.llenarMapaDetalleReserva(constanciaReserva,rs);
+                constanciaDAO.llenarMapaDetalleConstancia(constanciaReserva,rs);
+                System.out.println("Se busco la constancia de la reserva correctamente");
+                return constanciaReserva;
+            }else{
+                throw new RuntimeException("Constancia de la reserva no encontrada");
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar reservas por nombre de espacio", e);
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
-
-        return reservas;
     }
 }

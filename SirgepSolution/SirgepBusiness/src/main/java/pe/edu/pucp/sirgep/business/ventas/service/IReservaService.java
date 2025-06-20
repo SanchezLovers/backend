@@ -6,7 +6,9 @@ import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReservaDTO;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ReservaDTO;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
@@ -27,21 +29,19 @@ public interface IReservaService {
     public Distrito buscarDistritoDeReserva(int idEntrada);
 
     //Metodos adicionales para el listado de reservas
-    List<Reserva> listarPorFecha(Date fecha, boolean activo);
-    List<Reserva> listarPorHorario(String horaInicio, String horaFin, Date fecha, boolean activo);
-    List<Reserva> listarPorDistrito(int id_distrito, boolean activo);
-    List<Reserva> listarPorEspacio(int id_espacio, boolean activo);
-    List<Reserva> listarPorPersona(int id_persona, boolean activo);
-    Reserva obtenerPorNumReserva(int num_reserva, boolean activo);
-    List<Reserva> buscarReservasPorFecha(LocalDate fecha);
-    public List<Reserva> buscarReservasPorNombreEspacio(String nombre);
+    public List<ReservaDTO> listarTodos();
+    public List<ReservaDTO> listarDetalleReservasPorFecha(Date fecha, boolean activo);
+    public List<ReservaDTO> listarPorDistrito(int id_distrito, boolean activo);
 
     //Metodos para crear libro de Excel para las entradas
     public void crearLibroExcelReservas(int idComprador);
     public String crearHojalReservas(XSSFWorkbook libro,int idComprador);
     public String crearEncabezadoHojaReservas(XSSFSheet hoja,int idComprador);
     public void llenarTablaReservas(XSSFSheet hoja,int idComprador);
-    public void llenarFilaReserva(XSSFRow registro,DetalleReserva detalleReserva);
-    public List<DetalleReserva> listarDetalleReservasPorComprador(int idComprador);
+    public void llenarFilaReserva(XSSFRow registro,DetalleReservaDTO detalleReserva);
+    public List<DetalleReservaDTO> listarDetalleReservasPorComprador(int idComprador);
     public void exportarLibroReservas(XSSFWorkbook libro,String nombreArchivo);
+    
+    //Metodos para buscar el detalle de la constancia de la reserva
+    public ConstanciaReservaDTO buscarConstanciaReserva(int numReserva);
 }
