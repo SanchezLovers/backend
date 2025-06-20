@@ -1,7 +1,3 @@
-///*
-// * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-// * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
-// */
 //package pe.edu.pucp.sirgep.ws.infraestructura.test;
 //
 //import java.util.List;
@@ -16,11 +12,6 @@
 //import pe.edu.pucp.sirgep.business.infraestructura.impl.EspacioServiceImpl;
 //import pe.edu.pucp.sirgep.business.infraestructura.service.IEspacioService;
 //import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
-//
-///**
-// *
-// * @author benny
-// */
 //
 //@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 //
@@ -60,7 +51,6 @@
 //        for(Espacio e : espacios){
 //            System.out.println(e.getNombre());
 //        }
-//        
 //        assert(espacios!=null);
 //    }
 //    

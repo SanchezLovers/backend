@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.xml.ws.WebServiceException;
 import java.time.LocalTime;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
@@ -202,6 +203,34 @@ public class ReservaWS {
             return reservaService.listarPorPersona(id,activo);
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar por persona: " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "obtenerPorNumReserva")
+    public Reserva obtenerPorNumReserva(@WebParam(name = "num_reserva")int num_reserva,
+            @WebParam(name = "activo")boolean activo) {
+        try {
+            return reservaService.obtenerPorNumReserva(num_reserva,activo);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por reserva: " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "buscarReservasPorFecha")
+    public List<Reserva> buscarReservasPorFecha(@WebParam(name = "nombre")String fecha) {
+        try {
+            return reservaService.buscarReservasPorFecha(LocalDate.parse(fecha));
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por fecha: " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "buscarReservasPorNombreEspacio")
+    public List<Reserva> buscarReservasPorNombreEspacio(@WebParam(name = "nombre")String nombre) {
+        try {
+            return reservaService.buscarReservasPorNombreEspacio(nombre);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por nombre de espacio: " + ex.getMessage());
         }
     }
 }

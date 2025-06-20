@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -301,5 +302,20 @@ public class ReservaServiceImpl implements IReservaService {
         } catch (Exception ex) {
             throw new RuntimeException("Error al exportar el libro excel de las reservas: " + ex.getMessage());
         }
+    }
+
+    @Override
+    public Reserva obtenerPorNumReserva(int num_reserva, boolean activo) {
+        return reservaDAO.obtenerPorNumReserva(num_reserva, activo);
+    }
+
+    @Override
+    public List<Reserva> buscarReservasPorFecha(LocalDate fecha) {
+        return reservaDAO.buscarReservasPorFecha(fecha);
+    }
+
+    @Override
+    public List<Reserva> buscarReservasPorNombreEspacio(String nombre) {
+        return reservaDAO.buscarReservasPorNombreEspacio(nombre);
     }
 }

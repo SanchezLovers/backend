@@ -43,4 +43,9 @@ public class FuncionServiceImpl implements IFuncionService {
     public boolean eliminarFisico(int id) {
         return funcionDAO.eliminarFisico(id);
     }
+
+    @Override
+    public List<Funcion> listarPorIdEvento(int idEvento) {
+        return funcionDAO.listarPorIdEvento(idEvento);
+    }
 }
