@@ -1,5 +1,6 @@
 package pe.edu.pucp.sirgep.business.ventas.service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -31,6 +32,9 @@ public interface IReservaService {
     List<Reserva> listarPorDistrito(int id_distrito, boolean activo);
     List<Reserva> listarPorEspacio(int id_espacio, boolean activo);
     List<Reserva> listarPorPersona(int id_persona, boolean activo);
+    Reserva obtenerPorNumReserva(int num_reserva, boolean activo);
+    List<Reserva> buscarReservasPorFecha(LocalDate fecha);
+    public List<Reserva> buscarReservasPorNombreEspacio(String nombre);
 
     //Metodos para crear libro de Excel para las entradas
     public void crearLibroExcelReservas(int idComprador);

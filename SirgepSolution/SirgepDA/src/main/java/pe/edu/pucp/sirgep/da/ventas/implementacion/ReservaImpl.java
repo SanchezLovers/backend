@@ -45,7 +45,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo FROM Reserva";
+        return "SELECT num_reserva, horario_ini, horario_fin, fecha_reserva, Espacio_id_espacio, Persona_id_persona, id_constancia_reserva, activo FROM Reserva";
     }
 
     @Override
@@ -521,5 +521,81 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
         } finally {
             return listaReservas;
         }
+    }
+
+    @Override
+    public Reserva obtenerPorNumReserva(int num_reserva, boolean activo) {
+        String sql;
+        Reserva reserva = null;
+
+        if (activo) {
+            sql = "SELECT * FROM Reserva WHERE num_reserva = ? AND activo = 'A'";
+        } else {
+            return buscar(num_reserva); // Si no está activo, se usa otro método
+        }
+
+        try (
+            Connection conn = DBManager.getInstance().getConnection();
+            PreparedStatement pst = conn.prepareStatement(sql)
+        ) {
+            pst.setInt(1, num_reserva); // Evitamos inyección SQL usando parámetros
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    reserva = createFromResultSet(rs); // Solo una reserva
+                    System.out.println("Reserva encontrada con num_reserva: " + num_reserva);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al obtener la reserva por num_reserva: ", e);
+        }
+
+        return reserva;
+    }
+
+    @Override
+    public List<Reserva> buscarReservasPorFecha(LocalDate fecha) {
+        List<Reserva> reservas = new ArrayList<>();
+        String query = "{CALL reservaPorFecha(?)}";
+
+        try (
+            Connection conn = DBManager.getInstance().getConnection();
+            CallableStatement stmt = conn.prepareCall(query)
+        ) {
+            stmt.setDate(1, java.sql.Date.valueOf(fecha));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    reservas.add(this.createFromResultSet(rs));
+                }
+            }
+
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al buscar reservas por fecha", ex);
+        }
+
+        return reservas;
+    }
+
+    @Override
+    public List<Reserva> buscarReservasPorNombreEspacio(String nombre) {
+        List<Reserva> reservas = new ArrayList<>();
+        String query = "{CALL buscarReservasPorNombreEspacio(?)}";
+
+        try (
+            Connection conn = DBManager.getInstance().getConnection();
+            CallableStatement stmt = conn.prepareCall(query)
+        ) {
+            stmt.setString(1, nombre);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    reservas.add(this.createFromResultSet(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar reservas por nombre de espacio", e);
+        }
+
+        return reservas;
     }
 }

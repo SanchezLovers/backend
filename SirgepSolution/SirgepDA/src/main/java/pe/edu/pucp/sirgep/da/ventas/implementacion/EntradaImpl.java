@@ -40,7 +40,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         String sql = "SELECT id_constancia,fecha,metodo_pago,igv,total,detalle_pago,"
                 + "num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion "
                 + "FROM Constancia C, Entrada E "
-                + "WHERE C.id_constancia = E.id_constancia_entrada AND num_entrada=?";
+                + "WHERE C.id_constancia = E.id_constancia_entrada AND id_constancia_entrada=?";
         return sql;
     }
     
@@ -137,8 +137,8 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             throw new RuntimeException("Error al insertar "+entrada.getClass().getSimpleName()+" ", e);
         }finally{
             if(idE>0)
-                return idE;
-            return idC;
+                return idC;
+            return 0;
         }
     }
     

@@ -14,4 +14,7 @@ public interface IEspacioService {
     List<Espacio> buscarPorCategoria(String texto);
     List<Espacio> buscarPorDistrito(int id);
     List<Espacio> buscarPorDistritoCate(int id, String cat);
+    
+    //Metodo para el envio de correo a los compradores registrados con el mismo distrito
+    public boolean enviarCorreosCompradoresPorDistritoDeEspacio(Espacio espacio);
 }

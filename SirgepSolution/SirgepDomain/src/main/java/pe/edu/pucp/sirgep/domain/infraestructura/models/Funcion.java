@@ -8,12 +8,12 @@ import java.util.Date;
 public class Funcion{
     //Atributos
     private int idFuncion;
-    private Date horaInicio;
-    private Date horaFin;
-    private Date fecha;
+    private String horaInicio;
+    private String horaFin;
+    private String fecha;
     private boolean activo;
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
@@ -25,7 +25,7 @@ public class Funcion{
         this.activo = activo;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
     
@@ -48,20 +48,20 @@ public class Funcion{
     }
 
     // Getter y Setter para fechaHoraInicio
-    public Date getHoraInicio() {
+    public String getHoraInicio() {
             return this.horaInicio;
     }
 
-    public void setHoraInicio(Date horaInicio) {
+    public void setHoraInicio(String horaInicio) {
             this.horaInicio = horaInicio;
     }
 
     // Getter y Setter para fechaHoraFin
-    public Date getHoraFin() {
+    public String getHoraFin() {
             return this.horaFin;
     }
 
-    public void setHoraFin(Date horaFin) {
+    public void setHoraFin(String horaFin) {
             this.horaFin = horaFin;
     }
 
