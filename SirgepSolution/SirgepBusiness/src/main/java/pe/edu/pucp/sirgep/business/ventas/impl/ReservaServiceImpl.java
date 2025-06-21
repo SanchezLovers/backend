@@ -22,8 +22,9 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
 
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.service.IReservaService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
@@ -285,14 +286,14 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
-    public List<DetalleReserva> listarDetalleReservasPorComprador(int idComprador) {
-        List<DetalleReserva> listaFinal = null;
+    public List<DetalleReservaDTO> listarDetalleReservasPorComprador(int idComprador) {
+        List<DetalleReservaDTO> listaFinal = null;
         try {
             List<Map<String, Object>> lista = reservaDAO.listarDetalleReservasPorComprador(idComprador);
             if (lista != null) {
                 listaFinal = new ArrayList<>();
                 for (Map<String, Object> fila : lista) {
-                    DetalleReserva detalleReserva = new DetalleReserva();
+                    DetalleReservaDTO detalleReserva = new DetalleReservaDTO();
                     detalleReserva.setNumReserva((int) fila.get("numReserva"));
                     detalleReserva.setNombreEspacio((String) fila.get("nombreEspacio"));
                     detalleReserva.setCategoria((String) fila.get("categoria"));
@@ -313,9 +314,9 @@ public class ReservaServiceImpl implements IReservaService {
 
     @Override
     public void llenarTablaReservas(XSSFSheet hoja, int idComprador) {
-        List<DetalleReserva> listaDetalleReservas = listarDetalleReservasPorComprador(idComprador);
+        List<DetalleReservaDTO> listaDetalleReservas = listarDetalleReservasPorComprador(idComprador);
         int posicion = 3;
-        for (DetalleReserva detalleReserva : listaDetalleReservas) {
+        for (DetalleReservaDTO detalleReserva : listaDetalleReservas) {
             XSSFRow registro = hoja.createRow(posicion++);
             llenarFilaReserva(registro, detalleReserva);
         }
@@ -325,7 +326,7 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
-    public void llenarFilaReserva(XSSFRow registro, DetalleReserva detalleReserva) {
+    public void llenarFilaReserva(XSSFRow registro, DetalleReservaDTO detalleReserva) {
         XSSFCell celda = registro.createCell(0);
         celda.setCellValue(detalleReserva.getNumReserva());
         celda = registro.createCell(1);
@@ -365,6 +366,23 @@ public class ReservaServiceImpl implements IReservaService {
             output.close();//Libero bytes
         } catch (Exception ex) {
             throw new RuntimeException("Error al exportar el libro excel de las reservas: " + ex.getMessage());
+        }
+    }
+    //Metodos para buscar el detalle de la constancia de la reserva
+    @Override
+    public ConstanciaReservaDTO buscarConstanciaReserva(int numReserva){
+        ConstanciaReservaDTO constanciaReservaDTO=null;
+        try {
+            Map<String, Object> detalle=reservaDAO.buscarConstanciaReserva(numReserva);
+            if(detalle!=null){
+                constanciaReservaDTO=new ConstanciaReservaDTO();
+                constanciaReservaDTO.llenarConstanciaReserva(detalle);
+                return constanciaReservaDTO;
+            }else{
+                throw new RuntimeException("Constancia de la reserva no encontrada");
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
     }
 }
