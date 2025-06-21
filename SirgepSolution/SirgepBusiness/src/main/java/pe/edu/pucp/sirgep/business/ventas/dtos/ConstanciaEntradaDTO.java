@@ -1,11 +1,14 @@
 package pe.edu.pucp.sirgep.business.ventas.dtos;
 
+import java.util.Map;
+
 public class ConstanciaEntradaDTO extends DetalleConstanciaDTO{
     //Atributos
     private DetalleEntradaDTO detalleEntrada;
     
     //Constructor
     public ConstanciaEntradaDTO() {
+        detalleEntrada=new DetalleEntradaDTO();
     }
     
     //Propiedades
@@ -14,5 +17,13 @@ public class ConstanciaEntradaDTO extends DetalleConstanciaDTO{
     }
     public DetalleEntradaDTO getDetalleEntrada() {
         return detalleEntrada;
+    }
+    
+    //Metodos
+    public void llenarConstanciaEntrada(Map<String, Object>detalle){
+        if(detalle!=null){
+            this.detalleEntrada.llenarDetalleEntrada(detalle);
+            this.llenarDetalleConstancia(detalle);
+        }
     }
 }
