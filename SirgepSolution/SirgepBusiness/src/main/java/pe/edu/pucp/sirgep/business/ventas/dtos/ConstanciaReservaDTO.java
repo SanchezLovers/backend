@@ -21,9 +21,13 @@ public class ConstanciaReservaDTO extends DetalleConstanciaDTO {
     
     //Metodos
     public void llenarConstanciaReserva(Map<String, Object>detalle){
-        if(detalle!=null){
-            this.detalleReserva.llenarDetalleReserva(detalle);
-            this.llenarDetalleConstancia(detalle);
+        try{
+            if (detalle != null) {
+                this.detalleReserva.llenarDetalleReserva(detalle);
+                this.llenarDetalleConstancia(detalle);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al llenar el detalle de la constancia de la reserva: " + ex.getMessage());
         }
     }
 }

@@ -3,11 +3,8 @@ package pe.edu.pucp.sirgep.ws.ventas;
 import jakarta.jws.WebService;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
-import jakarta.ws.rs.core.Response;
 import jakarta.xml.ws.WebServiceException;
-import java.time.LocalTime;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
@@ -186,10 +183,10 @@ public class ReservaWS {
 
     //Metodos para buscar la constancia de una reserva
     @WebMethod(operationName = "buscarConstanciaReserva")
-    public ConstanciaReservaDTO buscarConstanciaReserva(@WebParam(name = "numReserva") int numReserva){
+    public ConstanciaReservaDTO buscarConstanciaReserva(@WebParam(name = "idConstancia") int idConstancia){
         ConstanciaReservaDTO resultado=null;
         try {
-            resultado= reservaService.buscarConstanciaReserva(numReserva);
+            resultado= reservaService.buscarConstanciaReserva(idConstancia);
             if(resultado!=null){
                 System.out.println("Se busco la constancia de la reserva correctamente");
                 return resultado;

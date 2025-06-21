@@ -21,6 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;//Para crear libro de Excel
+import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
 
 import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
@@ -296,6 +297,23 @@ public class EntradaServiceImpl implements IEntradaService{
             output.close();//Libero bytes
         }catch(Exception ex){
             throw new RuntimeException("Error al exportar el libro excel de las entradas: " + ex.getMessage());
+        }
+    }
+    
+    @Override
+    public ConstanciaEntradaDTO buscarConstanciaEntrada(int idConstancia){
+        ConstanciaEntradaDTO constanciaEntradaDTO=null;
+        try {
+            Map<String, Object> detalle=entradaDAO.buscarConstanciaEntrada(idConstancia);
+            if(detalle!=null){
+                constanciaEntradaDTO=new ConstanciaEntradaDTO();
+                constanciaEntradaDTO.llenarConstanciaEntrada(detalle);
+                return constanciaEntradaDTO;
+            }else{
+                throw new RuntimeException("Constancia de la entrada no encontrada");
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al buscar la constancia de la entrada: " + ex.getMessage());
         }
     }
 }

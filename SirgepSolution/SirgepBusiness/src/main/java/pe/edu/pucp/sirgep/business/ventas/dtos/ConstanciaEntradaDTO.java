@@ -21,9 +21,13 @@ public class ConstanciaEntradaDTO extends DetalleConstanciaDTO{
     
     //Metodos
     public void llenarConstanciaEntrada(Map<String, Object>detalle){
-        if(detalle!=null){
-            this.detalleEntrada.llenarDetalleEntrada(detalle);
-            this.llenarDetalleConstancia(detalle);
+        try{
+            if (detalle != null) {
+                this.detalleEntrada.llenarDetalleEntrada(detalle);
+                this.llenarDetalleConstancia(detalle);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al llenar el detalle de la constancia de la entrada: " + ex.getMessage());
         }
     }
 }
