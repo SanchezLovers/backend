@@ -370,10 +370,10 @@ public class ReservaServiceImpl implements IReservaService {
     }
     //Metodos para buscar el detalle de la constancia de la reserva
     @Override
-    public ConstanciaReservaDTO buscarConstanciaReserva(int numReserva){
+    public ConstanciaReservaDTO buscarConstanciaReserva(int idConstancia){
         ConstanciaReservaDTO constanciaReservaDTO=null;
         try {
-            Map<String, Object> detalle=reservaDAO.buscarConstanciaReserva(numReserva);
+            Map<String, Object> detalle=reservaDAO.buscarConstanciaReserva(idConstancia);
             if(detalle!=null){
                 constanciaReservaDTO=new ConstanciaReservaDTO();
                 constanciaReservaDTO.llenarConstanciaReserva(detalle);

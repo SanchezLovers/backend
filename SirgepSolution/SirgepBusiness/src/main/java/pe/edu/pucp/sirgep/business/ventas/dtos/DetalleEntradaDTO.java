@@ -1,6 +1,8 @@
 package pe.edu.pucp.sirgep.business.ventas.dtos;
 
+import java.sql.Time;
 import java.util.Date;
+import java.util.Map;
 
 public class DetalleEntradaDTO {
     //Atributos
@@ -20,9 +22,6 @@ public class DetalleEntradaDTO {
     //Propiedades
     public int getNumEntrada() {
         return numEntrada;
-    }
-    public char getEstado() {
-        return estado;
     }
     public void setNumEntrada(int numEntrada) {
         this.numEntrada = numEntrada;
@@ -63,7 +62,42 @@ public class DetalleEntradaDTO {
     public void setHoraFin(Date horaFin) {
         this.horaFin = horaFin;
     }
+    public char getEstado() {
+        return estado;
+    }
     public void setEstado(char estado) {
         this.estado = estado;
+    }
+    
+    //Metodos
+    public void llenarDetalleEntrada(Map<String, Object> detalle) {
+        try{
+            if (detalle.get("numEntrada") != null) {
+                this.setNumEntrada((int) detalle.get("numEntrada"));
+            }
+            if (detalle.get("nombreEvento") != null) {
+                this.setNombreEvento((String) detalle.get("nombreEvento"));
+            }
+            if (detalle.get("ubicacion") != null) {
+                this.setUbicacion((String) detalle.get("ubicacion"));
+            }
+            if (detalle.get("nombreDistrito") != null) {
+                this.setNombreDistrito((String) detalle.get("nombreDistrito"));
+            }
+            if (detalle.get("fecha") != null) {
+                this.setFecha((Date) detalle.get("fecha"));
+            }
+            if (detalle.get("horaInicio") != null) {
+                this.setHoraInicio((Time) detalle.get("horaInicio"));
+            }
+            if (detalle.get("horaFin") != null) {
+                this.setHoraFin((Time) detalle.get("horaFin"));
+            }
+            if (detalle.get("estado") != null) {
+                this.setEstado((char) detalle.get("estado"));
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al llenar el detalle de la entrada: " + ex.getMessage());
+        }
     }
 }
