@@ -105,35 +105,39 @@ public class DetalleReservaDTO {
 
     //Metodos
     public void llenarDetalleReserva(Map<String, Object> detalle) {
-        if (detalle.get("numReserva") != null) {
-            this.setNumReserva((int) detalle.get("numReserva"));
-        }
-        if (detalle.get("nombreEspacio") != null) {
-            this.setNombreEspacio((String) detalle.get("nombreEspacio"));
-        }
-        if (detalle.get("categoria") != null) {
-            this.setCategoria((String) detalle.get("categoria"));
-        }
-        if (detalle.get("ubicacion") != null) {
-            this.setUbicacion((String) detalle.get("ubicacion"));
-        }
-        if (detalle.get("nombreDistrito") != null) {
-            this.setNombreDistrito((String) detalle.get("nombreDistrito"));
-        }
-        if (detalle.get("fecha") != null) {
-            this.setFecha((Date) detalle.get("fecha"));
-        }
-        if (detalle.get("horaInicio") != null) {
-            this.setHoraInicio((Time) detalle.get("horaInicio"));
-        }
-        if (detalle.get("horaFin") != null) {
-            this.setHoraFin((Time) detalle.get("horaFin"));
-        }
-        if (detalle.get("superficie") != null) {
-            this.setSuperficie((double) detalle.get("superficie"));
-        }
-        if (detalle.get("estado") != null) {
-            this.setEstado((char) detalle.get("estado"));
+        try{
+            if (detalle.get("numReserva") != null) {
+                this.setNumReserva((int) detalle.get("numReserva"));
+            }
+            if (detalle.get("nombreEspacio") != null) {
+                this.setNombreEspacio((String) detalle.get("nombreEspacio"));
+            }
+            if (detalle.get("categoria") != null) {
+                this.setCategoria((String) detalle.get("categoria"));
+            }
+            if (detalle.get("ubicacion") != null) {
+                this.setUbicacion((String) detalle.get("ubicacion"));
+            }
+            if (detalle.get("nombreDistrito") != null) {
+                this.setNombreDistrito((String) detalle.get("nombreDistrito"));
+            }
+            if (detalle.get("fecha") != null) {
+                this.setFecha((Date) detalle.get("fecha"));
+            }
+            if (detalle.get("horaInicio") != null) {
+                this.setHoraInicio((Time) detalle.get("horaInicio"));
+            }
+            if (detalle.get("horaFin") != null) {
+                this.setHoraFin((Time) detalle.get("horaFin"));
+            }
+            if (detalle.get("superficie") != null) {
+                this.setSuperficie((double) detalle.get("superficie"));
+            }
+            if (detalle.get("estado") != null) {
+                this.setEstado((char) detalle.get("estado"));
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al llenar el detalle de la reserva: " + ex.getMessage());
         }
     }
 }

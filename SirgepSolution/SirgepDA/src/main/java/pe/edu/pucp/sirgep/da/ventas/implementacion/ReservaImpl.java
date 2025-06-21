@@ -172,18 +172,19 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     public int insertar(Reserva entity) {
         // SOBRECARGAS NECESARIAS para considerar la herencia con la clase CONSTANCIA
         // Siempre que se quiera hacer un CRUD sobre RESERVA se hace en CONSTANCIA primero
-        int idC = -1, idR = -1;
+        int idConstancia = -1, numReserva = -1;
         try (Connection con = DBManager.getInstance().getConnection()) {
             con.setAutoCommit(false);
             // insertar la constancia
-            idC = constanciaDAO.insertar((Constancia) entity);
-            entity.setIdConstancia(idC);
-            idR = super.insertar(entity);
+            idConstancia = constanciaDAO.insertar((Constancia) entity);
+            entity.setIdConstancia(idConstancia);
+            numReserva = super.insertar(entity);
+            entity.setNumReserva(numReserva);
         } catch (SQLException e) {
             throw new RuntimeException("Error al insertar " + entity.getClass().getSimpleName() + " ", e);
         } finally {
-            if (idR > 0) {
-                return idR;
+            if (numReserva > 0) {
+                return idConstancia;
             }
             return -1;
         }
@@ -516,17 +517,17 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         }
     }
     @Override
-    public Map<String, Object> buscarConstanciaReserva(int numReserva){
+    public Map<String, Object> buscarConstanciaReserva(int idConstancia){
         Map<String, Object> constanciaReserva = null;
         String sql = """
-                     SELECT r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio, e.ubicacion, 
-                     e.superficie, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio, r.horario_fin AS 
-                     hora_fin, r.activo, c.fecha, c.metodo_pago, c.total, c.detalle_pago, p.nombres AS nombres_comprador, 
+                     SELECT c.id_constancia, r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio, 
+                     e.ubicacion, e.superficie, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio, r.horario_fin 
+                     AS hora_fin, r.activo, c.fecha, c.metodo_pago, c.total, c.detalle_pago, p.nombres AS nombres_comprador, 
                      p.primer_apellido, p.segundo_apellido, p.correo, p.tipo_documento, p.num_documento
                      FROM Reserva r JOIN Constancia c ON c.id_constancia=r.id_constancia_reserva JOIN Espacio e ON 
                      r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito JOIN Persona p 
-                     ON p.id_persona=r.Persona_id_persona WHERE r.num_reserva = 
-                 """ + numReserva;
+                     ON p.id_persona=r.Persona_id_persona WHERE c.id_constancia = 
+                 """ + idConstancia;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
             if(rs.next()){
                 constanciaReserva = new HashMap<>();
