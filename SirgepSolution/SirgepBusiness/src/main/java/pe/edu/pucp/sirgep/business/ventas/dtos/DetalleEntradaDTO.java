@@ -71,29 +71,33 @@ public class DetalleEntradaDTO {
     
     //Metodos
     public void llenarDetalleEntrada(Map<String, Object> detalle) {
-        if (detalle.get("numEntrada") != null) {
-            this.setNumEntrada((int) detalle.get("numEntrada"));
-        }
-        if (detalle.get("nombreEvento") != null) {
-            this.setNombreEvento((String) detalle.get("nombreEvento"));
-        }
-        if (detalle.get("ubicacion") != null) {
-            this.setUbicacion((String) detalle.get("ubicacion"));
-        }
-        if (detalle.get("nombreDistrito") != null) {
-            this.setNombreDistrito((String) detalle.get("nombreDistrito"));
-        }
-        if (detalle.get("fecha") != null) {
-            this.setFecha((Date) detalle.get("fecha"));
-        }
-        if (detalle.get("horaInicio") != null) {
-            this.setHoraInicio((Time) detalle.get("horaInicio"));
-        }
-        if (detalle.get("horaFin") != null) {
-            this.setHoraFin((Time) detalle.get("horaFin"));
-        }
-        if (detalle.get("estado") != null) {
-            this.setEstado((char) detalle.get("estado"));
+        try{
+            if (detalle.get("numEntrada") != null) {
+                this.setNumEntrada((int) detalle.get("numEntrada"));
+            }
+            if (detalle.get("nombreEvento") != null) {
+                this.setNombreEvento((String) detalle.get("nombreEvento"));
+            }
+            if (detalle.get("ubicacion") != null) {
+                this.setUbicacion((String) detalle.get("ubicacion"));
+            }
+            if (detalle.get("nombreDistrito") != null) {
+                this.setNombreDistrito((String) detalle.get("nombreDistrito"));
+            }
+            if (detalle.get("fecha") != null) {
+                this.setFecha((Date) detalle.get("fecha"));
+            }
+            if (detalle.get("horaInicio") != null) {
+                this.setHoraInicio((Time) detalle.get("horaInicio"));
+            }
+            if (detalle.get("horaFin") != null) {
+                this.setHoraFin((Time) detalle.get("horaFin"));
+            }
+            if (detalle.get("estado") != null) {
+                this.setEstado((char) detalle.get("estado"));
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al llenar el detalle de la entrada: " + ex.getMessage());
         }
     }
 }

@@ -127,17 +127,18 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     
     @Override
     public int insertar(Entrada entrada){
-        int idC=-1, idE=-1;
+        int idConstancia=-1, numEntrada=-1;
         try(Connection con = DBManager.getInstance().getConnection()){
             con.setAutoCommit(false);
-            idC = constanciaDAO.insertar((Constancia)entrada);
-            entrada.setIdConstancia(idC);
-            idE = super.insertar(entrada);
+            idConstancia = constanciaDAO.insertar((Constancia)entrada);
+            entrada.setIdConstancia(idConstancia);
+            numEntrada = super.insertar(entrada);
+            entrada.setNumEntrada(numEntrada);
         }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+entrada.getClass().getSimpleName()+" ", e);
         }finally{
-            if(idE>0)
-                return idC;
+            if(numEntrada>0)
+                return idConstancia;
             return 0;
         }
     }
@@ -242,6 +243,68 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             throw new RuntimeException("Error al listar las entradas: ", e);
         } finally {
             return listaDetalleEntradas;
+        }
+    }
+    
+    
+    @Override
+    public void llenarMapaDetalleEntrada(Map<String, Object>detalleEntrada,ResultSet rs){
+        try{
+            if (!rs.wasNull()) {
+                detalleEntrada.put("numEntrada", rs.getInt("num_entrada"));
+            }
+            if (rs.getString("nombre_evento") != null) {
+                detalleEntrada.put("nombreEvento", rs.getString("nombre_evento"));
+            }
+            if (rs.getString("ubicacion") != null) {
+                detalleEntrada.put("ubicacion", rs.getString("ubicacion"));
+            }
+            if (rs.getString("nombre_distrito") != null) {
+                detalleEntrada.put("nombreDistrito", rs.getString("nombre_distrito"));
+            }
+            if (rs.getDate("fecha_funcion") != null) {
+                detalleEntrada.put("fecha", rs.getDate("fecha_funcion"));
+            }
+            if (rs.getTime("hora_inicio") != null) {
+                detalleEntrada.put("horaInicio", rs.getTime("hora_inicio"));
+            }
+            if (rs.getTime("hora_fin") != null) {
+                detalleEntrada.put("horaFin", rs.getTime("hora_fin"));
+            }
+            if (rs.getString("activo") != null && !rs.getString("activo").isEmpty()) {
+                detalleEntrada.put("estado", rs.getString("activo").charAt(0));
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al llenar el mapa del detalle de la entrada: " + ex.getMessage());
+        }
+    }
+    @Override
+    public Map<String, Object> buscarConstanciaEntrada(int idConstancia){
+        Map<String, Object> constanciaEntrada = null;
+        String sql = """
+                     SELECT c.id_constancia, en.num_entrada, ev.nombre AS nombre_evento, 
+                     ev.ubicacion, d.nombre AS nombre_distrito, f.fecha AS fecha_funcion, 
+                     f.hora_inicio, f.hora_fin, en.activo, c.fecha, c.metodo_pago, c.total, 
+                     c.detalle_pago, p.nombres AS nombres_comprador, p.primer_apellido, 
+                     p.segundo_apellido, p.correo, p.tipo_documento, p.num_documento 
+                     FROM Entrada en JOIN Constancia c ON c.id_constancia=en.id_constancia_entrada 
+                     JOIN Funcion f ON f.id_funcion=en.Funcion_id_funcion JOIN Evento ev ON 
+                     ev.id_evento = f.Evento_idEvento JOIN Distrito d ON d.id_distrito = 
+                     ev.Distrito_id_distrito JOIN Persona p ON p.id_persona=en.Persona_id_persona 
+                     WHERE en.id_constancia_entrada = 
+                 """ + idConstancia;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            if(rs.next()){
+                constanciaEntrada = new HashMap<>();
+                this.llenarMapaDetalleEntrada(constanciaEntrada,rs);
+                constanciaDAO.llenarMapaDetalleConstancia(constanciaEntrada,rs);
+                System.out.println("Se busco la constancia de la entrada correctamente");
+                return constanciaEntrada;
+            }else{
+                throw new RuntimeException("Constancia de la entrada no encontrada");
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al buscar la constancia de la entrada: " + ex.getMessage());
         }
     }
 }

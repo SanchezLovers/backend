@@ -95,19 +95,40 @@ public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDA
         entity.setIdConstancia(id);
     }
     
-    //Metodo para el detalle de la constancia
     @Override
     public void llenarMapaDetalleConstancia(Map<String, Object>detalleConstancia,ResultSet rs){
         try{
-            detalleConstancia.put("nombresComprador", rs.getString("nombres_comprador"));
-            detalleConstancia.put("apellidosComprador", rs.getString("primer_apellido")+" "+rs.getString("segundo_apellido"));
-            detalleConstancia.put("correo", rs.getString("correo"));
-            detalleConstancia.put("tipoDocumento", rs.getString("tipo_documento"));
-            detalleConstancia.put("numDocumento", rs.getString("num_documento"));
-            detalleConstancia.put("fecha", rs.getDate("fecha"));
-            detalleConstancia.put("metodoPago", rs.getString("metodo_pago"));
-            detalleConstancia.put("monto", rs.getDouble("total"));
-            detalleConstancia.put("detallePago", rs.getString("detalle_pago"));
+            if (rs.getString("id_constancia") != null) {
+                detalleConstancia.put("idConstancia", rs.getInt("id_constancia"));
+            }
+            if (rs.getString("nombres_comprador") != null) {
+                detalleConstancia.put("nombresComprador", rs.getString("nombres_comprador"));
+            }
+            if (rs.getString("primer_apellido") != null || rs.getString("segundo_apellido") != null) {
+                detalleConstancia.put("apellidosComprador", (rs.getString("primer_apellido") != null ? rs.getString("primer_apellido") : "")
+                        + " " + (rs.getString("segundo_apellido") != null ? rs.getString("segundo_apellido") : ""));
+            }
+            if (rs.getString("correo") != null) {
+                detalleConstancia.put("correo", rs.getString("correo"));
+            }
+            if (rs.getString("tipo_documento") != null) {
+                detalleConstancia.put("tipoDocumento", rs.getString("tipo_documento"));
+            }
+            if (rs.getString("num_documento") != null) {
+                detalleConstancia.put("numDocumento", rs.getString("num_documento"));
+            }
+            if (rs.getDate("fecha") != null) {
+                detalleConstancia.put("fecha", rs.getDate("fecha"));
+            }
+            if (rs.getString("metodo_pago") != null) {
+                detalleConstancia.put("metodoPago", rs.getString("metodo_pago"));
+            }
+            if (!rs.wasNull()) {
+                detalleConstancia.put("monto", rs.getDouble("total"));
+            }
+            if (rs.getString("detalle_pago") != null) {
+                detalleConstancia.put("detallePago", rs.getString("detalle_pago"));
+            }
         } catch (SQLException ex) {
             throw new RuntimeException("Error al llenar el mapa del detalle de la constancia: " + ex.getMessage());
         }

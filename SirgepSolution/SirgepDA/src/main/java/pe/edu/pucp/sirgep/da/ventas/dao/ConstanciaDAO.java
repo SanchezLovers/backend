@@ -7,6 +7,5 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface ConstanciaDAO extends BaseDAO<Constancia> {
-    //Metodo para el detalle de la constancia
     public void llenarMapaDetalleConstancia(Map<String, Object>detalleConstancia,ResultSet rs);
 }

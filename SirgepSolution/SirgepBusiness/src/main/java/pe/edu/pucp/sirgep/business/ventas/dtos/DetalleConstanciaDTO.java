@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class DetalleConstanciaDTO {
     //Atributos
+    private int idConstancia;
     private String nombresComprador;
     private String apellidosComprador;
     private String correo;
@@ -20,6 +21,9 @@ public class DetalleConstanciaDTO {
     }
 
     //Propiedades
+    public int getIdConstancia() {
+        return idConstancia;
+    }
     public String getNombresComprador() {
         return nombresComprador;
     }
@@ -74,35 +78,46 @@ public class DetalleConstanciaDTO {
     public void setDetallePago(String detallePago) {
         this.detallePago = detallePago;
     }
+    public void setIdConstancia(int idConstancia) {
+        this.idConstancia = idConstancia;
+    }
     
     //Metodos
     public void llenarDetalleConstancia(Map<String, Object> detalle) {
-        if (detalle.get("nombresComprador") != null) {
-            this.setNombresComprador((String) detalle.get("nombresComprador"));
-        }
-        if (detalle.get("apellidosComprador") != null) {
-            this.setApellidosComprador((String) detalle.get("apellidosComprador"));
-        }
-        if (detalle.get("correo") != null) {
-            this.setCorreo((String) detalle.get("correo"));
-        }
-        if (detalle.get("tipoDocumento") != null) {
-            this.setTipoDocumento((String) detalle.get("tipoDocumento"));
-        }
-        if (detalle.get("numDocumento") != null) {
-            this.setNumDocumento((String) detalle.get("numDocumento"));
-        }
-        if (detalle.get("fecha") != null) {
-            this.setFecha((Date) detalle.get("fecha"));
-        }
-        if (detalle.get("metodoPago") != null) {
-            this.setMetodoPago((String) detalle.get("metodoPago"));
-        }
-        if (detalle.get("monto") != null) {
-            this.setMonto((double) detalle.get("monto"));
-        }
-        if (detalle.get("detallePago") != null) {
-            this.setDetallePago((String) detalle.get("detallePago"));
+        try{
+            int id = (int) detalle.get("idConstancia");
+            if (detalle.get("idConstancia") != null) {
+                this.setIdConstancia((int) detalle.get("idConstancia"));
+            }
+            if (detalle.get("nombresComprador") != null) {
+                this.setNombresComprador((String) detalle.get("nombresComprador"));
+            }
+            if (detalle.get("apellidosComprador") != null) {
+                this.setApellidosComprador((String) detalle.get("apellidosComprador"));
+            }
+            if (detalle.get("correo") != null) {
+                this.setCorreo((String) detalle.get("correo"));
+            }
+            if (detalle.get("tipoDocumento") != null) {
+                this.setTipoDocumento((String) detalle.get("tipoDocumento"));
+            }
+            if (detalle.get("numDocumento") != null) {
+                this.setNumDocumento((String) detalle.get("numDocumento"));
+            }
+            if (detalle.get("fecha") != null) {
+                this.setFecha((Date) detalle.get("fecha"));
+            }
+            if (detalle.get("metodoPago") != null) {
+                this.setMetodoPago((String) detalle.get("metodoPago"));
+            }
+            if (detalle.get("monto") != null) {
+                this.setMonto((double) detalle.get("monto"));
+            }
+            if (detalle.get("detallePago") != null) {
+                this.setDetallePago((String) detalle.get("detallePago"));
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al llenar el detalle de la constancia: " + ex.getMessage());
         }
     }
 }
