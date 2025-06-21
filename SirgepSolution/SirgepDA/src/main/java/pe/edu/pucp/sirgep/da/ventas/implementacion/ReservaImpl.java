@@ -526,7 +526,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
                      p.primer_apellido, p.segundo_apellido, p.correo, p.tipo_documento, p.num_documento
                      FROM Reserva r JOIN Constancia c ON c.id_constancia=r.id_constancia_reserva JOIN Espacio e ON 
                      r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito JOIN Persona p 
-                     ON p.id_persona=r.Persona_id_persona WHERE r.num_reserva = 
+                     ON p.id_persona=r.Persona_id_persona WHERE c.id_constancia = 
                  """ + idConstancia;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
             if(rs.next()){

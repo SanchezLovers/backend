@@ -7,18 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pe.edu.pucp.sirgep.business.infraestructura.dtos.EnvioCorreo;
-import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
-import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
-import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
+import pe.edu.pucp.sirgep.business.ventas.impl.ReservaServiceImpl;
+import pe.edu.pucp.sirgep.business.ventas.service.IReservaService;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 
 public class Main {
 
     public static void main(String[] args) throws Exception, SQLException, IOException {
         Connection con = DBManager.getInstance().getConnection();
-        IEntradaService entradaService=new EntradaServiceImpl();
-        ConstanciaEntradaDTO constanciaEntradaDTO=entradaService.buscarConstanciaEntrada(212);
+        IReservaService entradaService=new ReservaServiceImpl();
+        ConstanciaReservaDTO constanciaReservaDTO=entradaService.buscarConstanciaReserva(215);
         
         EnvioCorreo envioCorreo = new EnvioCorreo();
         List<String> listaCorreosCompradores = new ArrayList<>();
