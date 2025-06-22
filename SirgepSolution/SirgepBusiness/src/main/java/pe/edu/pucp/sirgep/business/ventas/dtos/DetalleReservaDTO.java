@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.Map;
 
 public class DetalleReservaDTO {
-
     //Atributos
+    private int IdConstancia;
     private int numReserva;
     private String nombreEspacio;
     private String categoria;
@@ -23,6 +23,9 @@ public class DetalleReservaDTO {
     }
 
     //Propiedades
+    public int getIdConstancia() {
+        return IdConstancia;
+    }
     public int getNumReserva() {
         return numReserva;
     }
@@ -102,10 +105,17 @@ public class DetalleReservaDTO {
     public void setSuperficie(double superficie) {
         this.superficie = superficie;
     }
+    public void setIdConstancia(int IdConstancia) {
+        this.IdConstancia = IdConstancia;
+    }
 
     //Metodos
     public void llenarDetalleReserva(Map<String, Object> detalle) {
         try{
+            int id = (int) detalle.get("idConstancia");
+            if (detalle.get("idConstancia") != null) {
+                this.setIdConstancia((int) detalle.get("idConstancia"));
+            }
             if (detalle.get("numReserva") != null) {
                 this.setNumReserva((int) detalle.get("numReserva"));
             }

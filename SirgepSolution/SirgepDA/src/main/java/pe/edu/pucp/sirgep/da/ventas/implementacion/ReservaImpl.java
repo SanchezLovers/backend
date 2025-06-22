@@ -45,10 +45,11 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r "
-                + "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio "
-                + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
-                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona";
+        return "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r " +
+               "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio " +
+               "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito " +
+               "JOIN Persona p ON p.id_persona = r.Persona_id_persona " +
+               "WHERE r.activo='A'";
     }
 
     @Override
@@ -106,10 +107,8 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
             aux.setIniString(aux.getHorarioIni().toString());
             aux.setFinString(aux.getHorarioIni().toString());
-
             dis.setIdDistrito(rs.getInt("id_distrito"));
             dis.setNombre(rs.getString("D.nombre"));
-
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
             esp.setNombre(rs.getString("E.nombre"));
             esp.setDistrito(dis);
@@ -340,24 +339,19 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     public List<Map<String, Object>> listarDetalleReservasPorComprador(int IdComprador) {
         List<Map<String, Object>> listaDetalleReservas = null;
         String sql = """
-                         SELECT r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio, e.ubicacion, 
-                     d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio, r.horario_fin AS hora_fin
-                         FROM Reserva r JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON 
-                     e.Distrito_id_distrito = d.id_distrito WHERE r.activo = 'A' AND r.Persona_id_persona = 
+                     SELECT c.id_constancia, r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS 
+                     categoria_espacio, e.ubicacion, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS 
+                     hora_inicio, r.horario_fin AS hora_fin, e.superficie, r.activo 
+                     FROM Reserva r JOIN Constancia c ON c.id_constancia=r.id_constancia_reserva JOIN Espacio e ON 
+                     r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito 
+                     WHERE r.Persona_id_persona = 
                  """ + IdComprador;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
             listaDetalleReservas = new ArrayList<>();
             while (rs.next()) {
-                Map<String, Object> fila = new HashMap<>();
-                fila.put("numReserva", rs.getInt("num_reserva"));
-                fila.put("nombreEspacio", rs.getString("nombre_espacio"));
-                fila.put("categoria", rs.getString("categoria_espacio"));
-                fila.put("ubicacion", rs.getString("ubicacion"));
-                fila.put("nombreDistrito", rs.getString("nombre_distrito"));
-                fila.put("fecha", rs.getDate("fecha_reserva"));
-                fila.put("horaInicio", rs.getTime("hora_inicio"));
-                fila.put("horaFin", rs.getTime("hora_fin"));
-                listaDetalleReservas.add(fila);
+                Map<String, Object> detalleReserva = new HashMap<>();
+                this.llenarMapaDetalleReserva(detalleReserva,rs);
+                listaDetalleReservas.add(detalleReserva);
             }
             System.out.println("Se listo las entradas correctamente");
         } catch (SQLException e) {
@@ -502,16 +496,39 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     @Override
     public void llenarMapaDetalleReserva(Map<String, Object>detalleReserva,ResultSet rs){
         try{
-            detalleReserva.put("numReserva", rs.getInt("num_reserva"));
-            detalleReserva.put("nombreEspacio", rs.getString("nombre_espacio"));
-            detalleReserva.put("categoria", rs.getString("categoria_espacio"));
-            detalleReserva.put("ubicacion", rs.getString("ubicacion"));
-            detalleReserva.put("nombreDistrito", rs.getString("nombre_distrito"));
-            detalleReserva.put("fecha", rs.getDate("fecha_reserva"));
-            detalleReserva.put("horaInicio", rs.getTime("hora_inicio"));
-            detalleReserva.put("horaFin", rs.getTime("hora_fin"));
-            detalleReserva.put("superficie", rs.getDouble("superficie"));
-            detalleReserva.put("estado", rs.getString("activo").charAt(0));
+            if (rs.getString("id_constancia") != null) {
+                detalleReserva.put("idConstancia", rs.getInt("id_constancia"));
+            }
+            if (!rs.wasNull()) {
+                detalleReserva.put("numReserva", rs.getInt("num_reserva"));
+            }
+            if (rs.getString("nombre_espacio") != null) {
+                detalleReserva.put("nombreEspacio", rs.getString("nombre_espacio"));
+            }
+            if (rs.getString("ubicacion") != null) {
+                detalleReserva.put("ubicacion", rs.getString("ubicacion"));
+            }
+            if (rs.getString("nombre_distrito") != null) {
+                detalleReserva.put("nombreDistrito", rs.getString("nombre_distrito"));
+            }
+            if (rs.getString("categoria_espacio") != null) {
+                detalleReserva.put("categoria", rs.getString("categoria_espacio"));
+            }
+            if (rs.getString("superficie") != null) {
+                detalleReserva.put("superficie", rs.getDouble("superficie"));
+            }
+            if (rs.getDate("fecha_reserva") != null) {
+                detalleReserva.put("fecha", rs.getDate("fecha_reserva"));
+            }
+            if (rs.getTime("hora_inicio") != null) {
+                detalleReserva.put("horaInicio", rs.getTime("hora_inicio"));
+            }
+            if (rs.getTime("hora_fin") != null) {
+                detalleReserva.put("horaFin", rs.getTime("hora_fin"));
+            }
+            if (rs.getString("activo") != null && !rs.getString("activo").isEmpty()) {
+                detalleReserva.put("estado", rs.getString("activo").charAt(0));
+            }
         } catch (SQLException ex) {
             throw new RuntimeException("Error al llenar el mapa del detalle de la reserva: " + ex.getMessage());
         }

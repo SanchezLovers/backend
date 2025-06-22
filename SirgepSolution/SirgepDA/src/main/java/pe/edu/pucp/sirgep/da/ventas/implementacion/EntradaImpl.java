@@ -220,23 +220,18 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     public List<Map<String, Object>> listarDetalleEntradasPorComprador(int IdComprador) {
     List<Map<String, Object>> listaDetalleEntradas = null;
     String sql = """
-                 SELECT e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion, d.nombre AS nombre_distrito, f.fecha, 
-                 f.hora_inicio, f.hora_fin FROM Entrada e JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
+                 SELECT c.id_constancia, e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion, d.nombre AS 
+                 nombre_distrito, f.fecha AS fecha_funcion, f.hora_inicio, f.hora_fin, e.activo FROM Entrada e JOIN Constancia c ON 
+                 c.id_constancia=e.id_constancia_entrada JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
                  JOIN Evento ev ON f.Evento_idEvento = ev.id_evento JOIN Distrito d ON ev.Distrito_id_distrito = d.id_distrito
-                 WHERE e.activo = 'A' AND e.Persona_id_persona = 
+                 WHERE e.Persona_id_persona = 
                  """+IdComprador;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
             listaDetalleEntradas = new ArrayList<>();
             while (rs.next()) {
-                Map<String, Object> fila = new HashMap<>();
-                fila.put("numEntrada", rs.getInt("num_entrada"));
-                fila.put("nombreEvento", rs.getString("nombre_evento"));
-                fila.put("ubicacion", rs.getString("ubicacion"));
-                fila.put("nombreDistrito", rs.getString("nombre_distrito"));
-                fila.put("fecha", rs.getDate("fecha"));
-                fila.put("horaInicio", rs.getTime("hora_inicio"));
-                fila.put("horaFin", rs.getTime("hora_fin"));
-                listaDetalleEntradas.add(fila);
+                Map<String, Object> detalleEntrada = new HashMap<>();
+                this.llenarMapaDetalleEntrada(detalleEntrada,rs);
+                listaDetalleEntradas.add(detalleEntrada);
             }
             System.out.println("Se listo las entradas correctamente");
         } catch (SQLException e) {
@@ -250,7 +245,10 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     @Override
     public void llenarMapaDetalleEntrada(Map<String, Object>detalleEntrada,ResultSet rs){
         try{
-            if (!rs.wasNull()) {
+            if (rs.getString("id_constancia")!=null) {
+                detalleEntrada.put("idConstancia", rs.getInt("id_constancia"));
+            }
+            if (rs.getString("num_entrada")!=null){
                 detalleEntrada.put("numEntrada", rs.getInt("num_entrada"));
             }
             if (rs.getString("nombre_evento") != null) {
