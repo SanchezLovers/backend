@@ -5,6 +5,8 @@ import pe.edu.pucp.sirgep.da.ubicacion.dao.DistritoDAO;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
@@ -116,6 +118,29 @@ public class DistritoImpl extends BaseImpl<Distrito> implements  DistritoDAO{
             throw new RuntimeException("Error al insertar "+entity.getClass().getSimpleName()+" ", e);
         }finally{
             return entity.getIdDistrito();
+        }
+    }
+    public String getListarPorProv(){
+        String query = "SELECT id_distrito, nombre, Provincia_id_provincia FROM Distrito WHERE Provincia_id_provincia=?;";
+        return query;
+    }
+    
+    @Override
+    public List<Distrito> listarPorProv(int idProvincia) {
+        List<Distrito> entities=null;
+        try (Connection conn = DBManager.getInstance().getConnection();
+              PreparedStatement pst = conn.prepareStatement(this.getListarPorProv())) {
+            pst.setInt(1, idProvincia);
+            ResultSet rs = pst.executeQuery();
+            entities = new ArrayList<>();
+            while (rs.next()) {
+                entities.add(this.createFromResultSet(rs));
+            }
+            System.out.println("Se listo los registros de distrito por Provincia");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las entidades", e);
+        }finally{
+            return entities;
         }
     }
 }

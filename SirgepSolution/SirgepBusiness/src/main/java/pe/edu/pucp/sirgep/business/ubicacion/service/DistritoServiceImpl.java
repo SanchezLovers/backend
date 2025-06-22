@@ -29,6 +29,15 @@ public class DistritoServiceImpl {
         return distritosDelDepa;
     }
     
+    public List<Distrito> listarPorProv(int id) {
+        try{
+            return distritoDAO.listarPorProv(id);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("ERROR AL LISTAR DISTRITOS POR DEPARTAMENTO ..." + ex.getMessage());
+        }
+    }
+    
     public List<Distrito> listar() {
         return distritoDAO.listar();
     }

@@ -6,6 +6,7 @@ import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import java.util.ArrayList;
 import java.util.List;
+import pe.edu.pucp.sirgep.business.infraestructura.dtos.EspacioDTO;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.EspacioServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEspacioService;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
@@ -150,6 +151,16 @@ public class EspacioWS {
             throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del espacio: "+ ex.getMessage());
         }finally{
             return resultado;
+        }
+    }
+    
+    @WebMethod(operationName = "obtenerEspacioDTO")
+    public EspacioDTO obtenerEspacioDTO(@WebParam(name = "idEspacio") int idEspacio){
+        try{
+            return espacioService.llenarEspacioDTOEdicion(idEspacio);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("ERROR AL OBTENER ESPACIO DTO " + ex.getMessage());
         }
     }
 }
