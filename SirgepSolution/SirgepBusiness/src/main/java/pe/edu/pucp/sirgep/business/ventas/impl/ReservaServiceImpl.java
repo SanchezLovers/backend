@@ -287,28 +287,21 @@ public class ReservaServiceImpl implements IReservaService {
 
     @Override
     public List<DetalleReservaDTO> listarDetalleReservasPorComprador(int idComprador) {
-        List<DetalleReservaDTO> listaFinal = null;
+        List<DetalleReservaDTO> listaDetalleReservas = null;
         try {
             List<Map<String, Object>> lista = reservaDAO.listarDetalleReservasPorComprador(idComprador);
             if (lista != null) {
-                listaFinal = new ArrayList<>();
-                for (Map<String, Object> fila : lista) {
-                    DetalleReservaDTO detalleReserva = new DetalleReservaDTO();
-                    detalleReserva.setNumReserva((int) fila.get("numReserva"));
-                    detalleReserva.setNombreEspacio((String) fila.get("nombreEspacio"));
-                    detalleReserva.setCategoria((String) fila.get("categoria"));
-                    detalleReserva.setUbicacion((String) fila.get("ubicacion"));
-                    detalleReserva.setNombreDistrito((String) fila.get("nombreDistrito"));
-                    detalleReserva.setFecha((Date) fila.get("fecha"));
-                    detalleReserva.setHoraInicio((Time) fila.get("horaInicio"));
-                    detalleReserva.setHoraFin((Time) fila.get("horaFin"));
-                    listaFinal.add(detalleReserva);
+                listaDetalleReservas = new ArrayList<>();
+                for (Map<String, Object> detalle : lista) {
+                    DetalleReservaDTO detalleReservaDTO = new DetalleReservaDTO();
+                    detalleReservaDTO.llenarDetalleReserva(detalle);
+                    listaDetalleReservas.add(detalleReservaDTO);
                 }
             }
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
         } finally {
-            return listaFinal;
+            return listaDetalleReservas;
         }
     }
 

@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class DetalleEntradaDTO {
     //Atributos
+    private int IdConstancia;
     private int numEntrada;
     private String nombreEvento;
     private String ubicacion;
@@ -20,6 +21,9 @@ public class DetalleEntradaDTO {
     }
     
     //Propiedades
+    public int getIdConstancia() {
+        return IdConstancia;
+    }
     public int getNumEntrada() {
         return numEntrada;
     }
@@ -68,10 +72,17 @@ public class DetalleEntradaDTO {
     public void setEstado(char estado) {
         this.estado = estado;
     }
+    public void setIdConstancia(int IdConstancia) {
+        this.IdConstancia = IdConstancia;
+    }
     
     //Metodos
     public void llenarDetalleEntrada(Map<String, Object> detalle) {
         try{
+            int id = (int) detalle.get("idConstancia");
+            if (detalle.get("idConstancia") != null) {
+                this.setIdConstancia((int) detalle.get("idConstancia"));
+            }
             if (detalle.get("numEntrada") != null) {
                 this.setNumEntrada((int) detalle.get("numEntrada"));
             }
