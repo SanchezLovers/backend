@@ -63,7 +63,6 @@ public class EspacioDiaSemImpl extends BaseImpl<EspacioDiaSem> implements Espaci
         try{
             ps.setInt(1, entity.getIdEspacio());
             ps.setString(2, entity.getDia().toString());
-            ps.setString(3, String.valueOf(entity.getActivo()));
         }
         catch(SQLException ex){
             throw new RuntimeException("ERROR AL INSERTAR DIA EN ESPACIO " + ex.getMessage());
@@ -112,12 +111,8 @@ public class EspacioDiaSemImpl extends BaseImpl<EspacioDiaSem> implements Espaci
             try(PreparedStatement pst=conn.prepareStatement(this.getInsertQuery())){
                 this.setInsertParameters(pst, entity);
                 rows = pst.executeUpdate();
-                try (ResultSet rs = pst.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        conn.commit();
-                        System.out.println("Se inserto un registro de "+entity.getClass().getSimpleName());
-                    }
-                }
+                conn.commit();
+                System.out.println("Se inserto un registro de "+entity.getClass().getSimpleName());
             }catch (SQLException e) {
                 conn.rollback();
                 throw new RuntimeException("Error al ejecutar el query insertado", e);

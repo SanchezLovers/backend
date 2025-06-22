@@ -18,15 +18,12 @@ public class ProvinciaServiceImpl {
         this.provinciaDAO=new ProvinciaImpl();
     }
     public List<Provincia> listarPorDepartamento(int id) {
-        List<Provincia> provinciasGeneral = provinciaDAO.listar();
-        List<Provincia> provinciasDelDepa;
-        provinciasDelDepa = new ArrayList<>();
-        for (int i = 0; i < provinciasGeneral.size(); i++) {
-            Provincia p = provinciasGeneral.get(i);
-            if (p.getDepartamento().getIdDepartamento() == id)
-                provinciasDelDepa.add(p);
+        try{
+            return provinciaDAO.listarPorDepa(id);
         }
-        return provinciasDelDepa;
+        catch(Exception ex){
+            throw new RuntimeException("ERROR AL LISTAR PROVINCIAS POR DEPARTAMENTO ..." + ex.getMessage());
+        }
     }
     
     public Provincia buscar(int id){

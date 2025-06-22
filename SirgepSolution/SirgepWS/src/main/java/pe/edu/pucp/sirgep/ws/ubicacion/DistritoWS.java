@@ -35,6 +35,15 @@ public class DistritoWS {
         }
     }
     
+    @WebMethod(operationName = "listarDistritosPorProvincia")
+    public List<Distrito> listarDistritosPorProvincia(@WebParam(name = "IdProvincia")int idProvincia) {
+        try {
+            return dService.listarPorProv(idProvincia);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar distritos: " + ex.getMessage());
+        }
+    }
+    
     @WebMethod(operationName = "listarTodosDistritos")
     public List<Distrito> listarTodosDistritos() {
         try{

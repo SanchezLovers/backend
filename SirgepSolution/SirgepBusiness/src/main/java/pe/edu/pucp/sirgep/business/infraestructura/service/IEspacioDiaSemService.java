@@ -16,4 +16,5 @@ public interface IEspacioDiaSemService{
     List<EspacioDiaSem> listarDiasSem();
     List<EspacioDiaSem> listarDiasSemPorEspacio(int idEspacio);
     boolean insertarDiaSem(EspacioDiaSem entity);
+    public boolean eliminarDiasPorEspacio(int idEspacio);
 }

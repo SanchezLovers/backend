@@ -44,5 +44,15 @@ public class EspacioDiaSemWS {
         }
     }
     
+    @WebMethod(operationName = "eliminarDiasPorEspacio")
+    public boolean eliminarDiasPorEspacio(@WebParam (name = "idEspacio") int idEspacio){
+        try{
+            return diaService.eliminarDiasPorEspacio(idEspacio);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("ERROR AL INSERTAR UN DIA DE LA SEMANA" + ex.getMessage());
+        }
+    }
+    
     
 }

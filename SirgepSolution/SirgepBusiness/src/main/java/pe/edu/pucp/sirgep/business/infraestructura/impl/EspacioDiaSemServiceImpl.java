@@ -35,4 +35,9 @@ public class EspacioDiaSemServiceImpl implements IEspacioDiaSemService {
     public List<EspacioDiaSem> listarDiasSemPorEspacio(int idEspacio) {
         return diaDAO.listarPorEspacio(idEspacio);
     }
+
+    @Override
+    public boolean eliminarDiasPorEspacio(int idEspacio) {
+        return diaDAO.eliminarLogico(idEspacio);
+    }
 }

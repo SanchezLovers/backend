@@ -2,21 +2,42 @@ package pe.edu.pucp.sirgep.business.infraestructura.impl;
 
 import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.dtos.EnvioCorreo;
+import pe.edu.pucp.sirgep.business.infraestructura.dtos.EspacioDTO;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEspacioService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
+import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDiaSemDAO;
+import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioDiaSemImpl;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioImpl;
+import pe.edu.pucp.sirgep.da.ubicacion.dao.DepartamentoDAO;
+import pe.edu.pucp.sirgep.da.ubicacion.dao.DistritoDAO;
+import pe.edu.pucp.sirgep.da.ubicacion.dao.ProvinciaDAO;
+import pe.edu.pucp.sirgep.da.ubicacion.implementacion.DepartamentoImpl;
+import pe.edu.pucp.sirgep.da.ubicacion.implementacion.DistritoImpl;
+import pe.edu.pucp.sirgep.da.ubicacion.implementacion.ProvinciaImpl;
 import pe.edu.pucp.sirgep.da.usuarios.dao.CompradorDAO;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.CompradorImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.EspacioDiaSem;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 
 public class EspacioServiceImpl implements IEspacioService {
     private final EspacioDAO espacioDAO;
     private final CompradorDAO compradorDAO;
+    private final DepartamentoDAO depaDAO;
+    private final ProvinciaDAO provDAO;
+    private final DistritoDAO distDAO;
+    private final EspacioDiaSemDAO diaSemDAO;
 
     public EspacioServiceImpl(){
         this.espacioDAO=new EspacioImpl();
         this.compradorDAO=new CompradorImpl();
+        depaDAO = new DepartamentoImpl();
+        provDAO = new ProvinciaImpl();
+        distDAO = new DistritoImpl();
+        diaSemDAO = new EspacioDiaSemImpl();
     }
     
     @Override
@@ -88,5 +109,42 @@ public class EspacioServiceImpl implements IEspacioService {
         }finally{
             return resultado;
         }
+    }
+    
+    public void mapearDTO(EspacioDTO espDTO, Espacio esp, Departamento depa, Provincia prov, Distrito dist){
+        /*Datos Espacio*/
+        espDTO.setIdEspacio(esp.getIdEspacio());
+        espDTO.setNombre(esp.getNombre());
+        espDTO.setTipo(esp.getTipoEspacio());
+        espDTO.setUbicacion(esp.getUbicacion());
+        espDTO.setPrecioReserva(esp.getPrecioReserva());
+        espDTO.setSuperficie(esp.getSuperficie());
+        espDTO.setHoraInicio(esp.getHorarioInicioAtencion());
+        espDTO.setHoraFin(esp.getHorarioFinAtencion());
+        espDTO.setDias(diaSemDAO.listarPorEspacio(esp.getIdEspacio()));
+        /*Datos Departamento*/
+        espDTO.setIdDepartamento(depa.getIdDepartamento());
+        espDTO.setNombreDepartamento(depa.getNombre());
+        espDTO.setDepartamentos(depaDAO.listar());
+        /*Datos Provincia*/
+        espDTO.setIdProvincia(prov.getIdProvincia());
+        espDTO.setNombreProvincia(prov.getNombre());
+        espDTO.setProvincias(provDAO.listarPorDepa(depa.getIdDepartamento()));
+        /*Datos Distrito*/
+        espDTO.setIdDistrito(dist.getIdDistrito());
+        espDTO.setNombreDistrito(dist.getNombre());
+        espDTO.setDistritos(distDAO.listarPorProv(prov.getIdProvincia()));
+    }
+    
+    @Override
+    public EspacioDTO llenarEspacioDTOEdicion(int idEspacio){
+        EspacioDTO espDTO = new EspacioDTO();
+        Espacio esp = espacioDAO.buscar(idEspacio);
+        Distrito dist = distDAO.buscar(esp.getDistrito().getIdDistrito());
+        Provincia prov = provDAO.buscar(dist.getProvincia().getIdProvincia());
+        Departamento depa = depaDAO.buscar(prov.getDepartamento().getIdDepartamento());
+        // ----------------------------------------------------------------
+        mapearDTO(espDTO,esp,depa,prov,dist);
+        return espDTO;
     }
 }
