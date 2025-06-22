@@ -301,6 +301,33 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
     }
     
     @Override
+    public boolean cancelarReserva(int id) throws SQLException{
+        
+        // intento realizar el procedimiento: actualizar Constancia y, luego, Reserva:
+        try(Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
+        {
+            String query = "UPDATE Reserva " +
+                    "SET  estado = C WHERE num_reserva = "+id;
+            con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
+            try(PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
+                ps.executeUpdate();
+                con.commit();
+    //            System.out.println("Se actualizo un registro de "+entity.getClass().getSimpleName());
+                return true; // si todo fue bien, la respuesta será verdadera
+            }
+            catch(SQLException e){
+                con.rollback();
+                return false; // si algo falló, la respuesta será falsa
+
+            } finally{
+                // el finally siempre se ejecuta... asi hayan returns antes
+                return (true);
+            }
+        }
+        
+    }
+    
+    @Override
     public boolean eliminarFisico(int id){
         boolean seEliminoFisC=false, seEliminoFisR=false;
         
@@ -358,7 +385,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO{
                          SELECT r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio, e.ubicacion, 
                      d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio, r.horario_fin AS hora_fin
                          FROM Reserva r JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON 
-                     e.Distrito_id_distrito = d.id_distrito WHERE r.activo = 'A' AND r.Persona_id_persona = 
+                     e.Distrito_id_distrito = d.id_distrito WHERE r.activo = 'A' or r.activo = 'C' AND r.Persona_id_persona = 
                  """ + IdComprador;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
             listaDetalleReservas = new ArrayList<>();

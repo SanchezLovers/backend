@@ -3,6 +3,7 @@ package pe.edu.pucp.sirgep.business.ventas.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
@@ -132,6 +133,11 @@ public class ReservaServiceImpl implements IReservaService {
     @Override
     public List<Reserva> listarPorDistrito(int id_distrito, boolean activo){
         return reservaDAO.listarPorDistrito(id_distrito, activo);
+    }
+    
+    @Override
+    public boolean cancelarReserva(int id) throws SQLException{
+        return reservaDAO.cancelarReserva(id);
     }
     
     @Override

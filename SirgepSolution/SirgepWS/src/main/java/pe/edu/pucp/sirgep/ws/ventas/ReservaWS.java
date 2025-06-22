@@ -204,4 +204,12 @@ public class ReservaWS {
             throw new WebServiceException("Error al listar por persona: " + ex.getMessage());
         }
     }
+    @WebMethod(operationName = "cancelarReserva")
+    public boolean cancelarReserva(@WebParam(name = "idReserva")int id){
+        try {
+            return reservaService.cancelarReserva(id);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por persona: " + ex.getMessage());
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package pe.edu.pucp.sirgep.business.ventas.service;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -24,6 +25,7 @@ public interface IReservaService {
     public Comprador buscarCompradorDeReserva(int idComprador);
     public Espacio buscarEspacioDeReserva(int idEspacio);
     public Distrito buscarDistritoDeReserva(int idEntrada);
+    public boolean cancelarReserva(int id) throws SQLException;
 
     //Metodos adicionales para el listado de reservas
     List<Reserva> listarPorFecha(Date fecha, boolean activo);

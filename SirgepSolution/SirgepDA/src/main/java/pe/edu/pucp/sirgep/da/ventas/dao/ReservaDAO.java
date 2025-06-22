@@ -1,4 +1,5 @@
 package pe.edu.pucp.sirgep.da.ventas.dao;
+import java.sql.SQLException;
 import java.util.Date;
 import javax.xml.crypto.Data;
 import java.util.List;
@@ -17,4 +18,5 @@ public interface ReservaDAO extends BaseDAO<Reserva>{
     public List<Reserva> listarPorDistrito(int id_distrito, boolean activo);
     public List<Reserva> listarPorEspacio(int id_espacio, boolean activo);
     public List<Reserva> listarPorPersona(int id_persona, boolean activo);
+    public boolean cancelarReserva(int id) throws SQLException;
 }
