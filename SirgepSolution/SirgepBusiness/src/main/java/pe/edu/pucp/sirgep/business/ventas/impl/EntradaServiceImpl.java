@@ -221,27 +221,21 @@ public class EntradaServiceImpl implements IEntradaService{
     
     @Override
     public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(int idComprador) {
-        List<DetalleEntradaDTO> listaFinal = null;
+        List<DetalleEntradaDTO> listaDetalleEntradas = null;
         try {
             List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasPorComprador(idComprador);
             if (lista != null) {
-                listaFinal = new ArrayList<>();
-                for (Map<String, Object> fila : lista) {
-                    DetalleEntradaDTO detalle = new DetalleEntradaDTO();
-                    detalle.setNumEntrada((int) fila.get("numEntrada"));
-                    detalle.setNombreEvento((String) fila.get("nombreEvento"));
-                    detalle.setUbicacion((String) fila.get("ubicacion"));
-                    detalle.setNombreDistrito((String) fila.get("nombreDistrito"));
-                    detalle.setFecha((Date) fila.get("fecha"));
-                    detalle.setHoraInicio((Time) fila.get("horaInicio"));
-                    detalle.setHoraFin((Time) fila.get("horaFin"));
-                    listaFinal.add(detalle);
+                listaDetalleEntradas = new ArrayList<>();
+                for (Map<String, Object> detalle : lista) {
+                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
+                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
+                    listaDetalleEntradas.add(detalleEntradaDTO);
                 }
             }
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
         } finally {
-            return listaFinal;
+            return listaDetalleEntradas;
         }
     }
 
