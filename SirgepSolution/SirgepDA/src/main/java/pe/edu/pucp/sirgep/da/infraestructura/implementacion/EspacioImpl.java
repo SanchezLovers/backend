@@ -42,7 +42,7 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
     @Override
     protected String getUpdateQuery() {
         String query = "UPDATE Espacio SET nombre=?, tipo_espacio=?, horario_inicio_atencion=?,"
-                + " horario_fin_atencion=?, ubicacion=?, superficie=?, precio_reserva=? WHERE id_espacio=?";
+                + " horario_fin_atencion=?, ubicacion=?, superficie=?, precio_reserva=?, Distrito_id_distrito=? WHERE id_espacio=?";
         return query;
     }
 
@@ -84,7 +84,8 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
             ps.setString(5, e.getUbicacion());
             ps.setDouble(6, e.getSuperficie());
             ps.setDouble(7, e.getPrecioReserva());
-            ps.setInt(8, e.getIdEspacio());
+            ps.setInt(8, e.getDistrito().getIdDistrito());
+            ps.setInt(9, e.getIdEspacio());
         }catch(SQLException ex){
             throw new RuntimeException(ex);
         }
