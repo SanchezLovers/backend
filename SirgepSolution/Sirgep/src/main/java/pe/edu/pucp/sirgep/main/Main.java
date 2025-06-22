@@ -7,13 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pe.edu.pucp.sirgep.business.infraestructura.dtos.EnvioCorreo;
-import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
-import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReservaDTO;
-import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
 import pe.edu.pucp.sirgep.business.ventas.impl.ReservaServiceImpl;
-import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
 import pe.edu.pucp.sirgep.business.ventas.service.IReservaService;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 
