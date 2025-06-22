@@ -150,6 +150,16 @@ public class EntradaWS {
         }
     }
     
+    //Metodo para listar el detalle de las entradas
+    @WebMethod(operationName = "listarDetalleEntradas")
+    public List<DetalleEntradaDTO> listarDetalleEntradas(){
+        try {
+            return entradaService.listarDetalleEntradas();
+        }  catch (Exception ex) {
+            throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
+        }
+    }
+    
     //Metodo para crear libro de Excel para las entradas
     @WebMethod(operationName = "crearLibroExcelEntradas")
     public void crearLibroExcelEntradas(@WebParam(name = "idComprador")int idComprador){
@@ -173,6 +183,15 @@ public class EntradaWS {
             }
         } catch (Exception ex) {
             throw new WebServiceException("Error al buscar la constancia de la entrada: " + ex.getMessage());
+        }
+    }
+
+    @WebMethod(operationName = "buscarEntradasPorTexto")
+    public List<DetalleEntradaDTO> buscarEntradasPorTexto(@WebParam(name = "texto") String texto){
+        try {
+            return entradaService.buscarPorTexto(texto);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al buscar las entradas: " + ex.getMessage());
         }
     }
 }

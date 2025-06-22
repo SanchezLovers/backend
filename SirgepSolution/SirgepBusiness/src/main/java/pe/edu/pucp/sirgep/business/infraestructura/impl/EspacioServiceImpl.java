@@ -140,9 +140,9 @@ public class EspacioServiceImpl implements IEspacioService {
     public EspacioDTO llenarEspacioDTOEdicion(int idEspacio){
         EspacioDTO espDTO = new EspacioDTO();
         Espacio esp = espacioDAO.buscar(idEspacio);
-        Distrito dist = distDAO.buscar(esp.getDistrito().getIdDistrito());
-        Provincia prov = provDAO.buscar(dist.getProvincia().getIdProvincia());
-        Departamento depa = depaDAO.buscar(prov.getDepartamento().getIdDepartamento());
+        Distrito dist = distDAO.buscarDistritoCompleto(esp.getDistrito().getIdDistrito());
+        Provincia prov = dist.getProvincia();
+        Departamento depa = prov.getDepartamento();
         // ----------------------------------------------------------------
         mapearDTO(espDTO,esp,depa,prov,dist);
         return espDTO;

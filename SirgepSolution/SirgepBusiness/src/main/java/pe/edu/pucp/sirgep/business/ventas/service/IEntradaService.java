@@ -37,4 +37,7 @@ public interface IEntradaService {
     public void exportarLibroEntradas(XSSFWorkbook libro,String nombreArchivo);
     
     public ConstanciaEntradaDTO buscarConstanciaEntrada(int idConstancia);
+
+    public List<DetalleEntradaDTO> listarDetalleEntradas();
+    public List<DetalleEntradaDTO> buscarPorTexto(String texto);
 }
