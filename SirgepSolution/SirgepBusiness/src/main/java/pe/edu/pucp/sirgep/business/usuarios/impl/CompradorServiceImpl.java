@@ -1,7 +1,10 @@
 package pe.edu.pucp.sirgep.business.usuarios.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import pe.edu.pucp.sirgep.business.usuarios.dtos.CompradorDTO;
 import pe.edu.pucp.sirgep.business.usuarios.dtos.DetalleComprador;
 import pe.edu.pucp.sirgep.business.usuarios.service.ICompradorService;
 import pe.edu.pucp.sirgep.da.usuarios.dao.CompradorDAO;
@@ -79,5 +82,29 @@ public class CompradorServiceImpl implements ICompradorService{
     @Override
     public boolean actualizarDistritoFavoritoPorIdComprador(String nuevoDistrito,int idComprador){
         return compradorDAO.actualizarDistritoFavoritoPorIdComprador(nuevoDistrito,idComprador);
+    }
+    
+    @Override
+    public Date obtenerUltimaCompraPorDocumento(String numeroDocumento) {
+        return compradorDAO.obtenerUltimaCompraPorDocumento(numeroDocumento);
+    }
+    @Override
+    public List<CompradorDTO> listarCompradoresDTO() {
+        List<CompradorDTO> resultado = new ArrayList<>();
+        List<Map<String, Object>> datos = compradorDAO.listarCompradoresDTO();
+
+        for (Map<String, Object> fila : datos) {
+            CompradorDTO dto = new CompradorDTO();
+            dto.setIdComprador((int) fila.get("id"));
+            dto.setNombres((String) fila.get("nombres"));
+            dto.setPrimerApellido((String) fila.get("primerApellido"));
+            dto.setSegundoApellido((String) fila.get("segundoApellido"));
+            dto.setTipoDocumento((String) fila.get("tipoDocumento"));
+            dto.setNumeroDocumento((String) fila.get("numDocumento"));
+            dto.setCorreo((String) fila.get("correo"));
+            resultado.add(dto);
+        }
+
+        return resultado;
     }
 }
