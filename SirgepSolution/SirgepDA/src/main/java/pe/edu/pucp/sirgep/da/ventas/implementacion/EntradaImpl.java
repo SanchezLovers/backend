@@ -40,7 +40,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         String sql = "SELECT id_constancia,fecha,metodo_pago,igv,total,detalle_pago,"
                 + "num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion "
                 + "FROM Constancia C, Entrada E "
-                + "WHERE C.id_constancia = E.id_constancia_entrada AND num_entrada=?";
+                + "WHERE C.id_constancia = E.id_constancia_entrada AND id_constancia_entrada=?";
         return sql;
     }
     
@@ -127,18 +127,19 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     
     @Override
     public int insertar(Entrada entrada){
-        int idC=-1, idE=-1;
+        int idConstancia=-1, numEntrada=-1;
         try(Connection con = DBManager.getInstance().getConnection()){
             con.setAutoCommit(false);
-            idC = constanciaDAO.insertar((Constancia)entrada);
-            entrada.setIdConstancia(idC);
-            idE = super.insertar(entrada);
+            idConstancia = constanciaDAO.insertar((Constancia)entrada);
+            entrada.setIdConstancia(idConstancia);
+            numEntrada = super.insertar(entrada);
+            entrada.setNumEntrada(numEntrada);
         }catch(SQLException e) {
             throw new RuntimeException("Error al insertar "+entrada.getClass().getSimpleName()+" ", e);
         }finally{
-            if(idE>0)
-                return idE;
-            return idC;
+            if(numEntrada>0)
+                return idConstancia;
+            return 0;
         }
     }
     
@@ -219,29 +220,89 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     public List<Map<String, Object>> listarDetalleEntradasPorComprador(int IdComprador) {
     List<Map<String, Object>> listaDetalleEntradas = null;
     String sql = """
-                 SELECT e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion, d.nombre AS nombre_distrito, f.fecha, 
-                 f.hora_inicio, f.hora_fin FROM Entrada e JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
+                 SELECT c.id_constancia, e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion, d.nombre AS 
+                 nombre_distrito, f.fecha AS fecha_funcion, f.hora_inicio, f.hora_fin, e.activo FROM Entrada e JOIN Constancia c ON 
+                 c.id_constancia=e.id_constancia_entrada JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
                  JOIN Evento ev ON f.Evento_idEvento = ev.id_evento JOIN Distrito d ON ev.Distrito_id_distrito = d.id_distrito
-                 WHERE e.activo = 'A' AND e.Persona_id_persona = 
+                 WHERE e.Persona_id_persona = 
                  """+IdComprador;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
             listaDetalleEntradas = new ArrayList<>();
             while (rs.next()) {
-                Map<String, Object> fila = new HashMap<>();
-                fila.put("numEntrada", rs.getInt("num_entrada"));
-                fila.put("nombreEvento", rs.getString("nombre_evento"));
-                fila.put("ubicacion", rs.getString("ubicacion"));
-                fila.put("nombreDistrito", rs.getString("nombre_distrito"));
-                fila.put("fecha", rs.getDate("fecha"));
-                fila.put("horaInicio", rs.getTime("hora_inicio"));
-                fila.put("horaFin", rs.getTime("hora_fin"));
-                listaDetalleEntradas.add(fila);
+                Map<String, Object> detalleEntrada = new HashMap<>();
+                this.llenarMapaDetalleEntrada(detalleEntrada,rs);
+                listaDetalleEntradas.add(detalleEntrada);
             }
             System.out.println("Se listo las entradas correctamente");
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las entradas: ", e);
         } finally {
             return listaDetalleEntradas;
+        }
+    }
+    
+    
+    @Override
+    public void llenarMapaDetalleEntrada(Map<String, Object>detalleEntrada,ResultSet rs){
+        try{
+            if (rs.getString("id_constancia")!=null) {
+                detalleEntrada.put("idConstancia", rs.getInt("id_constancia"));
+            }
+            if (rs.getString("num_entrada")!=null){
+                detalleEntrada.put("numEntrada", rs.getInt("num_entrada"));
+            }
+            if (rs.getString("nombre_evento") != null) {
+                detalleEntrada.put("nombreEvento", rs.getString("nombre_evento"));
+            }
+            if (rs.getString("ubicacion") != null) {
+                detalleEntrada.put("ubicacion", rs.getString("ubicacion"));
+            }
+            if (rs.getString("nombre_distrito") != null) {
+                detalleEntrada.put("nombreDistrito", rs.getString("nombre_distrito"));
+            }
+            if (rs.getDate("fecha_funcion") != null) {
+                detalleEntrada.put("fecha", rs.getDate("fecha_funcion"));
+            }
+            if (rs.getTime("hora_inicio") != null) {
+                detalleEntrada.put("horaInicio", rs.getTime("hora_inicio"));
+            }
+            if (rs.getTime("hora_fin") != null) {
+                detalleEntrada.put("horaFin", rs.getTime("hora_fin"));
+            }
+            if (rs.getString("activo") != null && !rs.getString("activo").isEmpty()) {
+                detalleEntrada.put("estado", rs.getString("activo").charAt(0));
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al llenar el mapa del detalle de la entrada: " + ex.getMessage());
+        }
+    }
+    @Override
+    public Map<String, Object> buscarConstanciaEntrada(int idConstancia){
+        Map<String, Object> constanciaEntrada = null;
+        String sql = """
+                     SELECT c.id_constancia, en.num_entrada, ev.nombre AS nombre_evento, 
+                     ev.ubicacion, d.nombre AS nombre_distrito, f.fecha AS fecha_funcion, 
+                     f.hora_inicio, f.hora_fin, en.activo, c.fecha, c.metodo_pago, c.total, 
+                     c.detalle_pago, p.nombres AS nombres_comprador, p.primer_apellido, 
+                     p.segundo_apellido, p.correo, p.tipo_documento, p.num_documento 
+                     FROM Entrada en JOIN Constancia c ON c.id_constancia=en.id_constancia_entrada 
+                     JOIN Funcion f ON f.id_funcion=en.Funcion_id_funcion JOIN Evento ev ON 
+                     ev.id_evento = f.Evento_idEvento JOIN Distrito d ON d.id_distrito = 
+                     ev.Distrito_id_distrito JOIN Persona p ON p.id_persona=en.Persona_id_persona 
+                     WHERE en.id_constancia_entrada = 
+                 """ + idConstancia;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            if(rs.next()){
+                constanciaEntrada = new HashMap<>();
+                this.llenarMapaDetalleEntrada(constanciaEntrada,rs);
+                constanciaDAO.llenarMapaDetalleConstancia(constanciaEntrada,rs);
+                System.out.println("Se busco la constancia de la entrada correctamente");
+                return constanciaEntrada;
+            }else{
+                throw new RuntimeException("Constancia de la entrada no encontrada");
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al buscar la constancia de la entrada: " + ex.getMessage());
         }
     }
 }

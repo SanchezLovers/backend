@@ -3,12 +3,12 @@ package pe.edu.pucp.sirgep.ws.ventas;
 import jakarta.jws.WebService;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
-import jakarta.ws.rs.core.Response;
 import jakarta.xml.ws.WebServiceException;
 import java.util.List;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
 
 import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntrada;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
 import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
@@ -142,7 +142,7 @@ public class EntradaWS {
 
     //Metodo para listar el detalle de las entradas
     @WebMethod(operationName = "listarDetalleEntradasPorComprador")
-    public List<DetalleEntrada> listarDetalleEntradasPorComprador(@WebParam(name = "idComprador")int idComprador){
+    public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(@WebParam(name = "idComprador")int idComprador){
         try {
             return entradaService.listarDetalleEntradasPorComprador(idComprador);
         }  catch (Exception ex) {
@@ -157,6 +157,22 @@ public class EntradaWS {
             entradaService.crearLibroExcelEntradas(idComprador);
         }  catch (Exception ex) {
             throw new RuntimeException("Error al exportar el libro excel de las entradas: : " + ex.getMessage());
+        }
+    }
+    
+    @WebMethod(operationName = "buscarConstanciaEntrada")
+    public ConstanciaEntradaDTO buscarConstanciaEntrada(@WebParam(name = "idConstancia") int idConstancia){
+        ConstanciaEntradaDTO resultado=null;
+        try {
+            resultado= entradaService.buscarConstanciaEntrada(idConstancia);
+            if(resultado!=null){
+                System.out.println("Se busco la constancia de la entrada correctamente");
+                return resultado;
+            }else{
+                throw new RuntimeException("Constancia de la entrada no encontrada");
+            }
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al buscar la constancia de la entrada: " + ex.getMessage());
         }
     }
 }

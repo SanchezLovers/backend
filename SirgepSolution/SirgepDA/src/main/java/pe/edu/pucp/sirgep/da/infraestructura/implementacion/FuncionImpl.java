@@ -1,5 +1,6 @@
 package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
 
+import java.sql.Connection;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.FuncionDAO;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
@@ -13,15 +14,22 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import pe.edu.pucp.sirgep.dbmanager.DBManager;
 
 public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Funcion(hora_inicio, hora_fin, Evento_idEvento, fecha)"
+        return "INSERT INTO Funcion(hora_inicio, hora_fin, Evento_idEvento, fecha, activo)"
                 + " VALUES(?, ?, ?, ?, 'A')";
     }
 
@@ -55,21 +63,46 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
     @Override
     protected void setInsertParameters(PreparedStatement ps, Funcion f) {
         try {
-            ps.setDate(1, Date.valueOf(f.getHoraInicio().toString()));
-            ps.setDate(2, Date.valueOf(f.getHoraFin().toString()));
+            
+            String fechaFun = f.getFecha();
+            String horaIniFun = f.getHoraInicio();
+            String horaFinFun = f.getHoraFin();
+            
+            // 1. Parsear la fecha y hora
+            LocalDate fechaParte = LocalDate.parse(fechaFun);     // "2025-06-17"
+            LocalTime horaParteIni = LocalTime.parse(horaIniFun);       // "17:50"
+            LocalTime horaParteFin = LocalTime.parse(horaFinFun);       // "17:50"
+
+            // 2. Combinarlos
+            LocalDateTime fechaHoraCompletaIni = LocalDateTime.of(fechaParte, horaParteIni);
+            LocalDateTime fechaHoraCompletaFin = LocalDateTime.of(fechaParte, horaParteFin);
+
+            // 3. Convertir a Timestamp
+            Timestamp timestampIni = Timestamp.valueOf(fechaHoraCompletaIni);
+            Timestamp timestampFin = Timestamp.valueOf(fechaHoraCompletaFin);
+            
+            SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date fechaFunUtil = formatoEntrada.parse(fechaFun); // java.util.Date
+            java.sql.Date fechaSql = new java.sql.Date(fechaFunUtil.getTime());
+            
+            ps.setTimestamp(1, timestampIni);
+            ps.setTimestamp(2, timestampFin);
             ps.setInt(3, f.getEvento().getIdEvento());
-            ps.setDate(4, Date.valueOf(f.getFecha().toString()));
+            ps.setDate(4, fechaSql);
+            
         } catch (SQLException ex) {
             throw new RuntimeException("Error al asignar parámetros de inserción para Funcion", ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(FuncionImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Funcion f) {
         try {
-            ps.setDate(1, Date.valueOf(f.getHoraInicio().toString()));
-            ps.setDate(2, Date.valueOf(f.getHoraFin().toString()));
-            ps.setDate(3, Date.valueOf(f.getFecha().toString()));
+            ps.setDate(1, Date.valueOf(f.getHoraInicio()));
+            ps.setDate(2, Date.valueOf(f.getHoraFin()));
+            ps.setDate(3, Date.valueOf(f.getFecha()));
             ps.setInt(4, f.getEvento().getIdEvento());
             ps.setInt(5, f.getIdFuncion());
         } catch (SQLException ex) {
@@ -82,13 +115,9 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
         try {
             Funcion f = new Funcion();
             f.setIdFuncion(rs.getInt("id_funcion"));
-            String fechaHoraStr = rs.getString("hora_inicio");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime ldt = LocalDateTime.parse(fechaHoraStr, formatter);
-//            System.out.println("hora_inicio como String: " + fechaHoraStr);
-            f.setHoraInicio(Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()));
-            f.setHoraFin(rs.getTimestamp("hora_fin"));
-            f.setFecha(rs.getDate("fecha"));
+            f.setHoraInicio(rs.getTime("hora_inicio").toString());
+            f.setHoraFin(rs.getTime("hora_fin").toString());
+            f.setFecha(rs.getDate("fecha").toString());
 
             Evento evento = new Evento();
             evento.setIdEvento(rs.getInt("Evento_idEvento"));
@@ -103,5 +132,30 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
     @Override
     protected void setId(Funcion f, int id) {
         f.setIdFuncion(id);
+    }
+
+    public String getListarPorIdEvento(){
+        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento, fecha FROM Funcion WHERE Evento_idEvento=? AND activo='A'";
+    }
+
+    @Override
+    public List<Funcion> listarPorIdEvento(int idEvento){
+        List<Funcion> funciones = new ArrayList<>();
+
+        // Utilizaremos procedimientos almacenados
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+            PreparedStatement ps = conn.prepareStatement(this.getListarPorIdEvento())) {
+
+            ps.setInt(1, idEvento);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    funciones.add(createFromResultSet(rs));
+                }
+            }
+        }catch(SQLException e){
+            throw new RuntimeException("ERROR al obtener FUNCIONES por idEvento: ", e);
+        }
+        return funciones;
     }
 }

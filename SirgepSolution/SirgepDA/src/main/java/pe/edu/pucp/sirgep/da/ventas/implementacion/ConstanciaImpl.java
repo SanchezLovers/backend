@@ -3,13 +3,13 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
 
 public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDAO{
-
     @Override
     protected String getInsertQuery() {
         return "INSERT INTO Constancia(fecha, metodo_pago, igv, total, detalle_pago, activo) VALUES(?,?,?,?,?,?)";
@@ -49,7 +49,6 @@ public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDA
     @Override
     protected void setInsertParameters(PreparedStatement ps, Constancia constancia) {
         try{
-            // return "INSERT INTO Constancia(fecha, metodo_pago, igv, total, detalle_pago, activo) VALUES(?,?,?,?,?,?)";
             ps.setDate(1, new Date(constancia.getFecha().getTime()));
             ps.setString(2, constancia.getMetodoPago().toString());
             ps.setDouble(3, constancia.getIgv());
@@ -64,8 +63,6 @@ public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDA
     @Override
     protected Constancia createFromResultSet(ResultSet rs) {
         Constancia aux = new Constancia();
-        // rs --> tendrá todos los parámetros de la constancia
-        // "SELECT fecha, metodo_pago, igv, total, detalle_pago, activo FROM Constancia WHERE id_constancia = ?";
         try{
             aux.setFecha(rs.getDate("fecha"));
             aux.setMetodoPago(EMetodoPago.valueOf(rs.getString("metodo_pago")));
@@ -83,14 +80,6 @@ public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDA
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Constancia entity) {
         try{
-            /*
-            "UPDATE Constancia SET fecha = ?,"
-                + "metodo_pago = ?,"
-                + "igv = ?,"
-                + "total = ?,"
-                + "detalle_pago = ?
-                WHERE id_constancia = ?";
-            */
             ps.setDate(1, new Date(entity.getFecha().getTime()));
             ps.setString(2, entity.getMetodoPago().toString());
             ps.setDouble(3, entity.getIgv());
@@ -101,11 +90,47 @@ public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDA
             System.out.println("Se encontro un error a la hora de MODIFICAR tabla: " + e.getMessage());
         }
     }
-
     @Override
     protected void setId(Constancia entity, int id) {
         entity.setIdConstancia(id);
     }
     
-    
+    @Override
+    public void llenarMapaDetalleConstancia(Map<String, Object>detalleConstancia,ResultSet rs){
+        try{
+            if (rs.getString("id_constancia") != null) {
+                detalleConstancia.put("idConstancia", rs.getInt("id_constancia"));
+            }
+            if (rs.getString("nombres_comprador") != null) {
+                detalleConstancia.put("nombresComprador", rs.getString("nombres_comprador"));
+            }
+            if (rs.getString("primer_apellido") != null || rs.getString("segundo_apellido") != null) {
+                detalleConstancia.put("apellidosComprador", (rs.getString("primer_apellido") != null ? rs.getString("primer_apellido") : "")
+                        + " " + (rs.getString("segundo_apellido") != null ? rs.getString("segundo_apellido") : ""));
+            }
+            if (rs.getString("correo") != null) {
+                detalleConstancia.put("correo", rs.getString("correo"));
+            }
+            if (rs.getString("tipo_documento") != null) {
+                detalleConstancia.put("tipoDocumento", rs.getString("tipo_documento"));
+            }
+            if (rs.getString("num_documento") != null) {
+                detalleConstancia.put("numDocumento", rs.getString("num_documento"));
+            }
+            if (rs.getDate("fecha") != null) {
+                detalleConstancia.put("fecha", rs.getDate("fecha"));
+            }
+            if (rs.getString("metodo_pago") != null) {
+                detalleConstancia.put("metodoPago", rs.getString("metodo_pago"));
+            }
+            if (!rs.wasNull()) {
+                detalleConstancia.put("monto", rs.getDouble("total"));
+            }
+            if (rs.getString("detalle_pago") != null) {
+                detalleConstancia.put("detallePago", rs.getString("detalle_pago"));
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al llenar el mapa del detalle de la constancia: " + ex.getMessage());
+        }
+    }
 }
