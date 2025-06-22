@@ -45,10 +45,11 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r "
-                + "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio "
-                + "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito "
-                + "JOIN Persona p ON p.id_persona = r.Persona_id_persona";
+        return "SELECT r.*, e.id_espacio, e.nombre AS 'E.nombre', d.id_distrito, d.nombre AS 'D.nombre', p.correo FROM Reserva r " +
+               "JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio " +
+               "JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito " +
+               "JOIN Persona p ON p.id_persona = r.Persona_id_persona " +
+               "WHERE r.activo='A'";
     }
 
     @Override
@@ -106,10 +107,8 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
             aux.setIniString(aux.getHorarioIni().toString());
             aux.setFinString(aux.getHorarioIni().toString());
-
             dis.setIdDistrito(rs.getInt("id_distrito"));
             dis.setNombre(rs.getString("D.nombre"));
-
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
             esp.setNombre(rs.getString("E.nombre"));
             esp.setDistrito(dis);
