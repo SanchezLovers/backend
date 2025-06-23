@@ -584,4 +584,30 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             throw new RuntimeException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
     }
+
+    @Override
+    public List<Reserva> listarPorMesYAnio(int mes, int anio) {
+        List<Reserva> listaReserva = new ArrayList<>();
+        String sql = "{CALL BUSCA_RESERVAS_POR_MES_Y_ANIO(?, ?)}";
+
+        try (Connection conn = DBManager.getInstance().getConnection();
+             CallableStatement pst = conn.prepareCall(sql)) {
+
+            pst.setInt(1, mes);   // Ej: "06"
+            pst.setInt(2, anio);  // Ej: "2025"
+
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Reserva r = createFromResultSet(rs); // Este método debería mapear correctamente el ResultSet
+                listaReserva.add(r);
+            }
+
+            System.out.println("Se listaron las reservas por mes y año correctamente.");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las reservas por mes y año", e);
+        }
+
+        return listaReserva;
+    }
+
 }
