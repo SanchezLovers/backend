@@ -390,9 +390,15 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     @Override
     public List<Map<String, Object>> listarCompradoresDTO() {
         List<Map<String, Object>> lista = new ArrayList<>();
+
         String sql = """
             SELECT P.id_persona, P.nombres, P.primer_apellido, P.segundo_apellido,
-                   P.tipo_documento, P.num_documento, P.correo
+                   P.tipo_documento, P.num_documento, P.correo,
+                   (
+                       SELECT MAX(C.fecha)
+                       FROM Constancia C
+                       WHERE C.detalle_pago LIKE CONCAT('%', P.num_documento, '%')
+                   ) AS ultima_compra
             FROM Persona P
             JOIN Comprador C ON P.id_persona = C.id_persona_comprador
             WHERE P.activo = 'A'
@@ -412,6 +418,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                 fila.put("tipoDocumento", rs.getString("tipo_documento"));
                 fila.put("numDocumento", rs.getString("num_documento"));
                 fila.put("correo", rs.getString("correo"));
+                fila.put("ultima_compra", rs.getDate("ultima_compra")); // <-- aquí capturas la fecha
                 lista.add(fila);
             }
         } catch (SQLException e) {

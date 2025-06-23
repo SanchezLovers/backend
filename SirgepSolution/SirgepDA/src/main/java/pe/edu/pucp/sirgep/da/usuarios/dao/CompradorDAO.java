@@ -10,7 +10,7 @@ public interface CompradorDAO extends BaseDAO<Comprador>{
     public Comprador buscarPorDni(String dni);
     public List<String> listarPorDistritoFavorito(int idDistrito);
     Date obtenerUltimaCompraPorDocumento(String numeroDocumento);
-    List<Map<String, Object>> listarCompradoresDTO();//O map
+    List<Map<String, Object>> listarCompradoresDTO();//
     
     //Metodos para el Perfil del Comprador
     public Map<String, Object> buscarDetalleCompradorPorId(int idComprador);

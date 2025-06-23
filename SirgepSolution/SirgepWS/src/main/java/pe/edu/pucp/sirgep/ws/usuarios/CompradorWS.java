@@ -48,26 +48,6 @@ public class CompradorWS {
     }
 
     
-    @WebMethod(operationName = "listarCompradores") 
-    public List<Comprador> listarCompradores() {
-        try {
-            return compradorService.listar();
-        } catch (Exception ex) {
-            throw new WebServiceException("Error al listar compradores: " + ex.getMessage());
-        }
-    }
-    
-    
-    @WebMethod(operationName = "obtenerUltimaCompraPorDocumento")
-    public String obtenerUltimaCompraPorDocumento(@WebParam(name = "numeroDocumento") String numeroDocumento) {
-        try {
-            Date fecha = compradorService.obtenerUltimaCompraPorDocumento(numeroDocumento);
-            return (fecha != null) ? fecha.toString() : null;
-        } catch (Exception ex) {
-            throw new WebServiceException("Error al obtener la última compra: " + ex.getMessage());
-        }
-    }
-    
     @WebMethod(operationName = "listarCompradoresDTO")
     public List<CompradorDTO> listarCompradoresDTO() {
         try {

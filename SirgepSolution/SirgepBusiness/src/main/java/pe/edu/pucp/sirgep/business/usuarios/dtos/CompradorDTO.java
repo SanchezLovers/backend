@@ -16,6 +16,16 @@ public class CompradorDTO {
     private String primerApellido;
     private String segundoApellido;
     private String correo;
+    private String fechaUltimaCompra;
+
+    public String getFechaUltimaCompra() {
+        return fechaUltimaCompra;
+    }
+
+    public void setFechaUltimaCompra(String fechaUltimaCompra) {
+        this.fechaUltimaCompra = fechaUltimaCompra;
+    }
+    
 
     public int getIdComprador() {
         return idComprador;
