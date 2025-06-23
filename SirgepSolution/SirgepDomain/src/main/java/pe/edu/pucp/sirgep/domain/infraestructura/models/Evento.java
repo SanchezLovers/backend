@@ -19,7 +19,6 @@ public class Evento {
     private byte[] archivoImagen;
     private String descripcion;
     
-//momentaneamente no implementado
     public byte[] getArchivoImagen() {
         return archivoImagen;
     }
