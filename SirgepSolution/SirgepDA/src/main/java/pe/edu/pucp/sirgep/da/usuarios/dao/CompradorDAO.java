@@ -12,4 +12,8 @@ public interface CompradorDAO extends BaseDAO<Comprador>{
     //Metodos para el Perfil del Comprador
     public Map<String, Object> buscarDetalleCompradorPorId(int idComprador);
     public boolean actualizarDistritoFavoritoPorIdComprador(String nuevoDistrito, int idComprador);
+    
+    //Creacion de cuenta
+    public boolean validarCorreo(String correo);
+
 }
