@@ -2,9 +2,6 @@ package pe.edu.pucp.sirgep.domain.infraestructura.models;
 
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 public class Evento {
     private int idEvento;
     private String nombre;
@@ -129,6 +126,4 @@ public class Evento {
     public String toString() {
         return "Evento{" + "idEvento=" + idEvento + ", nombre=" + nombre + ", fecha_inicio=" + fecha_inicio + ", fecha_fin=" + fecha_fin + ", ubicacion=" + ubicacion + ", referencia=" + referencia + ", cantEntradasDispo=" + cantEntradasDispo + ", cantEntradasVendidas=" + cantEntradasVendidas + ", precioEntrada=" + precioEntrada + ", descripcion=" + descripcion + ", distrito=" + distrito.getIdDistrito() + '}';
     }
-
-    
 }

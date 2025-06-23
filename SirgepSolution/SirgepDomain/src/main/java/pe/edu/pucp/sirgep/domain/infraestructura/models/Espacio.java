@@ -107,16 +107,13 @@ public class Espacio{
     public double getPrecioReserva() {
         return this.precioReserva;
     }
-
     public void setPrecioReserva(double precioReserva) {
         this.precioReserva = precioReserva;
     }
-
     // Getter y Setter para reservas
     public ArrayList<Reserva> getReservas() {
         return new ArrayList<>(this.reservas);
     }
-
     public void setReservas(ArrayList<Reserva> reservas) {
         this.reservas = new ArrayList<>(reservas);
     }

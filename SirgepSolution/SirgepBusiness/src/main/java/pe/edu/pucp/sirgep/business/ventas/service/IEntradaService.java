@@ -4,7 +4,8 @@ import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntrada;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
@@ -31,7 +32,9 @@ public interface IEntradaService {
     public String crearHojalEntradas(XSSFWorkbook libro,int idComprador);
     public String crearEncabezadoHojaEntradas(XSSFSheet hoja,int idComprador);
     public void llenarTablaEntradas(XSSFSheet hoja,int idComprador);
-    public void llenarFilaDetalleEntrada(XSSFRow registro,DetalleEntrada detalleEntrada);
-    public List<DetalleEntrada> listarDetalleEntradasPorComprador(int idComprador);
+    public void llenarFilaDetalleEntrada(XSSFRow registro,DetalleEntradaDTO detalleEntrada);
+    public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(int idComprador);
     public void exportarLibroEntradas(XSSFWorkbook libro,String nombreArchivo);
+    
+    public ConstanciaEntradaDTO buscarConstanciaEntrada(int idConstancia);
 }

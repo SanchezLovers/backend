@@ -3,14 +3,12 @@ package pe.edu.pucp.sirgep.ws.ventas;
 import jakarta.jws.WebService;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
-import jakarta.ws.rs.core.Response;
 import jakarta.xml.ws.WebServiceException;
-import java.time.LocalTime;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ReservaDTO;
 
 import pe.edu.pucp.sirgep.business.ventas.impl.ReservaServiceImpl;
@@ -48,7 +46,16 @@ public class ReservaWS {
             throw new WebServiceException("Error al buscar reserva: " + ex.getMessage());
         }
     }
-
+    
+    @WebMethod(operationName = "listarPorMesYAnio")
+    public List<Reserva> listarPorMesYAnio(int mes, int anio){
+        try {
+            return reservaService.listarPorMesYAnio(mes, anio);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar reserva: " + ex.getMessage());
+        }
+    }
+    
     @WebMethod(operationName = "listarReservas")
     public List<Reserva> listarReserva() {
         try {
@@ -143,7 +150,7 @@ public class ReservaWS {
 
     //Metodo para listar el detalle de las reservas
     @WebMethod(operationName = "listarDetalleReservasPorComprador")
-    public List<DetalleReserva> listarDetalleReservasPorComprador(@WebParam(name = "idComprador") int idComprador) {
+    public List<DetalleReservaDTO> listarDetalleReservasPorComprador(@WebParam(name = "idComprador") int idComprador) {
         try {
             return reservaService.listarDetalleReservasPorComprador(idComprador);
         } catch (Exception ex) {
@@ -180,6 +187,31 @@ public class ReservaWS {
             return reservaService.listarPorDistrito(id, activo);
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar por distritos: " + ex.getMessage());
+        }
+    }
+    @WebMethod(operationName = "cancelarReserva")
+    public boolean cancelarReserva(@WebParam(name = "idReserva")int id){
+        try {
+            return reservaService.cancelarReserva(id);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por persona: " + ex.getMessage());
+        }
+    }
+
+    //Metodos para buscar la constancia de una reserva
+    @WebMethod(operationName = "buscarConstanciaReserva")
+    public ConstanciaReservaDTO buscarConstanciaReserva(@WebParam(name = "idConstancia") int idConstancia){
+        ConstanciaReservaDTO resultado=null;
+        try {
+            resultado= reservaService.buscarConstanciaReserva(idConstancia);
+            if(resultado!=null){
+                System.out.println("Se busco la constancia de la reserva correctamente");
+                return resultado;
+            }else{
+                throw new RuntimeException("Constancia de la reserva no encontrada");
+            }
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
     }
 }

@@ -21,7 +21,8 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;//Para crear libro de Excel
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntrada;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
 
 import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EventoDAO;
@@ -219,36 +220,30 @@ public class EntradaServiceImpl implements IEntradaService{
     }
     
     @Override
-    public List<DetalleEntrada> listarDetalleEntradasPorComprador(int idComprador) {
-        List<DetalleEntrada> listaFinal = null;
+    public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(int idComprador) {
+        List<DetalleEntradaDTO> listaDetalleEntradas = null;
         try {
             List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasPorComprador(idComprador);
             if (lista != null) {
-                listaFinal = new ArrayList<>();
-                for (Map<String, Object> fila : lista) {
-                    DetalleEntrada detalle = new DetalleEntrada();
-                    detalle.setNumEntrada((int) fila.get("numEntrada"));
-                    detalle.setNombreEvento((String) fila.get("nombreEvento"));
-                    detalle.setUbicacion((String) fila.get("ubicacion"));
-                    detalle.setNombreDistrito((String) fila.get("nombreDistrito"));
-                    detalle.setFecha((Date) fila.get("fecha"));
-                    detalle.setHoraInicio((Time) fila.get("horaInicio"));
-                    detalle.setHoraFin((Time) fila.get("horaFin"));
-                    listaFinal.add(detalle);
+                listaDetalleEntradas = new ArrayList<>();
+                for (Map<String, Object> detalle : lista) {
+                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
+                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
+                    listaDetalleEntradas.add(detalleEntradaDTO);
                 }
             }
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
         } finally {
-            return listaFinal;
+            return listaDetalleEntradas;
         }
     }
 
     @Override
     public void llenarTablaEntradas(XSSFSheet hoja,int idComprador) {
-        List<DetalleEntrada> listaDetalleEntradas=listarDetalleEntradasPorComprador(idComprador);
+        List<DetalleEntradaDTO> listaDetalleEntradas=listarDetalleEntradasPorComprador(idComprador);
         int posicion=3;
-        for (DetalleEntrada detalleEntrada: listaDetalleEntradas) {
+        for (DetalleEntradaDTO detalleEntrada: listaDetalleEntradas) {
             XSSFRow registro=hoja.createRow(posicion++);
             llenarFilaDetalleEntrada(registro,detalleEntrada);
         }
@@ -258,7 +253,7 @@ public class EntradaServiceImpl implements IEntradaService{
     }
 
     @Override
-    public void llenarFilaDetalleEntrada(XSSFRow registro, DetalleEntrada detalleEntrada) {
+    public void llenarFilaDetalleEntrada(XSSFRow registro, DetalleEntradaDTO detalleEntrada) {
         XSSFCell celda=registro.createCell(0);
         celda.setCellValue(detalleEntrada.getNumEntrada());
         celda=registro.createCell(1);
@@ -296,6 +291,23 @@ public class EntradaServiceImpl implements IEntradaService{
             output.close();//Libero bytes
         }catch(Exception ex){
             throw new RuntimeException("Error al exportar el libro excel de las entradas: " + ex.getMessage());
+        }
+    }
+    
+    @Override
+    public ConstanciaEntradaDTO buscarConstanciaEntrada(int idConstancia){
+        ConstanciaEntradaDTO constanciaEntradaDTO=null;
+        try {
+            Map<String, Object> detalle=entradaDAO.buscarConstanciaEntrada(idConstancia);
+            if(detalle!=null){
+                constanciaEntradaDTO=new ConstanciaEntradaDTO();
+                constanciaEntradaDTO.llenarConstanciaEntrada(detalle);
+                return constanciaEntradaDTO;
+            }else{
+                throw new RuntimeException("Constancia de la entrada no encontrada");
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al buscar la constancia de la entrada: " + ex.getMessage());
         }
     }
 }

@@ -53,7 +53,6 @@ public class Distrito{
     public ArrayList<Espacio> getEspacios() {
         return new ArrayList<Espacio>(this.espacios);
     }
-
     public void setEspacios(ArrayList<Espacio> espacios) {
         this.espacios = new ArrayList<Espacio>(espacios);
     }
