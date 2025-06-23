@@ -2,20 +2,16 @@ package pe.edu.pucp.sirgep.business.infraestructura.dtos;
 
 import java.util.List;
 import java.util.Properties;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.swing.JOptionPane;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.Multipart;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 public class EnvioCorreo {
 
@@ -47,15 +43,12 @@ public class EnvioCorreo {
         };
     }
 
-    public boolean enviarEmail(List<String> listaCorreosCompradores, String asunto, String contenido, String rutaLogo) {
-        boolean resultado = false;
-        session = Session.getInstance(properties, autenticador);
-        correo = new MimeMessage(session);
-
+    public boolean enviarEmail(List<String> listaCorreosCompradores, String asunto, String contenidoHtml) {
         try {
+            session = Session.getInstance(properties, autenticador);
+            correo = new MimeMessage(session);
             // Remitente
             correo.setFrom(new InternetAddress(emailOrigen));
-
             // Destinatarios
             InternetAddress[] destinatarios = new InternetAddress[listaCorreosCompradores.size()];
             for (int i = 0; i < listaCorreosCompradores.size(); i++) {
@@ -64,36 +57,21 @@ public class EnvioCorreo {
             correo.setRecipients(Message.RecipientType.TO, destinatarios);
             correo.setSubject(asunto);
             correo.setSentDate(new java.util.Date());
-
-            // Parte 1: Cuerpo HTML con referencia al logo (ya incluida en 'contenido')
+            // Parte: Cuerpo HTML con imagen desde URL
             MimeBodyPart cuerpoHtml = new MimeBodyPart();
-            cuerpoHtml.setContent(contenido, "text/html");
-
-            // Parte 2: Imagen del logo como recurso embebido
-            MimeBodyPart imagenLogo = new MimeBodyPart();
-            DataSource fds = new FileDataSource(rutaLogo);
-            imagenLogo.setDataHandler(new DataHandler(fds));
-            imagenLogo.setHeader("Content-ID", "<logo>");
-            imagenLogo.setDisposition(MimeBodyPart.INLINE); // Mostrar dentro del cuerpo
-
-            // Parte 3: Ensamblar todo
+            cuerpoHtml.setContent(contenidoHtml, "text/html; charset=utf-8");
+            // Multipart para ensamblar contenido
             Multipart contenidoCorreo = new MimeMultipart();
             contenidoCorreo.addBodyPart(cuerpoHtml);
-            contenidoCorreo.addBodyPart(imagenLogo);
-
             correo.setContent(contenidoCorreo);
-
             // Enviar
             Transport.send(correo);
-            JOptionPane.showMessageDialog(null, "Correo enviado");
-            resultado = true;
-
+            System.out.println("Correo enviado correctamente");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al enviar el correo: " + e.getMessage());
+            System.out.println("Error al enviar los correos: " + e.getMessage());
+            throw new RuntimeException("No se enviaron los correos: "+e.getMessage());
         }
-
-        return resultado;
     }
-
 }

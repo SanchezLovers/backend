@@ -103,8 +103,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             aux.setHorarioIni(rs.getTime("horario_ini").toLocalTime());
             aux.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
-            aux.setFechaReserva(rs.getDate("fecha_reserva"));
-
             aux.setIniString(aux.getHorarioIni().toString());
             aux.setFinString(aux.getHorarioIni().toString());
             dis.setIdDistrito(rs.getInt("id_distrito"));
@@ -288,6 +286,33 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         return (seEliminoLogR && seEliminoLogC);
     }
 
+    @Override
+    public boolean cancelarReserva(int id) throws SQLException{
+        
+        // intento realizar el procedimiento: actualizar Constancia y, luego, Reserva:
+        try(Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
+        {
+            String query = "UPDATE Reserva " +
+                    "SET  estado = C WHERE num_reserva = "+id;
+            con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
+            try(PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
+                ps.executeUpdate();
+                con.commit();
+    //            System.out.println("Se actualizo un registro de "+entity.getClass().getSimpleName());
+                return true; // si todo fue bien, la respuesta será verdadera
+            }
+            catch(SQLException e){
+                con.rollback();
+                return false; // si algo falló, la respuesta será falsa
+
+            } finally{
+                // el finally siempre se ejecuta... asi hayan returns antes
+                return (true);
+            }
+        }
+        
+    }
+    
     @Override
     public boolean eliminarFisico(int id) {
         boolean seEliminoFisC = false, seEliminoFisR = false;
@@ -559,4 +584,30 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             throw new RuntimeException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
     }
+
+    @Override
+    public List<Reserva> listarPorMesYAnio(int mes, int anio) {
+        List<Reserva> listaReserva = new ArrayList<>();
+        String sql = "{CALL BUSCA_RESERVAS_POR_MES_Y_ANIO(?, ?)}";
+
+        try (Connection conn = DBManager.getInstance().getConnection();
+             CallableStatement pst = conn.prepareCall(sql)) {
+
+            pst.setInt(1, mes);   // Ej: "06"
+            pst.setInt(2, anio);  // Ej: "2025"
+
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Reserva r = createFromResultSet(rs); // Este método debería mapear correctamente el ResultSet
+                listaReserva.add(r);
+            }
+
+            System.out.println("Se listaron las reservas por mes y año correctamente.");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las reservas por mes y año", e);
+        }
+
+        return listaReserva;
+    }
+
 }

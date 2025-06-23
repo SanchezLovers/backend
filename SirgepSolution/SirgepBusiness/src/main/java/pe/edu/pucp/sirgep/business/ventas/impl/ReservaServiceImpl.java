@@ -3,6 +3,7 @@ package pe.edu.pucp.sirgep.business.ventas.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -179,8 +180,11 @@ public class ReservaServiceImpl implements IReservaService {
         }
         return listaFinal;
     }
-
+    
     @Override
+    public boolean cancelarReserva(int id) throws SQLException{
+        return reservaDAO.cancelarReserva(id);
+    }
     public List<ReservaDTO> listarPorDistrito(int id_distrito, boolean activo) {
         List<ReservaDTO> listaFinal = null;
 
@@ -377,5 +381,15 @@ public class ReservaServiceImpl implements IReservaService {
         } catch (Exception ex) {
             throw new RuntimeException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
+    }
+
+    @Override
+    public List<Reserva> listarPorMesYAnio(int mes, int anio) {
+        if(mes<1 || mes>12)
+            throw new RuntimeException("Mes incorrecto");
+        if(anio<=0)
+            throw new RuntimeException("Anio incorrecto");
+        
+        return reservaDAO.listarPorMesYAnio(mes, anio);
     }
 }

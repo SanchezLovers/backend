@@ -1,5 +1,6 @@
 package pe.edu.pucp.sirgep.business.ventas.service;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,8 @@ public interface IReservaService {
     public Comprador buscarCompradorDeReserva(int idComprador);
     public Espacio buscarEspacioDeReserva(int idEspacio);
     public Distrito buscarDistritoDeReserva(int idEntrada);
+    public boolean cancelarReserva(int id) throws SQLException;
+    public List<Reserva> listarPorMesYAnio(int mes, int anio);
 
     //Metodos adicionales para el listado de reservas
     public List<ReservaDTO> listarTodos();

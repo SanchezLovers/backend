@@ -2,23 +2,43 @@ package pe.edu.pucp.sirgep.business.infraestructura.impl;
 
 import java.util.List;
 import pe.edu.pucp.sirgep.business.infraestructura.dtos.EnvioCorreo;
+import pe.edu.pucp.sirgep.business.infraestructura.dtos.EspacioDTO;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEspacioService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
+import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDiaSemDAO;
+import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioDiaSemImpl;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioImpl;
+import pe.edu.pucp.sirgep.da.ubicacion.dao.DepartamentoDAO;
+import pe.edu.pucp.sirgep.da.ubicacion.dao.DistritoDAO;
+import pe.edu.pucp.sirgep.da.ubicacion.dao.ProvinciaDAO;
+import pe.edu.pucp.sirgep.da.ubicacion.implementacion.DepartamentoImpl;
+import pe.edu.pucp.sirgep.da.ubicacion.implementacion.DistritoImpl;
+import pe.edu.pucp.sirgep.da.ubicacion.implementacion.ProvinciaImpl;
 import pe.edu.pucp.sirgep.da.usuarios.dao.CompradorDAO;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.CompradorImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
-import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
 
 public class EspacioServiceImpl implements IEspacioService {
     private final EspacioDAO espacioDAO;
     private final CompradorDAO compradorDAO;
+    private final DepartamentoDAO depaDAO;
+    private final ProvinciaDAO provDAO;
+    private final DistritoDAO distDAO;
+    private final EspacioDiaSemDAO diaSemDAO;
 
     public EspacioServiceImpl(){
         this.espacioDAO=new EspacioImpl();
         this.compradorDAO=new CompradorImpl();
+        depaDAO = new DepartamentoImpl();
+        provDAO = new ProvinciaImpl();
+        distDAO = new DistritoImpl();
+        diaSemDAO = new EspacioDiaSemImpl();
     }
     
+    //CRUD
     @Override
     public int insertar(Espacio espacio) {
         return espacioDAO.insertar(espacio);
@@ -67,26 +87,61 @@ public class EspacioServiceImpl implements IEspacioService {
         return espacioDAO.buscarPorDistritoCategoria(id, cad);
     }
     
-    //Metodo para el envio de correo a los compradores registrados con el mismo distrito
+    //Adicionales
+    public void mapearDTO(EspacioDTO espDTO, Espacio esp, Departamento depa, Provincia prov, Distrito dist){
+        /*Datos Espacio*/
+        espDTO.setIdEspacio(esp.getIdEspacio());
+        espDTO.setNombre(esp.getNombre());
+        espDTO.setTipo(esp.getTipoEspacio());
+        espDTO.setUbicacion(esp.getUbicacion());
+        espDTO.setPrecioReserva(esp.getPrecioReserva());
+        espDTO.setSuperficie(esp.getSuperficie());
+        espDTO.setHoraInicio(esp.getHorarioInicioAtencion());
+        espDTO.setHoraFin(esp.getHorarioFinAtencion());
+        espDTO.setDias(diaSemDAO.listarPorEspacio(esp.getIdEspacio()));
+        /*Datos Departamento*/
+        espDTO.setIdDepartamento(depa.getIdDepartamento());
+        espDTO.setNombreDepartamento(depa.getNombre());
+        espDTO.setDepartamentos(depaDAO.listar());
+        /*Datos Provincia*/
+        espDTO.setIdProvincia(prov.getIdProvincia());
+        espDTO.setNombreProvincia(prov.getNombre());
+        espDTO.setProvincias(provDAO.listarPorDepa(depa.getIdDepartamento()));
+        /*Datos Distrito*/
+        espDTO.setIdDistrito(dist.getIdDistrito());
+        espDTO.setNombreDistrito(dist.getNombre());
+        espDTO.setDistritos(distDAO.listarPorProv(prov.getIdProvincia()));
+    }
+    
     @Override
-    public boolean enviarCorreosCompradoresPorDistritoDeEspacio(Espacio espacio){
-        boolean resultado=false;
-        try{
-            List<String>listaCorreosCompradores=compradorDAO.listarPorDistritoFavorito(espacio.getDistrito().getIdDistrito());
-            if (listaCorreosCompradores != null) {
-                EnvioCorreo correo=new EnvioCorreo();
-                String asunto="";
-                String contenido="";
-                String rutaLogo="";
-                resultado=correo.enviarEmail(listaCorreosCompradores,asunto,contenido,rutaLogo);
+    public EspacioDTO llenarEspacioDTOEdicion(int idEspacio){
+        EspacioDTO espDTO = new EspacioDTO();
+        Espacio esp = espacioDAO.buscar(idEspacio);
+        Distrito dist = distDAO.buscar(esp.getDistrito().getIdDistrito());
+        Provincia prov = provDAO.buscar(dist.getProvincia().getIdProvincia());
+        Departamento depa = depaDAO.buscar(prov.getDepartamento().getIdDepartamento());
+        // ----------------------------------------------------------------
+        mapearDTO(espDTO,esp,depa,prov,dist);
+        return espDTO;
+    }
+    
+    @Override
+    public boolean enviarCorreosCompradoresPorDistritoDeEspacio(String asunto, String contenido, int idDistrito) {
+        try {
+            List<String> listaCorreosCompradores = compradorDAO.listarPorDistritoFavorito(idDistrito);
+            if (listaCorreosCompradores != null && !listaCorreosCompradores.isEmpty()) {
+                EnvioCorreo correo = new EnvioCorreo();
+                boolean resultado = correo.enviarEmail(listaCorreosCompradores, asunto, contenido);
                 if (!resultado) {
-                    throw new RuntimeException("No se enviaron los correos");
+                    throw new RuntimeException("No se enviaron los correos a los compradores con el mismo distrito del evento");
                 }
+                return true;
+            } else {
+                throw new RuntimeException("No hay compradores con el mismo distrito favorito (lista vacía o null)");
             }
-        }catch(Exception ex){
-            throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del espacio: "+ ex.getMessage());
-        }finally{
-            return resultado;
+        } catch (Exception ex) {
+            ex.printStackTrace();  // ✅ Asegúrate que esto sí esté en el log del servidor
+            throw new RuntimeException("Error técnico: " + ex.getClass().getName() + " - " + ex.getMessage(), ex);
         }
     }
 }

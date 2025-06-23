@@ -46,7 +46,16 @@ public class ReservaWS {
             throw new WebServiceException("Error al buscar reserva: " + ex.getMessage());
         }
     }
-
+    
+    @WebMethod(operationName = "listarPorMesYAnio")
+    public List<Reserva> listarPorMesYAnio(int mes, int anio){
+        try {
+            return reservaService.listarPorMesYAnio(mes, anio);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar reserva: " + ex.getMessage());
+        }
+    }
+    
     @WebMethod(operationName = "listarReservas")
     public List<Reserva> listarReserva() {
         try {
@@ -178,6 +187,14 @@ public class ReservaWS {
             return reservaService.listarPorDistrito(id, activo);
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar por distritos: " + ex.getMessage());
+        }
+    }
+    @WebMethod(operationName = "cancelarReserva")
+    public boolean cancelarReserva(@WebParam(name = "idReserva")int id){
+        try {
+            return reservaService.cancelarReserva(id);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar por persona: " + ex.getMessage());
         }
     }
 

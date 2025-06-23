@@ -15,6 +15,8 @@ public interface ICompradorService{
     
     //Metodos adicionales
     Comprador buscarPorDni(String dni);
+    public boolean validarCorreo(String correo);
+
     
     //Metodos del perfil del comprador
     public DetalleComprador buscarDetalleCompradorPorId(int idComprador);

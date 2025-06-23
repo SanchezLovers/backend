@@ -80,4 +80,9 @@ public class CompradorServiceImpl implements ICompradorService{
     public boolean actualizarDistritoFavoritoPorIdComprador(String nuevoDistrito,int idComprador){
         return compradorDAO.actualizarDistritoFavoritoPorIdComprador(nuevoDistrito,idComprador);
     }
+    
+    @Override
+    public boolean validarCorreo(String correo){
+        return compradorDAO.validarCorreo(correo);
+    }
 }

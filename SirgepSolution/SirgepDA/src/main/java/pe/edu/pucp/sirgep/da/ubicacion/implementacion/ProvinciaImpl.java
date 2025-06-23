@@ -5,6 +5,8 @@ import pe.edu.pucp.sirgep.da.ubicacion.dao.ProvinciaDAO;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
@@ -115,6 +117,30 @@ public class ProvinciaImpl extends BaseImpl<Provincia> implements ProvinciaDAO {
             throw new RuntimeException("Error al insertar "+entity.getClass().getSimpleName()+" ", e);
         }finally{
             return entity.getIdProvincia();
+        }
+    }
+
+    public String getListarPorDepa(){
+        String query = "SELECT id_provincia, nombre, Departamento_id_departamento FROM Provincia WHERE Departamento_id_departamento=?;";
+        return query;
+    }
+    
+    @Override
+    public List<Provincia> listarPorDepa(int idDepartamento) {
+        List<Provincia> entities=null;
+        try (Connection conn = DBManager.getInstance().getConnection();
+              PreparedStatement pst = conn.prepareStatement(this.getListarPorDepa())) {
+            pst.setInt(1, idDepartamento);
+            ResultSet rs = pst.executeQuery();
+            entities = new ArrayList<>();
+            while (rs.next()) {
+                entities.add(this.createFromResultSet(rs));
+            }
+            System.out.println("Se listo los registros de provincia por Departamento");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las entidades", e);
+        }finally{
+            return entities;
         }
     }
 }
