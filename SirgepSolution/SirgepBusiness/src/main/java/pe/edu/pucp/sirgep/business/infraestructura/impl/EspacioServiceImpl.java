@@ -125,7 +125,6 @@ public class EspacioServiceImpl implements IEspacioService {
         /*Datos Departamento*/
         espDTO.setIdDepartamento(depa.getIdDepartamento());
         espDTO.setNombreDepartamento(depa.getNombre());
-        espDTO.setDepartamentos(depaDAO.listar());
         /*Datos Provincia*/
         espDTO.setIdProvincia(prov.getIdProvincia());
         espDTO.setNombreProvincia(prov.getNombre());

@@ -18,7 +18,6 @@ public class EspacioDTO {
 
     private int idDepartamento;
     private String nombreDepartamento;
-    private List<Departamento> departamentos;
 
     private int idProvincia;
     private String nombreProvincia;
@@ -97,14 +96,6 @@ public class EspacioDTO {
 
     public void setNombreDepartamento(String nombreDepartamento) {
         this.nombreDepartamento = nombreDepartamento;
-    }
-
-    public List<Departamento> getDepartamentos() {
-        return departamentos;
-    }
-
-    public void setDepartamentos(List<Departamento> departamentos) {
-        this.departamentos = departamentos;
     }
 
     public int getIdProvincia() {
