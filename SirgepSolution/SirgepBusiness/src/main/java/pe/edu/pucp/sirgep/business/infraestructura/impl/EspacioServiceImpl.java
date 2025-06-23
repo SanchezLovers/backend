@@ -17,11 +17,9 @@ import pe.edu.pucp.sirgep.da.ubicacion.implementacion.ProvinciaImpl;
 import pe.edu.pucp.sirgep.da.usuarios.dao.CompradorDAO;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.CompradorImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
-import pe.edu.pucp.sirgep.domain.infraestructura.models.EspacioDiaSem;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
-import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 
 public class EspacioServiceImpl implements IEspacioService {
     private final EspacioDAO espacioDAO;
@@ -40,6 +38,7 @@ public class EspacioServiceImpl implements IEspacioService {
         diaSemDAO = new EspacioDiaSemImpl();
     }
     
+    //CRUD
     @Override
     public int insertar(Espacio espacio) {
         return espacioDAO.insertar(espacio);
@@ -88,29 +87,7 @@ public class EspacioServiceImpl implements IEspacioService {
         return espacioDAO.buscarPorDistritoCategoria(id, cad);
     }
     
-    //Metodo para el envio de correo a los compradores registrados con el mismo distrito
-    @Override
-    public boolean enviarCorreosCompradoresPorDistritoDeEspacio(Espacio espacio){
-        boolean resultado=false;
-        try{
-            List<String>listaCorreosCompradores=compradorDAO.listarPorDistritoFavorito(espacio.getDistrito().getIdDistrito());
-            if (listaCorreosCompradores != null) {
-                EnvioCorreo correo=new EnvioCorreo();
-                String asunto="";
-                String contenido="";
-                String rutaLogo="";
-                resultado=correo.enviarEmail(listaCorreosCompradores,asunto,contenido,rutaLogo);
-                if (!resultado) {
-                    throw new RuntimeException("No se enviaron los correos");
-                }
-            }
-        }catch(Exception ex){
-            throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del espacio: "+ ex.getMessage());
-        }finally{
-            return resultado;
-        }
-    }
-    
+    //Adicionales
     public void mapearDTO(EspacioDTO espDTO, Espacio esp, Departamento depa, Provincia prov, Distrito dist){
         /*Datos Espacio*/
         espDTO.setIdEspacio(esp.getIdEspacio());
@@ -146,5 +123,25 @@ public class EspacioServiceImpl implements IEspacioService {
         // ----------------------------------------------------------------
         mapearDTO(espDTO,esp,depa,prov,dist);
         return espDTO;
+    }
+    
+    @Override
+    public boolean enviarCorreosCompradoresPorDistritoDeEspacio(String asunto, String contenido, int idDistrito) {
+        try {
+            List<String> listaCorreosCompradores = compradorDAO.listarPorDistritoFavorito(idDistrito);
+            if (listaCorreosCompradores != null && !listaCorreosCompradores.isEmpty()) {
+                EnvioCorreo correo = new EnvioCorreo();
+                boolean resultado = correo.enviarEmail(listaCorreosCompradores, asunto, contenido);
+                if (!resultado) {
+                    throw new RuntimeException("No se enviaron los correos a los compradores con el mismo distrito del evento");
+                }
+                return true;
+            } else {
+                throw new RuntimeException("No hay compradores con el mismo distrito favorito (lista vacía o null)");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();  // ✅ Asegúrate que esto sí esté en el log del servidor
+            throw new RuntimeException("Error técnico: " + ex.getClass().getName() + " - " + ex.getMessage(), ex);
+        }
     }
 }

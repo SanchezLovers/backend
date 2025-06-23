@@ -1,4 +1,3 @@
-
 package pe.edu.pucp.sirgep.ws.infraestructura;
 
 import jakarta.jws.WebService;
@@ -11,19 +10,17 @@ import pe.edu.pucp.sirgep.business.infraestructura.impl.EspacioServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEspacioService;
 import pe.edu.pucp.sirgep.domain.infraestructura.enums.ETipoEspacio;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
-import pe.edu.pucp.sirgep.ws.ventas.CompraWS;
-import pe.edu.pucp.sirgep.ws.ventas.ReservaWS;
 
 @WebService(serviceName = "EspacioWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class EspacioWS {
-
     private final IEspacioService espacioService;
     
-    public EspacioWS()
-    {
+    public EspacioWS(){
         espacioService = new EspacioServiceImpl();
     }
 
+    
+    //CRUD
     @WebMethod(operationName = "insertarEspacio")
     public int insertar(@WebParam(name = "espacio") Espacio espacio) {
         try{
@@ -137,23 +134,6 @@ public class EspacioWS {
         }
     }
     
-    //Metodo para el envio de correo a los compradores registrados con el mismo distrito
-    @WebMethod(operationName = "enviarCorreosCompradoresPorDistritoDeEspacio")
-    public boolean enviarCorreosCompradoresPorDistritoDeEspacio(@WebParam(name = "espacio") Espacio espacio) {
-        boolean resultado=false;
-        try{
-            resultado=espacioService.enviarCorreosCompradoresPorDistritoDeEspacio(espacio);
-            if(!resultado){
-                throw new RuntimeException("No se enviaron los correos");
-            }
-        }
-        catch(Exception ex){
-            throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del espacio: "+ ex.getMessage());
-        }finally{
-            return resultado;
-        }
-    }
-    
     @WebMethod(operationName = "obtenerEspacioDTO")
     public EspacioDTO obtenerEspacioDTO(@WebParam(name = "idEspacio") int idEspacio){
         try{
@@ -161,6 +141,18 @@ public class EspacioWS {
         }
         catch(Exception ex){
             throw new RuntimeException("ERROR AL OBTENER ESPACIO DTO " + ex.getMessage());
+        }
+    }
+    
+    //Adicionales
+    @WebMethod(operationName = "enviarCorreosCompradoresPorDistritoDeEspacio")
+    public boolean enviarCorreosCompradoresPorDistritoDeEspacio(@WebParam(name = "asunto")String asunto, 
+            @WebParam(name = "contenido")String contenido, @WebParam(name = "idDistrito")int idDistrito) {
+        try{
+            return espacioService.enviarCorreosCompradoresPorDistritoDeEspacio(asunto,contenido,idDistrito);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del espacio: "+ ex.getMessage());
         }
     }
 }

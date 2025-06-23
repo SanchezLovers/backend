@@ -4,6 +4,7 @@ import java.util.List;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 
 public interface IEventoService{
+    //CRUD
     int insertar(Evento evento);
     Evento buscar(int id);
     List<Evento> listar();
@@ -13,4 +14,6 @@ public interface IEventoService{
     List<Evento> listarPorDistrito(int id);
     List<Evento> buscarPorTexto(String texto);
     List<Evento> buscarEventosPorFechas(String inicio, String fin);
+    //Adicionales
+    boolean enviarCorreosCompradoresPorDistritoDeEvento(String asunto, String contenido, int idDistrito);
 }
