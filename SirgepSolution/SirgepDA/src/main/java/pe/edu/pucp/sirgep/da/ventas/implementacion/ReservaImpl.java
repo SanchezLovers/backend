@@ -408,7 +408,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         List<Map<String, Object>> listaReservas = null;
         String sql;
         sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, r.activo,
+            SELECT r.num_reserva, r.fecha_reserva, r.activo,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -431,7 +431,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
                 fila.put("distrito", rs.getString("nombre_distrito"));
                 fila.put("espacio", rs.getString("nombre_espacio"));
                 fila.put("correo", rs.getString("correo"));
-                fila.put("idConstancia", rs.getInt("id_constancia_reserva"));
                 fila.put("activo", rs.getString("activo").charAt(0));
                 listaReservas.add(fila);
             }
@@ -453,7 +452,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
         if (activo) {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
+            SELECT r.num_reserva, r.fecha_reserva, d.nombre AS nombre_distrito,
                    e.nombre AS nombre_espacio, p.correo, r.activo
             FROM Reserva r
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
@@ -463,7 +462,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         """;
         } else {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
+            SELECT r.num_reserva, r.fecha_reserva, d.nombre AS nombre_distrito,
                    e.nombre AS nombre_espacio, p.correo, r.activo
             FROM Reserva r
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
@@ -487,7 +486,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
                 fila.put("distrito", rs.getString("nombre_distrito"));
                 fila.put("espacio", rs.getString("nombre_espacio"));
                 fila.put("correo", rs.getString("correo"));
-                fila.put("idConstancia", rs.getInt("id_constancia_reserva"));
                 fila.put("activo", rs.getString("activo").charAt(0));
                 listaDetalleReservas.add(fila);
             }
@@ -508,7 +506,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
         if (activo) {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, r.activo,
+            SELECT r.num_reserva, r.fecha_reserva, r.activo,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -520,7 +518,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         """;
         } else {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, r.activo,
+            SELECT r.num_reserva, r.fecha_reserva, r.activo,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -546,7 +544,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
                 fila.put("distrito", rs.getString("nombre_distrito"));
                 fila.put("espacio", rs.getString("nombre_espacio"));
                 fila.put("correo", rs.getString("correo"));
-                fila.put("idConstancia", rs.getInt("id_constancia_reserva"));
                 fila.put("activo", rs.getString("activo").charAt(0));
                 listaReservas.add(fila);
             }

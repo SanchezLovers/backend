@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,10 +22,9 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReserva;
-import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleConstancia;
 
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReserva;
+import pe.edu.pucp.sirgep.business.ventas.dtos.ReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.service.IReservaService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EspacioImpl;
@@ -37,7 +37,6 @@ import pe.edu.pucp.sirgep.da.ventas.implementacion.ReservaImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
-import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
 
 public class ReservaServiceImpl implements IReservaService {
@@ -123,8 +122,8 @@ public class ReservaServiceImpl implements IReservaService {
 
     //Metodos adicionales para el listado de reservas por filtros
     @Override
-    public List<ConstanciaReserva> listarTodos() {
-        List<ConstanciaReserva> listaFinal = null;
+    public List<ReservaDTO> listarTodos() {
+        List<ReservaDTO> listaFinal = null;
 
         try {
             // Llamas al DAO que devuelve List<Map<String, Object>>
@@ -133,25 +132,16 @@ public class ReservaServiceImpl implements IReservaService {
             if (lista != null) {
                 listaFinal = new ArrayList<>();
                 for (Map<String, Object> fila : lista) {
-                    ConstanciaReserva constRes = new ConstanciaReserva();
-                    DetalleReserva detRes = new DetalleReserva();
-                    DetalleConstancia detConst = new DetalleConstancia();
-                    Comprador comprador = new Comprador();
-                    Constancia constancia = new Constancia();
-                    
-                    detRes.setNumReserva((int) fila.get("codigo"));
-                    detRes.setFecha((Date) fila.get("fecha"));
-                    detRes.setNombreDistrito((String) fila.get("distrito"));
-                    detRes.setNombreEspacio((String) fila.get("espacio"));
-                    detRes.setActivo((char) fila.get("activo"));
-                    constRes.setDetalleEntrada(detRes);
-                    
-                    comprador.setCorreo((String) fila.get("correo"));
-                    detConst.setComprador(comprador);
-                    constancia.setIdConstancia((int) fila.get("idConstancia"));
-                    detConst.setConstancia(constancia);
-                    constRes.setDetalleComprador(detConst);
-                    listaFinal.add(constRes);
+                    ReservaDTO reservaDTO = new ReservaDTO();
+
+                    reservaDTO.setCodigo((int) fila.get("codigo"));           // ojo, clave 'codigo' según tu DAO
+                    reservaDTO.setFecha((Date) fila.get("fecha"));
+                    reservaDTO.setDistrito((String) fila.get("distrito"));
+                    reservaDTO.setEspacio((String) fila.get("espacio"));
+                    reservaDTO.setCorreo((String) fila.get("correo"));
+                    reservaDTO.setActivo((char) fila.get("activo"));
+
+                    listaFinal.add(reservaDTO);
                 }
             }
         } catch (Exception ex) {
@@ -161,8 +151,8 @@ public class ReservaServiceImpl implements IReservaService {
     }
     
     @Override
-    public List<ConstanciaReserva> listarDetalleReservasPorFecha(Date fecha, boolean activo) {
-        List<ConstanciaReserva> listaFinal = null;
+    public List<ReservaDTO> listarDetalleReservasPorFecha(Date fecha, boolean activo) {
+        List<ReservaDTO> listaFinal = null;
 
         try {
             // Llamas al DAO que devuelve List<Map<String, Object>>
@@ -171,25 +161,16 @@ public class ReservaServiceImpl implements IReservaService {
             if (lista != null) {
                 listaFinal = new ArrayList<>();
                 for (Map<String, Object> fila : lista) {
-                    ConstanciaReserva constRes = new ConstanciaReserva();
-                    DetalleReserva detRes = new DetalleReserva();
-                    DetalleConstancia detConst = new DetalleConstancia();
-                    Comprador comprador = new Comprador();
-                    Constancia constancia = new Constancia();
-                    
-                    detRes.setNumReserva((int) fila.get("codigo"));
-                    detRes.setFecha((Date) fila.get("fecha"));
-                    detRes.setNombreDistrito((String) fila.get("distrito"));
-                    detRes.setNombreEspacio((String) fila.get("espacio"));
-                    detRes.setActivo((char) fila.get("activo"));
-                    constRes.setDetalleEntrada(detRes);
-                    
-                    comprador.setCorreo((String) fila.get("correo"));
-                    detConst.setComprador(comprador);
-                    constancia.setIdConstancia((int) fila.get("idConstancia"));
-                    detConst.setConstancia(constancia);
-                    constRes.setDetalleComprador(detConst);
-                    listaFinal.add(constRes);
+                    ReservaDTO reservaDTO = new ReservaDTO();
+
+                    reservaDTO.setCodigo((int) fila.get("codigo"));           // ojo, clave 'codigo' según tu DAO
+                    reservaDTO.setFecha((Date) fila.get("fecha"));
+                    reservaDTO.setDistrito((String) fila.get("distrito"));
+                    reservaDTO.setEspacio((String) fila.get("espacio"));
+                    reservaDTO.setCorreo((String) fila.get("correo"));
+                    reservaDTO.setActivo((char) fila.get("activo"));
+
+                    listaFinal.add(reservaDTO);
                 }
             }
         } catch (Exception ex) {
@@ -199,8 +180,8 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
-    public List<ConstanciaReserva> listarPorDistrito(int id_distrito, boolean activo) {
-        List<ConstanciaReserva> listaFinal = null;
+    public List<ReservaDTO> listarPorDistrito(int id_distrito, boolean activo) {
+        List<ReservaDTO> listaFinal = null;
 
         try {
             // Llamas al DAO que devuelve List<Map<String, Object>>
@@ -209,27 +190,19 @@ public class ReservaServiceImpl implements IReservaService {
             if (lista != null) {
                 listaFinal = new ArrayList<>();
                 for (Map<String, Object> fila : lista) {
-                    ConstanciaReserva constRes = new ConstanciaReserva();
-                    DetalleReserva detRes = new DetalleReserva();
-                    DetalleConstancia detConst = new DetalleConstancia();
-                    Comprador comprador = new Comprador();
-                    Constancia constancia = new Constancia();
-                    
-                    detRes.setNumReserva((int) fila.get("codigo"));
-                    detRes.setFecha((Date) fila.get("fecha"));
-                    detRes.setNombreDistrito((String) fila.get("distrito"));
-                    detRes.setNombreEspacio((String) fila.get("espacio"));
-                    detRes.setActivo((char) fila.get("activo"));
-                    constRes.setDetalleEntrada(detRes);
-                    
-                    comprador.setCorreo((String) fila.get("correo"));
-                    detConst.setComprador(comprador);
-                    constancia.setIdConstancia((int) fila.get("idConstancia"));
-                    detConst.setConstancia(constancia);
-                    constRes.setDetalleComprador(detConst);
-                    listaFinal.add(constRes);
+                    ReservaDTO reservaDTO = new ReservaDTO();
+
+                    reservaDTO.setCodigo((int) fila.get("codigo"));           // ojo, clave 'codigo' según tu DAO
+                    reservaDTO.setFecha((Date) fila.get("fecha"));
+                    reservaDTO.setDistrito((String) fila.get("distrito"));
+                    reservaDTO.setEspacio((String) fila.get("espacio"));
+                    reservaDTO.setCorreo((String) fila.get("correo"));
+                    reservaDTO.setActivo((char) fila.get("activo"));
+
+                    listaFinal.add(reservaDTO);
                 }
             }
+
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las reservas por fecha: " + ex.getMessage(), ex);
         }

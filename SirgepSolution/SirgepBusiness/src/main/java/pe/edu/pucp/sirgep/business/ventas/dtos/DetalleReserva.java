@@ -12,7 +12,6 @@ public class DetalleReserva {
     private Date fecha;
     private Date horaInicio;
     private Date horaFin;
-    private char activo;
 
     //Constructor
     public DetalleReserva() {
@@ -66,13 +65,5 @@ public class DetalleReserva {
     }
     public void setCategoria(String categoria) {
         this.categoria = categoria;
-    }
-
-    public char getActivo() {
-        return activo;
-    }
-
-    public void setActivo(char activo) {
-        this.activo = activo;
     }
 }
