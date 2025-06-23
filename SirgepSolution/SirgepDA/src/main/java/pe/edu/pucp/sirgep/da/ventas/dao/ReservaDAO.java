@@ -12,6 +12,7 @@ public interface ReservaDAO extends BaseDAO<Reserva>{
 
     public boolean cancelarReserva(int id) throws SQLException;
 
+    List<Reserva> listarPorMesYAnio(int mes, int anio);
     List<Reserva> listarPorDiaYEspacio(int idEspacio, Date fecha);
     List<Map<String, Object>> listarTodos();
     List<Map<String, Object>> listarDetalleReservasPorFecha(Date fecha, boolean activo);

@@ -382,4 +382,14 @@ public class ReservaServiceImpl implements IReservaService {
             throw new RuntimeException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
     }
+
+    @Override
+    public List<Reserva> listarPorMesYAnio(int mes, int anio) {
+        if(mes<1 || mes>12)
+            throw new RuntimeException("Mes incorrecto");
+        if(anio<=0)
+            throw new RuntimeException("Anio incorrecto");
+        
+        return reservaDAO.listarPorMesYAnio(mes, anio);
+    }
 }
