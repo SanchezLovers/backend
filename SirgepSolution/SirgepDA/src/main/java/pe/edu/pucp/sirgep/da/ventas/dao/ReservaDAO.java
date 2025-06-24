@@ -18,6 +18,7 @@ public interface ReservaDAO extends BaseDAO<Reserva>{
     List<Map<String, Object>> listarDetalleReservasPorFecha(Date fecha, boolean activo);
     List<Map<String, Object>> listarPorDistrito(int idDistrito, boolean activo);
     //Metodos para buscar la constancia de la reserva
+    void llenarMapaReserva(Map<String, Object>reserva,ResultSet rs);
     void llenarMapaDetalleReserva(Map<String, Object>detalleReserva,ResultSet rs);
     Map<String, Object> buscarConstanciaReserva(int numReserva);
 }

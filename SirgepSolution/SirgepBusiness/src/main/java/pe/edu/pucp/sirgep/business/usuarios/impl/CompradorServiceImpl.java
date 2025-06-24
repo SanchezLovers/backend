@@ -1,7 +1,11 @@
 package pe.edu.pucp.sirgep.business.usuarios.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import pe.edu.pucp.sirgep.business.usuarios.dtos.CompradorDTO;
 import pe.edu.pucp.sirgep.business.usuarios.dtos.DetalleComprador;
 import pe.edu.pucp.sirgep.business.usuarios.service.ICompradorService;
 import pe.edu.pucp.sirgep.da.usuarios.dao.CompradorDAO;
@@ -13,7 +17,6 @@ public class CompradorServiceImpl implements ICompradorService{
     
     public CompradorServiceImpl(){
         this.compradorDAO=new CompradorImpl();
-        
     }
     
     //Metodos CRUD
@@ -81,6 +84,43 @@ public class CompradorServiceImpl implements ICompradorService{
         return compradorDAO.actualizarDistritoFavoritoPorIdComprador(nuevoDistrito,idComprador);
     }
     
+    @Override
+    public Date obtenerUltimaCompraPorDocumento(String numeroDocumento) {
+        return compradorDAO.obtenerUltimaCompraPorDocumento(numeroDocumento);
+    }
+    
+    @Override
+    public List<CompradorDTO> listarCompradoresDTO() {
+        List<CompradorDTO> resultado = new ArrayList<>();
+        List<Map<String, Object>> datos = compradorDAO.listarCompradoresDTO();
+
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+
+        for (Map<String, Object> fila : datos) {
+            CompradorDTO dto = new CompradorDTO();
+
+            dto.setIdComprador((int) fila.get("id"));
+            dto.setNombres((String) fila.get("nombres"));
+            dto.setPrimerApellido((String) fila.get("primerApellido"));
+            dto.setSegundoApellido((String) fila.get("segundoApellido"));
+            dto.setTipoDocumento((String) fila.get("tipoDocumento"));
+            dto.setNumeroDocumento((String) fila.get("numDocumento"));
+            dto.setCorreo((String) fila.get("correo"));
+
+            // Obtener la fecha de última compra
+            Date fechaCompra = (Date) fila.get("ultima_compra");
+            if (fechaCompra != null) {
+                dto.setFechaUltimaCompra(formato.format(fechaCompra));
+            } else {
+                dto.setFechaUltimaCompra("No ha comprado aún");
+            }
+
+            resultado.add(dto);
+        }
+
+        return resultado;
+    }
+
     @Override
     public boolean validarCorreo(String correo){
         return compradorDAO.validarCorreo(correo);

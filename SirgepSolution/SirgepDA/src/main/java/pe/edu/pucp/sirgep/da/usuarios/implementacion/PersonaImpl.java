@@ -13,7 +13,7 @@ public class PersonaImpl extends BaseImpl<Persona> implements PersonaDAO {
     @Override
     protected String getInsertQuery() {
         String sql = "INSERT INTO Persona(nombres, primer_apellido, segundo_apellido, correo, usuario, "
-                + "contrasenia, num_documento, tipo_documento, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)";
+                + "contrasenia, num_documento, tipo_documento, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'A')";
         return sql;
     }
 

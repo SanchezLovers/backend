@@ -131,8 +131,8 @@ public class DetalleReservaDTO {
             if (detalle.get("nombreDistrito") != null) {
                 this.setNombreDistrito((String) detalle.get("nombreDistrito"));
             }
-            if (detalle.get("fecha") != null) {
-                this.setFecha((Date) detalle.get("fecha"));
+            if (detalle.get("fecha_reserva") != null) {
+                this.setFecha((Date) detalle.get("fecha_reserva"));
             }
             if (detalle.get("horaInicio") != null) {
                 this.setHoraInicio((Time) detalle.get("horaInicio"));

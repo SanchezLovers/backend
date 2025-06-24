@@ -133,16 +133,10 @@ public class ReservaServiceImpl implements IReservaService {
 
             if (lista != null) {
                 listaFinal = new ArrayList<>();
-                for (Map<String, Object> fila : lista) {
+                for (Map<String, Object> reserva : lista) {
                     ReservaDTO reservaDTO = new ReservaDTO();
-
-                    reservaDTO.setCodigo((int) fila.get("codigo"));           // ojo, clave 'codigo' según tu DAO
-                    reservaDTO.setFecha((Date) fila.get("fecha"));
-                    reservaDTO.setDistrito((String) fila.get("distrito"));
-                    reservaDTO.setEspacio((String) fila.get("espacio"));
-                    reservaDTO.setCorreo((String) fila.get("correo"));
-                    reservaDTO.setActivo((char) fila.get("activo"));
-
+                    reservaDTO.llenarReserva(reserva);
+                    listaFinal.add(reservaDTO);
                     listaFinal.add(reservaDTO);
                 }
             }
@@ -162,16 +156,9 @@ public class ReservaServiceImpl implements IReservaService {
 
             if (lista != null) {
                 listaFinal = new ArrayList<>();
-                for (Map<String, Object> fila : lista) {
+                for (Map<String, Object> reserva : lista) {
                     ReservaDTO reservaDTO = new ReservaDTO();
-
-                    reservaDTO.setCodigo((int) fila.get("codigo"));           // ojo, clave 'codigo' según tu DAO
-                    reservaDTO.setFecha((Date) fila.get("fecha"));
-                    reservaDTO.setDistrito((String) fila.get("distrito"));
-                    reservaDTO.setEspacio((String) fila.get("espacio"));
-                    reservaDTO.setCorreo((String) fila.get("correo"));
-                    reservaDTO.setActivo((char) fila.get("activo"));
-
+                    reservaDTO.llenarReserva(reserva);
                     listaFinal.add(reservaDTO);
                 }
             }
@@ -194,16 +181,10 @@ public class ReservaServiceImpl implements IReservaService {
 
             if (lista != null) {
                 listaFinal = new ArrayList<>();
-                for (Map<String, Object> fila : lista) {
+                for (Map<String, Object> reserva : lista) {
                     ReservaDTO reservaDTO = new ReservaDTO();
-
-                    reservaDTO.setCodigo((int) fila.get("codigo"));           // ojo, clave 'codigo' según tu DAO
-                    reservaDTO.setFecha((Date) fila.get("fecha"));
-                    reservaDTO.setDistrito((String) fila.get("distrito"));
-                    reservaDTO.setEspacio((String) fila.get("espacio"));
-                    reservaDTO.setCorreo((String) fila.get("correo"));
-                    reservaDTO.setActivo((char) fila.get("activo"));
-
+                    reservaDTO.llenarReserva(reserva);
+                    listaFinal.add(reservaDTO);
                     listaFinal.add(reservaDTO);
                 }
             }

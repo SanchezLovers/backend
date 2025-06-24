@@ -1,6 +1,8 @@
 package pe.edu.pucp.sirgep.business.usuarios.service;
 
+import java.util.Date;
 import java.util.List;
+import pe.edu.pucp.sirgep.business.usuarios.dtos.CompradorDTO;
 import pe.edu.pucp.sirgep.business.usuarios.dtos.DetalleComprador;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 
@@ -15,6 +17,10 @@ public interface ICompradorService{
     
     //Metodos adicionales
     Comprador buscarPorDni(String dni);
+
+    Date obtenerUltimaCompraPorDocumento(String numeroDocumento);
+    List<CompradorDTO> listarCompradoresDTO();
+    
     public boolean validarCorreo(String correo);
 
     

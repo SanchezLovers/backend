@@ -45,7 +45,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                 + "segundo_apellido,correo,usuario,contrasenia,num_documento,"
                 + "tipo_documento,es_registrado "
                 + "FROM Persona P, Comprador C "
-                + "WHERE P.id_persona = C.id_persona_comprador AND P.activo='A'";
+                + "WHERE P.id_persona = C.id_persona_comprador AND P.activo='A' AND C.es_registrado=1";
         return sql;
     }
 
@@ -362,6 +362,71 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         }
     }
     
+    @Override
+    public Date obtenerUltimaCompraPorDocumento(String numeroDocumento) {
+        String sql = "{CALL ObtenerUltimaCompraPorDocumento(?, ?)}";
+        Date fechaUltimaCompra = null;
+
+        try (
+            Connection conn = DBManager.getInstance().getConnection();
+            CallableStatement stmt = conn.prepareCall(sql)
+        ) {
+            stmt.setString(1, numeroDocumento);
+            stmt.registerOutParameter(2, java.sql.Types.DATE);
+
+            stmt.execute();
+            fechaUltimaCompra = stmt.getDate(2);
+
+            System.out.println("Última compra obtenida correctamente para documento: " + numeroDocumento);
+
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al obtener la última compra por documento", ex);
+        }
+
+        return fechaUltimaCompra;
+    }
+    
+    @Override
+    public List<Map<String, Object>> listarCompradoresDTO() {
+        List<Map<String, Object>> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT P.id_persona, P.nombres, P.primer_apellido, P.segundo_apellido,
+                   P.tipo_documento, P.num_documento, P.correo,
+                   (
+                       SELECT MAX(C.fecha)
+                       FROM Constancia C
+                       WHERE C.detalle_pago LIKE CONCAT('%', P.num_documento, '%')
+                   ) AS ultima_compra
+            FROM Persona P
+            JOIN Comprador C ON P.id_persona = C.id_persona_comprador
+            WHERE P.activo = 'A'
+        """;
+
+        try (
+            Connection conn = DBManager.getInstance().getConnection();
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery()
+        ) {
+            while (rs.next()) {
+                Map<String, Object> fila = new HashMap<>();
+                fila.put("id", rs.getInt("id_persona"));
+                fila.put("nombres", rs.getString("nombres"));
+                fila.put("primerApellido", rs.getString("primer_apellido"));
+                fila.put("segundoApellido", rs.getString("segundo_apellido"));
+                fila.put("tipoDocumento", rs.getString("tipo_documento"));
+                fila.put("numDocumento", rs.getString("num_documento"));
+                fila.put("correo", rs.getString("correo"));
+                fila.put("ultima_compra", rs.getDate("ultima_compra")); // <-- aquí capturas la fecha
+                lista.add(fila);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar compradores DTO", e);
+        }
+
+        return lista;
+    }
+
     @Override
     public boolean validarCorreo(String correo) {
         boolean devolver=true;
