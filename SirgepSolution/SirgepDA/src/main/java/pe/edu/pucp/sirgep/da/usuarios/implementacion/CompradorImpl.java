@@ -340,8 +340,9 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     @Override
     public boolean actualizarDistritoFavoritoPorIdComprador(String nuevoDistrito, int idComprador) {
         boolean resultado = false;
-        String sql = "UPDATE Comprador C JOIN Distrito D ON D.nombre COLLATE utf8mb4_general_ci LIKE '%"+
-                nuevoDistrito+"%' SET C.id_distrito_favorito = D.id_distrito WHERE C.id_persona_comprador = " + idComprador;
+        String sql = "UPDATE Comprador C JOIN (SELECT id_distrito FROM Distrito WHERE nombre COLLATE "
+                + "utf8mb4_general_ci LIKE '%"+nuevoDistrito+"%' LIMIT 1) D ON 1=1 SET C.id_distrito_favorito = D.id_distrito "
+                + "WHERE C.id_persona_comprador = " + idComprador;
         try (Connection conn = DBManager.getInstance().getConnection()) {
             conn.setAutoCommit(false);
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
