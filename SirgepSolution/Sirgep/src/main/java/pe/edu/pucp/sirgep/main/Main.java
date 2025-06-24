@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pe.edu.pucp.sirgep.business.infraestructura.dtos.EnvioCorreo;
+import pe.edu.pucp.sirgep.business.usuarios.impl.CompradorServiceImpl;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
@@ -16,7 +17,7 @@ import pe.edu.pucp.sirgep.dbmanager.DBManager;
 public class Main {
     public static void main(String[] args) throws Exception, SQLException, IOException {
         Connection con = DBManager.getInstance().getConnection();
-        ConstanciaReservaDTO d=new ReservaServiceImpl().buscarConstanciaReserva(1);
+        boolean r=new CompradorServiceImpl().actualizarDistritoFavoritoPorIdComprador("fdf", 3);
         EnvioCorreo envioCorreo = new EnvioCorreo();
         List<String> listaCorreosCompradores = new ArrayList<>();
         String asunto = "¡Bienvenid@ al equipo de desarrollo de SIRGEP!";
