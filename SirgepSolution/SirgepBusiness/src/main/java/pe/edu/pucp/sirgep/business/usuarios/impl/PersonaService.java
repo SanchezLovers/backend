@@ -8,6 +8,7 @@ package pe.edu.pucp.sirgep.business.usuarios.impl;
 import pe.edu.pucp.sirgep.business.usuarios.service.IPersonaService;
 import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
 /**
  *
@@ -21,6 +22,14 @@ public class PersonaService implements IPersonaService{
     
     public int validarCuenta(String correo, String passcode) {
         return pdao.validarCuenta(correo, passcode);
+    }
+
+    @Override
+    public String obtenerNombreUsuario(int id){
+        Persona persona = pdao.buscar(id);
+        if(persona!=null)
+            return  persona.getUsuario();
+        return null;
     }
 
 }
