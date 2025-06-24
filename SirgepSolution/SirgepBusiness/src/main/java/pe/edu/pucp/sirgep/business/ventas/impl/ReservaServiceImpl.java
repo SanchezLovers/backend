@@ -183,7 +183,6 @@ public class ReservaServiceImpl implements IReservaService {
                     ReservaDTO reservaDTO = new ReservaDTO();
                     reservaDTO.llenarReserva(reserva);
                     listaFinal.add(reservaDTO);
-                    listaFinal.add(reservaDTO);
                 }
             }
 

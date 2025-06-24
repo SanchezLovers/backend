@@ -13,15 +13,15 @@ public class Evento {
     private int cantEntradasVendidas;
     private double precioEntrada;
 //    private String urlImagen;
-    private byte[] archivoImagen;
+    private String archivoImagen;
     private String descripcion;
     
 //momentaneamente no implementado
-    public byte[] getArchivoImagen() {
+    public String getArchivoImagen() {
         return archivoImagen;
     }
 
-    public void setArchivoImagen(byte[] archivoImagen) {
+    public void setArchivoImagen(String archivoImagen) {
         this.archivoImagen = archivoImagen;
     }
 	
