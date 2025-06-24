@@ -104,8 +104,8 @@ public class DetalleConstanciaDTO {
             if (detalle.get("numDocumento") != null) {
                 this.setNumDocumento((String) detalle.get("numDocumento"));
             }
-            if (detalle.get("fecha") != null) {
-                this.setFecha((Date) detalle.get("fecha"));
+            if (detalle.get("fechaConstancia") != null) {
+                this.setFecha((Date) detalle.get("fechaConstancia"));
             }
             if (detalle.get("metodoPago") != null) {
                 this.setMetodoPago((String) detalle.get("metodoPago"));

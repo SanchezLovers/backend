@@ -132,13 +132,13 @@ public class DetalleReservaDTO {
                 this.setNombreDistrito((String) detalle.get("nombreDistrito"));
             }
             if (detalle.get("fecha_reserva") != null) {
-                this.setFecha((Date) detalle.get("fecha_reserva"));
+                this.setFecha((java.sql.Date) detalle.get("fecha_reserva"));
             }
             if (detalle.get("horaInicio") != null) {
-                this.setHoraInicio((Time) detalle.get("horaInicio"));
+                this.setHoraInicio(new Date(((java.sql.Time) detalle.get("horaInicio")).getTime()));
             }
             if (detalle.get("horaFin") != null) {
-                this.setHoraFin((Time) detalle.get("horaFin"));
+                this.setHoraFin(new Date(((java.sql.Time) detalle.get("horaFin")).getTime()));
             }
             if (detalle.get("superficie") != null) {
                 this.setSuperficie((double) detalle.get("superficie"));

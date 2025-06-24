@@ -261,7 +261,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
                 detalleEntrada.put("nombreDistrito", rs.getString("nombre_distrito"));
             }
             if (rs.getDate("fecha_funcion") != null) {
-                detalleEntrada.put("fecha", rs.getDate("fecha_funcion"));
+                detalleEntrada.put("fechaFuncion", rs.getDate("fecha_funcion"));
             }
             if (rs.getTime("hora_inicio") != null) {
                 detalleEntrada.put("horaInicio", rs.getTime("hora_inicio"));

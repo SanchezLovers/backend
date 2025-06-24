@@ -557,7 +557,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
                 detalleReserva.put("superficie", rs.getDouble("superficie"));
             }
             if (rs.getDate("fecha_reserva") != null) {
-                detalleReserva.put("fecha", rs.getDate("fecha_reserva"));
+                detalleReserva.put("fecha_reserva", rs.getDate("fecha_reserva"));
             }
             if (rs.getTime("hora_inicio") != null) {
                 detalleReserva.put("horaInicio", rs.getTime("hora_inicio"));
