@@ -29,6 +29,7 @@ public interface IReservaService {
     public Espacio buscarEspacioDeReserva(int idEspacio);
     public Distrito buscarDistritoDeReserva(int idEntrada);
     public boolean cancelarReserva(int id) throws SQLException;
+    public List<Reserva> listarPorMesYAnio(int mes, int anio);
 
     //Metodos adicionales para el listado de reservas
     public List<ReservaDTO> listarTodos();

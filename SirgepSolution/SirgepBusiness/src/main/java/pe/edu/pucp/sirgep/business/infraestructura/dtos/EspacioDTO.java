@@ -21,11 +21,9 @@ public class EspacioDTO {
 
     private int idProvincia;
     private String nombreProvincia;
-    private List<Provincia> provincias;
 
     private int idDistrito;
     private String nombreDistrito;
-    private List<Distrito> distritos;
     
     private String horaInicio;
     private String horaFin;
@@ -114,14 +112,6 @@ public class EspacioDTO {
         this.nombreProvincia = nombreProvincia;
     }
 
-    public List<Provincia> getProvincias() {
-        return provincias;
-    }
-
-    public void setProvincias(List<Provincia> provincias) {
-        this.provincias = provincias;
-    }
-
     public int getIdDistrito() {
         return idDistrito;
     }
@@ -136,14 +126,6 @@ public class EspacioDTO {
 
     public void setNombreDistrito(String nombreDistrito) {
         this.nombreDistrito = nombreDistrito;
-    }
-
-    public List<Distrito> getDistritos() {
-        return distritos;
-    }
-
-    public void setDistritos(List<Distrito> distritos) {
-        this.distritos = distritos;
     }
 
     public String getHoraInicio() {

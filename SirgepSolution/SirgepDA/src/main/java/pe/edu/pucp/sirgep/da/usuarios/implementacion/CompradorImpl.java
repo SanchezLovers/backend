@@ -45,7 +45,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                 + "segundo_apellido,correo,usuario,contrasenia,num_documento,"
                 + "tipo_documento,es_registrado "
                 + "FROM Persona P, Comprador C "
-                + "WHERE P.id_persona = C.id_persona_comprador AND P.activo='A'";
+                + "WHERE P.id_persona = C.id_persona_comprador AND P.activo='A' AND C.es_registrado=1";
         return sql;
     }
 
@@ -340,25 +340,123 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     @Override
     public boolean actualizarDistritoFavoritoPorIdComprador(String nuevoDistrito, int idComprador) {
         boolean resultado = false;
-        String sql = "UPDATE Comprador C JOIN Distrito D ON D.nombre COLLATE utf8mb4_general_ci LIKE '%"+
-                nuevoDistrito+"%' SET C.id_distrito_favorito = D.id_distrito WHERE C.id_persona_comprador = " + idComprador;
+        String sql = "UPDATE Comprador C "
+                + "JOIN (SELECT id_distrito FROM Distrito WHERE nombre COLLATE utf8mb4_general_ci LIKE ? LIMIT 1) D ON 1=1 "
+                + "SET C.id_distrito_favorito = D.id_distrito "
+                + "WHERE C.id_persona_comprador = ?";
         try (Connection conn = DBManager.getInstance().getConnection()) {
             conn.setAutoCommit(false);
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.executeUpdate();
+                ps.setString(1,nuevoDistrito);
+                ps.setInt(2, idComprador);
+                int filasActualizadas = ps.executeUpdate();
                 conn.commit();
-                System.out.println("Se actualizo el distrito favorito de un comprador");
-                resultado = true;
+                if (filasActualizadas > 0) {
+                    System.out.println("✅ Se actualizó el distrito favorito del comprador.");
+                    resultado = true;
+                } else {
+                    System.out.println("⚠️ No se actualizó nada: distrito no encontrado o ID inválido.");
+                }
             } catch (SQLException e) {
                 conn.rollback();
-                throw new RuntimeException("Error al ejecutar el query de actualizado: ", e);
+                throw new RuntimeException("Error al ejecutar el query de actualización: ", e);
             } finally {
                 conn.setAutoCommit(true);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al actualizar el distrito favorito de un comprador: ", e);
-        } finally {
-            return resultado;
+        }
+        return resultado;
+    }
+    
+    @Override
+    public Date obtenerUltimaCompraPorDocumento(String numeroDocumento) {
+        String sql = "{CALL ObtenerUltimaCompraPorDocumento(?, ?)}";
+        Date fechaUltimaCompra = null;
+
+        try (
+            Connection conn = DBManager.getInstance().getConnection();
+            CallableStatement stmt = conn.prepareCall(sql)
+        ) {
+            stmt.setString(1, numeroDocumento);
+            stmt.registerOutParameter(2, java.sql.Types.DATE);
+
+            stmt.execute();
+            fechaUltimaCompra = stmt.getDate(2);
+
+            System.out.println("Última compra obtenida correctamente para documento: " + numeroDocumento);
+
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al obtener la última compra por documento", ex);
+        }
+
+        return fechaUltimaCompra;
+    }
+    
+    @Override
+    public List<Map<String, Object>> listarCompradoresDTO() {
+        List<Map<String, Object>> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT P.id_persona, P.nombres, P.primer_apellido, P.segundo_apellido,
+                   P.tipo_documento, P.num_documento, P.correo,
+                   (
+                       SELECT MAX(C.fecha)
+                       FROM Constancia C
+                       WHERE C.detalle_pago LIKE CONCAT('%', P.num_documento, '%')
+                   ) AS ultima_compra
+            FROM Persona P
+            JOIN Comprador C ON P.id_persona = C.id_persona_comprador
+            WHERE P.activo = 'A'
+        """;
+
+        try (
+            Connection conn = DBManager.getInstance().getConnection();
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery()
+        ) {
+            while (rs.next()) {
+                Map<String, Object> fila = new HashMap<>();
+                fila.put("id", rs.getInt("id_persona"));
+                fila.put("nombres", rs.getString("nombres"));
+                fila.put("primerApellido", rs.getString("primer_apellido"));
+                fila.put("segundoApellido", rs.getString("segundo_apellido"));
+                fila.put("tipoDocumento", rs.getString("tipo_documento"));
+                fila.put("numDocumento", rs.getString("num_documento"));
+                fila.put("correo", rs.getString("correo"));
+                fila.put("ultima_compra", rs.getDate("ultima_compra")); // <-- aquí capturas la fecha
+                lista.add(fila);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar compradores DTO", e);
+        }
+
+        return lista;
+    }
+
+    @Override
+    public boolean validarCorreo(String correo) {
+        boolean devolver=true;
+        try (Connection conn = DBManager.getInstance().getConnection()){
+            conn.setAutoCommit(false);
+            try(CallableStatement pst=conn.prepareCall("{Call validar_correo_comprador(?,?)}")){
+                pst.setString(1, correo);
+//                pst.setBoolean(2, devolver);
+                
+                pst.registerOutParameter(2, Types.BOOLEAN);
+                pst.execute();
+                
+                devolver=pst.getBoolean(2);
+            }catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el stored procedure", e);
+            }finally {
+                conn.setAutoCommit(true);
+            }
+        }catch(SQLException e) {
+            throw new RuntimeException("Error al ejectuar");
+        }finally{
+            return devolver;
         }
     }
 }

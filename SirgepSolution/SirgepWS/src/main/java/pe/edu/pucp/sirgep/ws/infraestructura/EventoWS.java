@@ -14,18 +14,21 @@ import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 
 @WebService(serviceName = "EventoWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class EventoWS {
-    private EventoServiceImpl eService;
-    private FuncionServiceImpl fService;
+    private EventoServiceImpl eventoService;
+    private FuncionServiceImpl funcionService;
     private EntradaServiceImpl entradasService;
+    
     public EventoWS(){
-        eService = new EventoServiceImpl();
-        fService =  new FuncionServiceImpl();
+        eventoService = new EventoServiceImpl();
+        funcionService =  new FuncionServiceImpl();
         entradasService =  new EntradaServiceImpl();
     }
+    
+    //CRUD
     @WebMethod(operationName = "insertarEvento")
     public int insertarEvento(@WebParam(name = "evento") Evento evento) {
         try{
-            return eService.insertar(evento);
+            return eventoService.insertar(evento);
         }
         catch(Exception ex)
         {
@@ -35,7 +38,7 @@ public class EventoWS {
     @WebMethod(operationName = "listarEvento")
     public List<Evento> listarEvento() {
         try{
-            List<Evento> eventos = eService.listar();
+            List<Evento> eventos = eventoService.listar();
             return eventos;
         }
         catch(Exception ex)
@@ -47,7 +50,7 @@ public class EventoWS {
     @WebMethod(operationName = "listarEventoPorDistrito")
     public List<Evento> listarEventoPorDistrito(@WebParam(name = "Id")int id) {
         try {
-            return eService.listarPorDistrito(id);
+            return eventoService.listarPorDistrito(id);
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar distritos: " + ex.getMessage());
         }
@@ -56,7 +59,7 @@ public class EventoWS {
     @WebMethod(operationName = "buscarEventoPorTexto")
     public List<Evento> buscarPorTextoEvento(@WebParam(name = "texto") String texto) {
         try{
-            return eService.buscarPorTexto(texto);
+            return eventoService.buscarPorTexto(texto);
         }
         catch(Exception ex){
             throw new RuntimeException("ERROR al buscar el EVENTO mediante un texto: "+ ex.getMessage());
@@ -66,7 +69,7 @@ public class EventoWS {
     @WebMethod(operationName = "buscarEventosPorFechas")
     public List<Evento> buscarEventosPorFechas(@WebParam(name = "fecha_inicio") String inicio, @WebParam(name = "fecha_fin") String fin){
         try{
-            return eService.buscarEventosPorFechas(inicio, fin);
+            return eventoService.buscarEventosPorFechas(inicio, fin);
         }
         catch(Exception ex){
             throw new RuntimeException("ERROR al LISTAR EVENTOS POR FECHAS: ... " + ex.getMessage());
@@ -76,7 +79,7 @@ public class EventoWS {
     @WebMethod(operationName = "buscarEventoPorID")
     public Evento buscarEventoPorID(@WebParam(name = "id") int id) {
         try{
-            return eService.buscar(id);
+            return eventoService.buscar(id);
         }
         catch(Exception ex){
             throw new RuntimeException("Error al buscar el evento con id: " + id + " ... " + ex.getMessage());
@@ -86,7 +89,7 @@ public class EventoWS {
     @WebMethod(operationName = "actualizarEvento")
     public boolean actualizarEvento(@WebParam(name = "evento") Evento evento) {
         try{
-            return eService.actualizar(evento);
+            return eventoService.actualizar(evento);
         }
         catch(Exception ex){
             throw new RuntimeException("ERROR al actualizar el evento " + ex.getMessage());
@@ -94,11 +97,11 @@ public class EventoWS {
     }
     
     public boolean eliminarFuncionesDeEvento(int id){
-        List<Funcion> funcionesEvento = fService.listar();
+        List<Funcion> funcionesEvento = funcionService.listar();
         for(Funcion f : funcionesEvento){
             if(f.getEvento().getIdEvento() == id){
                 // pertenece al evento a eliminar
-                boolean eliminado = fService.eliminarLogico(f.getIdFuncion()); // eliminamos la función
+                boolean eliminado = funcionService.eliminarLogico(f.getIdFuncion()); // eliminamos la función
                 if(!eliminado) return false;
             }
         }
@@ -110,7 +113,7 @@ public class EventoWS {
         try{
             boolean eliminarFunciones = eliminarFuncionesDeEvento(id);
             if(!eliminarFunciones) return false;
-            boolean eliminarEvento = eService.eliminarLogico(id);
+            boolean eliminarEvento = eventoService.eliminarLogico(id);
             return eliminarEvento;
         }
         catch(Exception ex){
@@ -120,7 +123,7 @@ public class EventoWS {
     
     @WebMethod(operationName = "listarFuncionesDeEvento")
     public List<Funcion> listarFuncionesDeEvento(@WebParam(name = "Id") int id) {
-        List <Funcion> funcionesGeneral = fService.listar();
+        List <Funcion> funcionesGeneral = funcionService.listar();
         List <Funcion> funcionesEvento = new ArrayList<>();
         for (int i = 0; i < funcionesGeneral.size(); i++) {
             Funcion fAux = funcionesGeneral.get(i);
@@ -135,5 +138,17 @@ public class EventoWS {
     public int obtenerCantEntradasDisponibles(@WebParam(name = "IdFuncion") int id,
             @WebParam(name = "obtenerCantEDisponibles") int cantEntradasPorFuncion){
         return entradasService.cantidadDispo(id, cantEntradasPorFuncion);
+    }
+    
+    //Adicionales
+    @WebMethod(operationName = "enviarCorreosCompradoresPorDistritoDeEvento")
+    public boolean enviarCorreosCompradoresPorDistritoDeEvento(@WebParam(name = "asunto")String asunto, 
+            @WebParam(name = "contenido")String contenido, @WebParam(name = "idDistrito")int idDistrito) {
+        try{
+            return eventoService.enviarCorreosCompradoresPorDistritoDeEvento(asunto,contenido,idDistrito);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del evento: "+ ex.getMessage());
+        }
     }
 }
