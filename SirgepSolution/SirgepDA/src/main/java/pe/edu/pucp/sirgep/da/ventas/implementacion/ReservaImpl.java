@@ -391,7 +391,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         List<Map<String, Object>> listaReservas = null;
         String sql;
         sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.activo,
+            SELECT r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -404,14 +404,9 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             ResultSet rs = pst.executeQuery();
             listaReservas = new ArrayList<>();
             while (rs.next()) {
-                Map<String, Object> fila = new HashMap<>();
-                fila.put("codigo", rs.getInt("num_reserva"));
-                fila.put("fecha", rs.getDate("fecha_reserva"));
-                fila.put("distrito", rs.getString("nombre_distrito"));
-                fila.put("espacio", rs.getString("nombre_espacio"));
-                fila.put("correo", rs.getString("correo"));
-                fila.put("activo", rs.getString("activo").charAt(0));
-                listaReservas.add(fila);
+                Map<String, Object> reserva = new HashMap<>();
+                this.llenarMapaReserva(reserva, rs);
+                listaReservas.add(reserva);
             }
             System.out.println("Se listaron las reservas por distrito correctamente");
         } catch (SQLException e) {
@@ -427,7 +422,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         String sql;
         if (activo) {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, d.nombre AS nombre_distrito,
+            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
                    e.nombre AS nombre_espacio, p.correo, r.activo
             FROM Reserva r
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
@@ -437,7 +432,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         """;
         } else {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, d.nombre AS nombre_distrito,
+            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
                    e.nombre AS nombre_espacio, p.correo, r.activo
             FROM Reserva r
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
@@ -451,14 +446,9 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             ResultSet rs = pst.executeQuery();
             listaDetalleReservas = new ArrayList<>();
             while (rs.next()) {
-                Map<String, Object> fila = new HashMap<>();
-                fila.put("codigo", rs.getInt("num_reserva"));
-                fila.put("fecha", rs.getDate("fecha_reserva"));
-                fila.put("distrito", rs.getString("nombre_distrito"));
-                fila.put("espacio", rs.getString("nombre_espacio"));
-                fila.put("correo", rs.getString("correo"));
-                fila.put("activo", rs.getString("activo").charAt(0));
-                listaDetalleReservas.add(fila);
+                Map<String, Object> reserva = new HashMap<>();
+                this.llenarMapaReserva(reserva, rs);
+                listaDetalleReservas.add(reserva);
             }
             System.out.println("Se listaron las reservas por fecha correctamente");
         } catch (SQLException e) {
@@ -473,7 +463,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         String sql;
         if (activo) {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.activo,
+            SELECT r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -485,7 +475,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         """;
         } else {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.activo,
+            SELECT r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -501,14 +491,9 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             ResultSet rs = pst.executeQuery();
             listaReservas = new ArrayList<>();
             while (rs.next()) {
-                Map<String, Object> fila = new HashMap<>();
-                fila.put("codigo", rs.getInt("num_reserva"));
-                fila.put("fecha", rs.getDate("fecha_reserva"));
-                fila.put("distrito", rs.getString("nombre_distrito"));
-                fila.put("espacio", rs.getString("nombre_espacio"));
-                fila.put("correo", rs.getString("correo"));
-                fila.put("activo", rs.getString("activo").charAt(0));
-                listaReservas.add(fila);
+                Map<String, Object> reserva = new HashMap<>();
+                this.llenarMapaReserva(reserva, rs);
+                listaReservas.add(reserva);
             }
             System.out.println("Se listaron las reservas por distrito correctamente");
         } catch (SQLException e) {
@@ -517,6 +502,35 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             return listaReservas;
         }
     }
+    @Override
+    public void llenarMapaReserva(Map<String, Object>reserva,ResultSet rs){
+        try{
+            if (rs.getString("num_reserva") != null) {
+                reserva.put("num_reserva", rs.getInt("num_reserva"));
+            }
+            if (rs.getString("fecha_reserva") != null) {
+                reserva.put("fecha_reserva", rs.getDate("fecha_reserva"));
+            }
+            if (rs.getString("id_constancia_reserva") != null) {
+                reserva.put("id_constancia_reserva", rs.getInt("id_constancia_reserva"));
+            }
+            if (rs.getString("nombre_espacio") != null) {
+                reserva.put("nombre_espacio", rs.getString("nombre_espacio"));
+            }
+            if (rs.getString("nombre_distrito") != null) {
+                reserva.put("nombre_distrito", rs.getString("nombre_distrito"));
+            }
+            if (rs.getString("correo") != null) {
+                reserva.put("correo", rs.getString("correo"));
+            }
+            if (rs.getString("activo") != null && !rs.getString("activo").isEmpty()) {
+                reserva.put("activo", rs.getString("activo").charAt(0));
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al llenar el mapa del detalle de la reserva: " + ex.getMessage());
+        }
+    }
+    
     //Metodos para buscar el detalle de la constancia de la reserva
     @Override
     public void llenarMapaDetalleReserva(Map<String, Object>detalleReserva,ResultSet rs){
@@ -584,4 +598,30 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             throw new RuntimeException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
     }
+
+    @Override
+    public List<Reserva> listarPorMesYAnio(int mes, int anio) {
+        List<Reserva> listaReserva = new ArrayList<>();
+        String sql = "{CALL BUSCA_RESERVAS_POR_MES_Y_ANIO(?, ?)}";
+
+        try (Connection conn = DBManager.getInstance().getConnection();
+             CallableStatement pst = conn.prepareCall(sql)) {
+
+            pst.setInt(1, mes);   // Ej: "06"
+            pst.setInt(2, anio);  // Ej: "2025"
+
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Reserva r = createFromResultSet(rs); // Este método debería mapear correctamente el ResultSet
+                listaReserva.add(r);
+            }
+
+            System.out.println("Se listaron las reservas por mes y año correctamente.");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las reservas por mes y año", e);
+        }
+
+        return listaReserva;
+    }
+
 }

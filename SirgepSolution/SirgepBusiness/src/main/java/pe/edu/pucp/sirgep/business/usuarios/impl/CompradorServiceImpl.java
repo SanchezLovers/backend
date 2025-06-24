@@ -17,7 +17,6 @@ public class CompradorServiceImpl implements ICompradorService{
     
     public CompradorServiceImpl(){
         this.compradorDAO=new CompradorImpl();
-        
     }
     
     //Metodos CRUD
@@ -89,6 +88,7 @@ public class CompradorServiceImpl implements ICompradorService{
     public Date obtenerUltimaCompraPorDocumento(String numeroDocumento) {
         return compradorDAO.obtenerUltimaCompraPorDocumento(numeroDocumento);
     }
+    
     @Override
     public List<CompradorDTO> listarCompradoresDTO() {
         List<CompradorDTO> resultado = new ArrayList<>();
@@ -119,5 +119,10 @@ public class CompradorServiceImpl implements ICompradorService{
         }
 
         return resultado;
+    }
+
+    @Override
+    public boolean validarCorreo(String correo){
+        return compradorDAO.validarCorreo(correo);
     }
 }

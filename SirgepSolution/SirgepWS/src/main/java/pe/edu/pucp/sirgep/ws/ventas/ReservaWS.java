@@ -46,7 +46,16 @@ public class ReservaWS {
             throw new WebServiceException("Error al buscar reserva: " + ex.getMessage());
         }
     }
-
+    
+    @WebMethod(operationName = "listarPorMesYAnio")
+    public List<Reserva> listarPorMesYAnio(int mes, int anio){
+        try {
+            return reservaService.listarPorMesYAnio(mes, anio);
+        } catch (Exception ex) {
+            throw new WebServiceException("Error al listar reserva: " + ex.getMessage());
+        }
+    }
+    
     @WebMethod(operationName = "listarReservas")
     public List<Reserva> listarReserva() {
         try {

@@ -17,8 +17,12 @@ public interface ICompradorService{
     
     //Metodos adicionales
     Comprador buscarPorDni(String dni);
+
     Date obtenerUltimaCompraPorDocumento(String numeroDocumento);
     List<CompradorDTO> listarCompradoresDTO();
+    
+    public boolean validarCorreo(String correo);
+
     
     //Metodos del perfil del comprador
     public DetalleComprador buscarDetalleCompradorPorId(int idComprador);

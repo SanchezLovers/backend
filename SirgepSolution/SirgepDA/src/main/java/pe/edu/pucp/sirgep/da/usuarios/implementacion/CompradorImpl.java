@@ -362,7 +362,6 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         }
     }
     
-    
     @Override
     public Date obtenerUltimaCompraPorDocumento(String numeroDocumento) {
         String sql = "{CALL ObtenerUltimaCompraPorDocumento(?, ?)}";
@@ -426,5 +425,31 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         }
 
         return lista;
+    }
+
+    @Override
+    public boolean validarCorreo(String correo) {
+        boolean devolver=true;
+        try (Connection conn = DBManager.getInstance().getConnection()){
+            conn.setAutoCommit(false);
+            try(CallableStatement pst=conn.prepareCall("{Call validar_correo_comprador(?,?)}")){
+                pst.setString(1, correo);
+//                pst.setBoolean(2, devolver);
+                
+                pst.registerOutParameter(2, Types.BOOLEAN);
+                pst.execute();
+                
+                devolver=pst.getBoolean(2);
+            }catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el stored procedure", e);
+            }finally {
+                conn.setAutoCommit(true);
+            }
+        }catch(SQLException e) {
+            throw new RuntimeException("Error al ejectuar");
+        }finally{
+            return devolver;
+        }
     }
 }
