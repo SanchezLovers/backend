@@ -17,7 +17,8 @@ public class ReservaDTO {
     //Atributos
     private int numReserva;
     private int idConstancia;
-    private Date fecha;
+    private Date fechaReserva;
+    private Date fechaConstancia;
     private String distrito;
     private String espacio;
     private String correo;
@@ -43,18 +44,26 @@ public class ReservaDTO {
         this.idConstancia = idConstancia;
     }
     
-    public Date getFecha() {
-        return fecha;
+    public Date getFechaReserva() {
+        return fechaReserva;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setFechaReserva(Date fecha) {
+        this.fechaReserva = fecha;
     }
 
     public String getDistrito() {
         return distrito;
     }
 
+    public Date getFechaConstancia() {
+        return fechaConstancia;
+    }
+
+    public void setFechaConstancia(Date fechaConstancia) {
+        this.fechaConstancia = fechaConstancia;
+    }
+    
     public void setDistrito(String distrito) {
         this.distrito = distrito;
     }
@@ -89,7 +98,10 @@ public class ReservaDTO {
                 this.setNumReserva((int) reserva.get("num_reserva"));
             }
             if (reserva.get("fecha_reserva") != null) {
-                this.setFecha((Date) reserva.get("fecha_reserva"));
+                this.setFechaReserva((Date) reserva.get("fecha_reserva"));
+            }
+            if (reserva.get("fecha_constancia") != null) {
+                this.setFechaConstancia((Date) reserva.get("fecha_constancia"));
             }
             if (reserva.get("id_constancia_reserva") != null) {
                 this.setIdConstancia((int) reserva.get("id_constancia_reserva"));
