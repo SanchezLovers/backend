@@ -1,6 +1,6 @@
 package pe.edu.pucp.sirgep.business.ventas.dtos;
 
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Map;
 
@@ -95,14 +95,14 @@ public class DetalleEntradaDTO {
             if (detalle.get("nombreDistrito") != null) {
                 this.setNombreDistrito((String) detalle.get("nombreDistrito"));
             }
-            if (detalle.get("fecha") != null) {
-                this.setFecha((Date) detalle.get("fecha"));
+            if (detalle.get("fechaFuncion") != null) {
+                this.setFecha((java.sql.Date) detalle.get("fechaFuncion"));
             }
             if (detalle.get("horaInicio") != null) {
-                this.setHoraInicio((Time) detalle.get("horaInicio"));
+                this.setHoraInicio(new Date(((java.sql.Time) detalle.get("horaInicio")).getTime()));
             }
             if (detalle.get("horaFin") != null) {
-                this.setHoraFin((Time) detalle.get("horaFin"));
+                this.setHoraFin(new Date(((java.sql.Time) detalle.get("horaFin")).getTime()));
             }
             if (detalle.get("estado") != null) {
                 this.setEstado((char) detalle.get("estado"));

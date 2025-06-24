@@ -118,7 +118,7 @@ public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDA
                 detalleConstancia.put("numDocumento", rs.getString("num_documento"));
             }
             if (rs.getDate("fecha") != null) {
-                detalleConstancia.put("fecha", rs.getDate("fecha"));
+                detalleConstancia.put("fechaConstancia", rs.getDate("fecha"));
             }
             if (rs.getString("metodo_pago") != null) {
                 detalleConstancia.put("metodoPago", rs.getString("metodo_pago"));
