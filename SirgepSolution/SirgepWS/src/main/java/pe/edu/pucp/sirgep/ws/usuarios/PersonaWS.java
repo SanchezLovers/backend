@@ -49,4 +49,9 @@ public class PersonaWS {
 //        return "Hello " + txt + " !";
         return personaService.validarCuenta(c, p);
     }
+    
+    @WebMethod(operationName = "obtenerNombreUsuario")
+    public String obtenerNombreUsuario(@WebParam(name = "id") int id){
+        return personaService.obtenerNombreUsuario(id);
+    }
 }
