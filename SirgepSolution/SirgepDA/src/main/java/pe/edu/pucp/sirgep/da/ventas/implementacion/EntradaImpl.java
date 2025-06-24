@@ -13,11 +13,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.io.IOException;
+import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
@@ -276,6 +279,17 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             throw new RuntimeException("Error al llenar el mapa del detalle de la entrada: " + ex.getMessage());
         }
     }
+    
+    public void llenarMapaDetalleEntradaConFecha(Map<String, Object>detalleEntrada,ResultSet rs){
+        try {
+            llenarMapaDetalleEntrada(detalleEntrada, rs);
+            if(rs.getDate("fecha_constancia") != null){
+                detalleEntrada.put("fechaConstancia", rs.getDate("fecha_constancia"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EntradaImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     @Override
     public Map<String, Object> buscarConstanciaEntrada(int idConstancia){
         Map<String, Object> constanciaEntrada = null;
@@ -294,7 +308,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
             if(rs.next()){
                 constanciaEntrada = new HashMap<>();
-                this.llenarMapaDetalleEntrada(constanciaEntrada,rs);
+                this.llenarMapaDetalleEntradaConFecha(constanciaEntrada,rs);
                 constanciaDAO.llenarMapaDetalleConstancia(constanciaEntrada,rs);
                 System.out.println("Se busco la constancia de la entrada correctamente");
                 return constanciaEntrada;
@@ -304,5 +318,57 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         } catch (SQLException ex) {
             throw new RuntimeException("Error al buscar la constancia de la entrada: " + ex.getMessage());
         }
+    }
+
+    @Override
+    public List<Map<String, Object>> listarDetalleEntradas() {
+        List<Map<String, Object>> listaDetalleEntradas = null;
+        String sql = """
+                     SELECT c.fecha AS fecha_constancia, c.id_constancia, e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion, d.nombre AS 
+                     nombre_distrito, f.fecha AS fecha_funcion, f.hora_inicio, f.hora_fin, e.activo FROM Entrada e JOIN Constancia c ON 
+                     c.id_constancia=e.id_constancia_entrada JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
+                     JOIN Evento ev ON f.Evento_idEvento = ev.id_evento JOIN Distrito d ON ev.Distrito_id_distrito = d.id_distrito
+                     WHERE e.activo = 'A';
+                     """;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            listaDetalleEntradas = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, Object> detalleEntrada = new HashMap<>();
+                this.llenarMapaDetalleEntradaConFecha(detalleEntrada,rs);
+                listaDetalleEntradas.add(detalleEntrada);
+            }
+            System.out.println("Se listo las entradas correctamente");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las entradas: ", e);
+        } finally {
+            return listaDetalleEntradas;
+        }
+    }
+    public String getBuscarPorTexto(){
+        return "{CALL BUSCAR_ENTRADA_POR_TEXTO(?)}";
+    }
+
+    /*Buscar Entradas con cierto patrón de Texto*/
+    @Override
+    public List<Map<String, Object>> buscarPorTexto(String texto) {
+        List<Map<String, Object>> entradas = new ArrayList<>();
+
+        // Utilizaremos procedimientos almacenados
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+             CallableStatement cs = conn.prepareCall(this.getBuscarPorTexto())) {
+
+            cs.setString(1, texto); // asignamos el parámetro de texto
+
+            try (ResultSet rs = cs.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> detalleEntrada = new HashMap<>();
+                    this.llenarMapaDetalleEntradaConFecha(detalleEntrada,rs);
+                    entradas.add(detalleEntrada);
+                }
+            }
+        }catch(SQLException e){
+            throw new RuntimeException("Error al obtener un espacio: ", e);
+        }
+        return entradas;
     }
 }

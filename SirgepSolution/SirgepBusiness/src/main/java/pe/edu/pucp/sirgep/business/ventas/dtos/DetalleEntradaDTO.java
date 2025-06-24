@@ -11,10 +11,11 @@ public class DetalleEntradaDTO {
     private String nombreEvento;
     private String ubicacion;
     private String nombreDistrito;
-    private Date fecha;
+    private Date fechaFuncion;
     private Date horaInicio;
     private Date horaFin;
     private char estado;
+    private Date fechaConstancia;
 
     //Constructor
     public DetalleEntradaDTO() {
@@ -48,11 +49,11 @@ public class DetalleEntradaDTO {
     public void setNombreDistrito(String nombreDistrito) {
         this.nombreDistrito = nombreDistrito;
     }
-    public Date getFecha() {
-        return fecha;
+    public Date getFechaFuncion() {
+        return fechaFuncion;
     }
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setFechaFuncion(Date fechaFuncion) {
+        this.fechaFuncion = fechaFuncion;
     }
     public Date getHoraInicio() {
         return horaInicio;
@@ -75,6 +76,13 @@ public class DetalleEntradaDTO {
     public void setIdConstancia(int IdConstancia) {
         this.IdConstancia = IdConstancia;
     }
+    public Date getFechaConstancia() {
+        return fechaConstancia;
+    }
+
+    public void setFechaConstancia(Date fechaConstancia) {
+        this.fechaConstancia = fechaConstancia;
+    }
     
     //Metodos
     public void llenarDetalleEntrada(Map<String, Object> detalle) {
@@ -96,7 +104,7 @@ public class DetalleEntradaDTO {
                 this.setNombreDistrito((String) detalle.get("nombreDistrito"));
             }
             if (detalle.get("fechaFuncion") != null) {
-                this.setFecha((java.sql.Date) detalle.get("fechaFuncion"));
+                this.setFechaFuncion((java.sql.Date) detalle.get("fechaFuncion"));
             }
             if (detalle.get("horaInicio") != null) {
                 this.setHoraInicio(new Date(((java.sql.Time) detalle.get("horaInicio")).getTime()));
@@ -107,6 +115,10 @@ public class DetalleEntradaDTO {
             if (detalle.get("estado") != null) {
                 this.setEstado((char) detalle.get("estado"));
             }
+            if (detalle.get("fechaConstancia") != null) {
+                this.setFechaConstancia((Date) detalle.get("fechaConstancia"));
+            }
+            
         } catch (Exception ex) {
             throw new RuntimeException("Error al llenar el detalle de la entrada: " + ex.getMessage());
         }

@@ -12,4 +12,7 @@ public interface EntradaDAO extends BaseDAO<Entrada>{
     
     void llenarMapaDetalleEntrada(Map<String, Object>detalleEntrada,ResultSet rs);
     Map<String, Object> buscarConstanciaEntrada(int numEntrada);
+
+    public List<Map<String, Object>> listarDetalleEntradas();
+    public List<Map<String, Object>> buscarPorTexto(String texto);
 }

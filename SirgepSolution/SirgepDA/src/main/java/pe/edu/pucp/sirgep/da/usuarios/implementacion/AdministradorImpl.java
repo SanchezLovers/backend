@@ -2,7 +2,6 @@ package pe.edu.pucp.sirgep.da.usuarios.implementacion;
 
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.da.usuarios.dao.AdministradorDAO;
-import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoAdministrador;
 import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoDocumento;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Administrador;
 

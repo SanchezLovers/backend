@@ -18,6 +18,7 @@ public class Espacio{
     private String ubicacion;
     private double superficie;
     private double precioReserva;
+    private String foto;
   
     //Relaciones
     private ArrayList<Reserva> reservas;
@@ -125,6 +126,14 @@ public class Espacio{
 
     public void setDistrito(Distrito distrito) {
         this.distrito = distrito;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 	
     //Metodos

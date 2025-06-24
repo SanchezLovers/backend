@@ -10,6 +10,7 @@ import java.util.List;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 
 public class DistritoImpl extends BaseImpl<Distrito> implements  DistritoDAO{
 
@@ -142,5 +143,42 @@ public class DistritoImpl extends BaseImpl<Distrito> implements  DistritoDAO{
         }finally{
             return entities;
         }
+    }
+
+    @Override
+    public Distrito buscarDistritoCompleto(int idDistrito) {
+        Distrito distrito = null;
+        String query = "SELECT d.id_distrito, d.nombre as nombre_distrito, " +
+                "p.id_provincia, p.nombre as nombre_provincia, " +
+                "dep.id_departamento, dep.nombre as nombre_departamento " +
+                "FROM Distrito d " +
+                "INNER JOIN Provincia p ON d.Provincia_id_provincia = p.id_provincia " +
+                "INNER JOIN Departamento dep ON p.Departamento_id_departamento = dep.id_departamento " +
+                "WHERE d.id_distrito = ? AND d.activo = 'A'";
+
+        try (Connection conn = DBManager.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setInt(1, idDistrito);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                distrito = new Distrito();
+                distrito.setIdDistrito(rs.getInt("id_distrito"));
+                distrito.setNombre(rs.getString("nombre_distrito"));
+
+                Provincia provincia = new Provincia();
+                provincia.setIdProvincia(rs.getInt("id_provincia"));
+                provincia.setNombre(rs.getString("nombre_provincia"));
+
+                Departamento departamento = new Departamento();
+                departamento.setIdDepartamento(rs.getInt("id_departamento"));
+                departamento.setNombre(rs.getString("nombre_departamento"));
+
+                provincia.setDepartamento(departamento);
+                distrito.setProvincia(provincia);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar el distrito completo", e);
+        }
+        return distrito;
     }
 }
