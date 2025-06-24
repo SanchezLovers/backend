@@ -137,7 +137,6 @@ public class ReservaServiceImpl implements IReservaService {
                     ReservaDTO reservaDTO = new ReservaDTO();
                     reservaDTO.llenarReserva(reserva);
                     listaFinal.add(reservaDTO);
-                    listaFinal.add(reservaDTO);
                 }
             }
         } catch (Exception ex) {
@@ -184,7 +183,6 @@ public class ReservaServiceImpl implements IReservaService {
                 for (Map<String, Object> reserva : lista) {
                     ReservaDTO reservaDTO = new ReservaDTO();
                     reservaDTO.llenarReserva(reserva);
-                    listaFinal.add(reservaDTO);
                     listaFinal.add(reservaDTO);
                 }
             }
