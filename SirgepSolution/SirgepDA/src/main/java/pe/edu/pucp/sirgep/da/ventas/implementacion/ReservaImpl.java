@@ -424,22 +424,24 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         String sql;
         if (activo) {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
+            SELECT c.fecha AS fecha_constancia, r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
                    e.nombre AS nombre_espacio, p.correo, r.activo
             FROM Reserva r
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
             WHERE r.fecha_reserva = ? AND r.activo = 'A'
         """;
         } else {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
+            SELECT c.fecha AS fecha_constancia, r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
                    e.nombre AS nombre_espacio, p.correo, r.activo
             FROM Reserva r
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
             WHERE r.fecha_reserva = ?
         """;
         }
@@ -465,7 +467,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         String sql;
         if (activo) {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
+            SELECT c.fecha AS fecha_constancia, r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -473,11 +475,12 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
             WHERE d.id_distrito = ? AND r.activo = 'A'
         """;
         } else {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
+            SELECT c.fecha AS fecha_constancia, r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -485,6 +488,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
             WHERE d.id_distrito = ?
         """;
         }
