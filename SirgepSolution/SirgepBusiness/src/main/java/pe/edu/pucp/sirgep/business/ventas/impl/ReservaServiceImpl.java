@@ -126,7 +126,6 @@ public class ReservaServiceImpl implements IReservaService {
     @Override
     public List<ReservaDTO> listarTodos() {
         List<ReservaDTO> listaFinal = null;
-
         try {
             // Llamas al DAO que devuelve List<Map<String, Object>>
             List<Map<String, Object>> lista = reservaDAO.listarTodos();
@@ -136,7 +135,6 @@ public class ReservaServiceImpl implements IReservaService {
                 for (Map<String, Object> reserva : lista) {
                     ReservaDTO reservaDTO = new ReservaDTO();
                     reservaDTO.llenarReserva(reserva);
-                    listaFinal.add(reservaDTO);
                     listaFinal.add(reservaDTO);
                 }
             }
@@ -184,7 +182,6 @@ public class ReservaServiceImpl implements IReservaService {
                 for (Map<String, Object> reserva : lista) {
                     ReservaDTO reservaDTO = new ReservaDTO();
                     reservaDTO.llenarReserva(reserva);
-                    listaFinal.add(reservaDTO);
                     listaFinal.add(reservaDTO);
                 }
             }

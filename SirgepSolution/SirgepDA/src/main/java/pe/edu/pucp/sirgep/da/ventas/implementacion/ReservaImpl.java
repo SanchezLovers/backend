@@ -104,7 +104,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             aux.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
             aux.setFechaReserva(rs.getDate("fecha_reserva"));
             aux.setIniString(aux.getHorarioIni().toString());
-            aux.setFinString(aux.getHorarioIni().toString());
+            aux.setFinString(aux.getHorarioFin().toString());
             dis.setIdDistrito(rs.getInt("id_distrito"));
             dis.setNombre(rs.getString("D.nombre"));
             esp.setIdEspacio(rs.getInt("Espacio_id_espacio"));
@@ -391,7 +391,8 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         List<Map<String, Object>> listaReservas = null;
         String sql;
         sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
+            SELECT c.fecha AS fecha_constancia, r.num_reserva, r.fecha_reserva,
+                   r.activo, r.id_constancia_reserva,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -399,6 +400,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
         """;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
             ResultSet rs = pst.executeQuery();
@@ -422,22 +424,24 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         String sql;
         if (activo) {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
+            SELECT c.fecha AS fecha_constancia, r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
                    e.nombre AS nombre_espacio, p.correo, r.activo
             FROM Reserva r
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
             WHERE r.fecha_reserva = ? AND r.activo = 'A'
         """;
         } else {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
+            SELECT c.fecha AS fecha_constancia, r.num_reserva, r.fecha_reserva, r.id_constancia_reserva, d.nombre AS nombre_distrito,
                    e.nombre AS nombre_espacio, p.correo, r.activo
             FROM Reserva r
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
             WHERE r.fecha_reserva = ?
         """;
         }
@@ -463,7 +467,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         String sql;
         if (activo) {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
+            SELECT c.fecha AS fecha_constancia, r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -471,11 +475,12 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
             WHERE d.id_distrito = ? AND r.activo = 'A'
         """;
         } else {
             sql = """
-            SELECT r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
+            SELECT c.fecha AS fecha_constancia, r.num_reserva, r.fecha_reserva, r.activo, r.id_constancia_reserva,
                    e.nombre AS nombre_espacio,
                    d.nombre AS nombre_distrito,
                    p.correo
@@ -483,6 +488,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
+            JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
             WHERE d.id_distrito = ?
         """;
         }
@@ -510,6 +516,9 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             }
             if (rs.getString("fecha_reserva") != null) {
                 reserva.put("fecha_reserva", rs.getDate("fecha_reserva"));
+            }
+            if (rs.getString("fecha_constancia") != null) {
+                reserva.put("fecha_constancia", rs.getDate("fecha_constancia"));
             }
             if (rs.getString("id_constancia_reserva") != null) {
                 reserva.put("id_constancia_reserva", rs.getInt("id_constancia_reserva"));

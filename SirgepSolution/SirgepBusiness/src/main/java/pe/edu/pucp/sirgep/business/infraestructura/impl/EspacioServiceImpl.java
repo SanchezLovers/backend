@@ -102,24 +102,23 @@ public class EspacioServiceImpl implements IEspacioService {
         /*Datos Departamento*/
         espDTO.setIdDepartamento(depa.getIdDepartamento());
         espDTO.setNombreDepartamento(depa.getNombre());
-        espDTO.setDepartamentos(depaDAO.listar());
         /*Datos Provincia*/
         espDTO.setIdProvincia(prov.getIdProvincia());
         espDTO.setNombreProvincia(prov.getNombre());
-        espDTO.setProvincias(provDAO.listarPorDepa(depa.getIdDepartamento()));
+        // espDTO.setProvincias(provDAO.listarPorDepa(depa.getIdDepartamento()));
         /*Datos Distrito*/
         espDTO.setIdDistrito(dist.getIdDistrito());
         espDTO.setNombreDistrito(dist.getNombre());
-        espDTO.setDistritos(distDAO.listarPorProv(prov.getIdProvincia()));
+        // espDTO.setDistritos(distDAO.listarPorProv(prov.getIdProvincia()));
     }
     
     @Override
     public EspacioDTO llenarEspacioDTOEdicion(int idEspacio){
         EspacioDTO espDTO = new EspacioDTO();
         Espacio esp = espacioDAO.buscar(idEspacio);
-        Distrito dist = distDAO.buscar(esp.getDistrito().getIdDistrito());
-        Provincia prov = provDAO.buscar(dist.getProvincia().getIdProvincia());
-        Departamento depa = depaDAO.buscar(prov.getDepartamento().getIdDepartamento());
+        Distrito dist = distDAO.buscarDistritoCompleto(esp.getDistrito().getIdDistrito());
+        Provincia prov = dist.getProvincia();
+        Departamento depa = prov.getDepartamento();
         // ----------------------------------------------------------------
         mapearDTO(espDTO,esp,depa,prov,dist);
         return espDTO;

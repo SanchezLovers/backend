@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -232,10 +233,9 @@ public class EntradaServiceImpl implements IEntradaService{
                     listaDetalleEntradas.add(detalleEntradaDTO);
                 }
             }
+            return listaDetalleEntradas;
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
-        } finally {
-            return listaDetalleEntradas;
         }
     }
 
@@ -263,7 +263,7 @@ public class EntradaServiceImpl implements IEntradaService{
         celda=registro.createCell(3);
         celda.setCellValue(detalleEntrada.getNombreDistrito());
         celda=registro.createCell(4);
-        celda.setCellValue(new SimpleDateFormat("dd-MM-yyyy").format(detalleEntrada.getFecha()));
+        celda.setCellValue(new SimpleDateFormat("dd-MM-yyyy").format(detalleEntrada.getFechaFuncion()));
         celda=registro.createCell(5);
         celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleEntrada.getHoraInicio()));
         celda=registro.createCell(6);
@@ -308,6 +308,67 @@ public class EntradaServiceImpl implements IEntradaService{
             }
         } catch (Exception ex) {
             throw new RuntimeException("Error al buscar la constancia de la entrada: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<DetalleEntradaDTO> listarDetalleEntradas() {
+        List<DetalleEntradaDTO> listaDetalleEntradas = null;
+        try {
+            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradas();
+            if (lista != null) {
+                listaDetalleEntradas = new ArrayList<>();
+                for (Map<String, Object> detalle : lista) {
+                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
+                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
+                    listaDetalleEntradas.add(detalleEntradaDTO);
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
+        } finally {
+            return listaDetalleEntradas;
+        }
+    }
+
+    @Override
+    public List<DetalleEntradaDTO> buscarPorTexto(String texto) {
+        List<DetalleEntradaDTO> listaDetalleEntradas = null;
+        try {
+            List<Map<String, Object>> lista = entradaDAO.buscarPorTexto(texto);
+            if (lista != null) {
+                listaDetalleEntradas = new ArrayList<>();
+                for (Map<String, Object> detalle : lista) {
+                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
+                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
+                    listaDetalleEntradas.add(detalleEntradaDTO);
+                }
+            }
+            return listaDetalleEntradas;
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al buscar las entradas: " + ex.getMessage());
+        } finally {
+            return listaDetalleEntradas;
+        }
+    }
+    
+    @Override
+    public List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
+            String fechaFin, List<String> estados){
+        List<DetalleEntradaDTO> listaDetalleEntradas = null;
+        try {
+            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
+            if (lista != null) {
+                listaDetalleEntradas = new ArrayList<>();
+                for (Map<String, Object> detalle : lista) {
+                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
+                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
+                    listaDetalleEntradas.add(detalleEntradaDTO);
+                }
+            }
+            return listaDetalleEntradas;
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
         }
     }
 }

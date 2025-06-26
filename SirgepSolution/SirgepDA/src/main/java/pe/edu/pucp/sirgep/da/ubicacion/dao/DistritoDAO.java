@@ -7,5 +7,6 @@ import pe.edu.pucp.sirgep.da.base.dao.BaseDAO;
 public interface DistritoDAO extends BaseDAO<Distrito>{
 
     public List<Distrito> listarPorProv(int idProvincia);
+    public Distrito buscarDistritoCompleto(int idDistrito);
 
 }

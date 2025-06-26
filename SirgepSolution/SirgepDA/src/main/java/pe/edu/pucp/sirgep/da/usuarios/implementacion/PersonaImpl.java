@@ -47,7 +47,9 @@ public class PersonaImpl extends BaseImpl<Persona> implements PersonaDAO {
         String query = "DELETE FROM Persona WHERE id_persona=?";
         return query;
     }
-
+/*
+    "INSERT INTO Persona(nombres, primer_apellido, segundo_apellido, correo, usuario, "
+                + "contrasenia, num_documento, tipo_documento, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'A')";*/
     @Override
     protected void setInsertParameters(PreparedStatement ps, Persona persona) {
         try{

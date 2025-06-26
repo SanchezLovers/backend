@@ -1,5 +1,6 @@
 package pe.edu.pucp.sirgep.business.ventas.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -28,13 +29,19 @@ public interface IEntradaService {
     public Distrito buscarDistritoDeEntrada(int idEntrada);
     
     //Metodos para crear libro de Excel para las entradas
-    public void crearLibroExcelEntradas(int idComprador);
-    public String crearHojalEntradas(XSSFWorkbook libro,int idComprador);
-    public String crearEncabezadoHojaEntradas(XSSFSheet hoja,int idComprador);
-    public void llenarTablaEntradas(XSSFSheet hoja,int idComprador);
-    public void llenarFilaDetalleEntrada(XSSFRow registro,DetalleEntradaDTO detalleEntrada);
-    public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(int idComprador);
-    public void exportarLibroEntradas(XSSFWorkbook libro,String nombreArchivo);
+    void crearLibroExcelEntradas(int idComprador);
+    String crearHojalEntradas(XSSFWorkbook libro,int idComprador);
+    String crearEncabezadoHojaEntradas(XSSFSheet hoja,int idComprador);
+    void llenarTablaEntradas(XSSFSheet hoja,int idComprador);
+    void llenarFilaDetalleEntrada(XSSFRow registro,DetalleEntradaDTO detalleEntrada);
+    List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(int idComprador);
+    void exportarLibroEntradas(XSSFWorkbook libro,String nombreArchivo);
     
-    public ConstanciaEntradaDTO buscarConstanciaEntrada(int idConstancia);
+    ConstanciaEntradaDTO buscarConstanciaEntrada(int idConstancia);
+
+    List<DetalleEntradaDTO> listarDetalleEntradas();
+    List<DetalleEntradaDTO> buscarPorTexto(String texto);
+    
+    List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
+            String fechaFin, List<String> estados);
 }
