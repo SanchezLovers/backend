@@ -633,4 +633,71 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         return listaReserva;
     }
 
+    @Override
+    public List<Map<String, Object>> listarDetalleReservasFiltradaPorComprador(int idComprador, String fechaInicio,
+            String fechaFin, List<String> estados) {
+        List<Map<String, Object>> listaDetalleReservas = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("""
+        SELECT c.id_constancia, r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio,
+               e.ubicacion, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio,
+               r.horario_fin AS hora_fin, e.superficie, r.activo
+        FROM Reserva r
+        JOIN Constancia c ON c.id_constancia = r.id_constancia_reserva
+        JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
+        JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
+        WHERE r.Persona_id_persona = ?
+    """);
+        List<Object> params = new ArrayList<>();
+        params.add(idComprador);
+        // Manejo de fechas
+        if (fechaInicio != null && !fechaInicio.isBlank() && fechaFin != null && !fechaFin.isBlank()) {
+            sql.append(" AND r.fecha_reserva BETWEEN ? AND ?");
+            params.add(java.sql.Date.valueOf(fechaInicio));
+            params.add(java.sql.Date.valueOf(fechaFin));
+        } else if (fechaInicio != null && !fechaInicio.isBlank()) {
+            sql.append(" AND r.fecha_reserva >= ?");
+            params.add(java.sql.Date.valueOf(fechaInicio));
+        } else if (fechaFin != null && !fechaFin.isBlank()) {
+            sql.append(" AND r.fecha_reserva <= ?");
+            params.add(java.sql.Date.valueOf(fechaFin));
+        }
+        // Manejo de estados con IN
+        if (estados != null && !estados.isEmpty()) {
+            sql.append(" AND r.activo IN (");
+            for (int i = 0; i < estados.size(); i++) {
+                if (i > 0) {
+                    sql.append(", ");
+                }
+                sql.append("?");
+                switch (estados.get(i)) {
+                    case "Vigentes" ->
+                        params.add("A");
+                    case "Finalizadas" ->
+                        params.add("I");
+                    case "Canceladas" ->
+                        params.add("C");
+                    default ->
+                        throw new IllegalArgumentException("Estado inválido: " + estados.get(i));
+                }
+            }
+            sql.append(")");
+        }
+        try (
+                Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                pst.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> detalleReserva = new HashMap<>();
+                    this.llenarMapaDetalleReserva(detalleReserva, rs);
+                    listaDetalleReservas.add(detalleReserva);
+                }
+            }
+            System.out.println("Reservas filtradas correctamente.");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las reservas filtradas", e);
+        }
+        return listaDetalleReservas;
+    }
 }
