@@ -385,9 +385,9 @@ public class ReservaServiceImpl implements IReservaService {
                     listaDetalleReservas.add(detalleReservaDTO);
                 }
             }
-            return listaDetalleReservas;
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las reservas: " + ex.getMessage());
         }
+        return listaDetalleReservas;
     }
 }

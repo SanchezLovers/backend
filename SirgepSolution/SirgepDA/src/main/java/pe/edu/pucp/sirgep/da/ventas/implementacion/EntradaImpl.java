@@ -375,7 +375,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     @Override
     public List<Map<String, Object>> listarDetalleEntradasFiltradaPorComprador(int idComprador, String fechaInicio,
             String fechaFin, List<String> estados) {
-        List<Map<String, Object>> listaDetalleEntradas = new ArrayList<>();
+        List<Map<String, Object>> listaDetalleEntradas=null;
         StringBuilder sql = new StringBuilder("""
         SELECT c.id_constancia, e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion,
                d.nombre AS nombre_distrito, f.fecha AS fecha_funcion, f.hora_inicio,
@@ -422,13 +422,15 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             }
             sql.append(")");
         }
-        try (
-                Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql.toString())) {
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 pst.setObject(i + 1, params.get(i));
             }
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
+                    if(listaDetalleEntradas==null){
+                        listaDetalleEntradas = new ArrayList<>();
+                    }
                     Map<String, Object> detalleEntrada = new HashMap<>();
                     this.llenarMapaDetalleEntrada(detalleEntrada, rs);
                     listaDetalleEntradas.add(detalleEntrada);

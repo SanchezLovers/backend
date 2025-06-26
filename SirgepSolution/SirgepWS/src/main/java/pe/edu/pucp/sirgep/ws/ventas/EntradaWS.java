@@ -150,9 +150,9 @@ public class EntradaWS {
     }
     
     @WebMethod(operationName = "listarDetalleEntradasFiltradaPorComprador")
-    public List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(@WebParam(name = "idComprador")int idComprador,
-            @WebParam(name = "fechaInicio")String fechaInicio, @WebParam(name = "fechaFin")String fechaFin, 
-            @WebParam(name = "estados")List<String> estados){
+    public List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(
+            @WebParam(name = "idComprador")int idComprador,@WebParam(name = "fechaInicio")String fechaInicio, 
+            @WebParam(name = "fechaFin")String fechaFin, @WebParam(name = "estados")List<String> estados){
         try {
             return entradaService.listarDetalleEntradasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
         }  catch (Exception ex) {

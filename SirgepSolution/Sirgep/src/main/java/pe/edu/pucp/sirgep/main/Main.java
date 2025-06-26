@@ -23,9 +23,9 @@ public class Main {
         estados.add("Finalizadas");
         estados.add("Canceladas");
         String ini="2003-05-12";
-        String fin="2025-09-03";
-        //List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarDetalleEntradasFiltradaPorComprador(40, ini, fin, estados);
-        List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(66, ini, fin, estados);
+        String fin="2023-09-03";
+        List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarDetalleEntradasFiltradaPorComprador(40, ini, fin, estados);
+        //List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(66, ini, fin, estados);
         
         List<String> listaCorreosCompradores = new ArrayList<>();
         String asunto = "¡Bienvenid@ al equipo de desarrollo de SIRGEP!";
