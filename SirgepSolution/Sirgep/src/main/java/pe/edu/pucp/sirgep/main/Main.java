@@ -19,13 +19,13 @@ public class Main {
     public static void main(String[] args) throws Exception, SQLException, IOException {
         Connection con = DBManager.getInstance().getConnection();
         List<String>estados=new ArrayList<>();
-        //estados.add("Vigentes");
+        estados.add("Vigentes");
         estados.add("Finalizadas");
-        //estados.add("Canceladas");
-        String ini=null;
-        String fin=null;
-        //List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarDetalleEntradasFiltradaPorComprador(40, ini, fin, estados);
-        ///Falta:/List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(40, ini, fin, estados);
+        estados.add("Canceladas");
+        String ini="2003-05-12";
+        String fin="2025-09-03";
+        List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarDetalleEntradasFiltradaPorComprador(40, ini, fin, estados);
+        //List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(66, ini, fin, estados);
         
         EnvioCorreo envioCorreo = new EnvioCorreo();
         List<String> listaCorreosCompradores = new ArrayList<>();

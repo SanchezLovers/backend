@@ -1,7 +1,6 @@
 package pe.edu.pucp.sirgep.business.ventas.service;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -47,4 +46,6 @@ public interface IReservaService {
     
     //Metodos para buscar el detalle de la constancia de la reserva
     public ConstanciaReservaDTO buscarConstanciaReserva(int numReserva);
+    List<DetalleReservaDTO> listarDetalleReservasFiltradaPorComprador(int idComprador,String fechaInicio, 
+            String fechaFin, List<String> estados);
 }

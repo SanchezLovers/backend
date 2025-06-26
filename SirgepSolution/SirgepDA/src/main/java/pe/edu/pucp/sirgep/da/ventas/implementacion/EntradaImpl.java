@@ -389,28 +389,33 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     """);
         List<Object> params = new ArrayList<>();
         params.add(idComprador);
-        if (fechaInicio != null && !fechaInicio.isBlank()) {
+        // Fechas usando BETWEEN si ambas están presentes
+        if (fechaInicio != null && !fechaInicio.isBlank() && fechaFin != null && !fechaFin.isBlank()) {
+            sql.append(" AND f.fecha BETWEEN ? AND ?");
+            params.add(java.sql.Date.valueOf(fechaInicio));
+            params.add(java.sql.Date.valueOf(fechaFin));
+        } else if (fechaInicio != null && !fechaInicio.isBlank()) {
             sql.append(" AND f.fecha >= ?");
             params.add(java.sql.Date.valueOf(fechaInicio));
-        }
-        if (fechaFin != null && !fechaFin.isBlank()) {
+        } else if (fechaFin != null && !fechaFin.isBlank()) {
             sql.append(" AND f.fecha <= ?");
             params.add(java.sql.Date.valueOf(fechaFin));
         }
+        // Estado con IN
         if (estados != null && !estados.isEmpty()) {
-            sql.append(" AND (");
+            sql.append(" AND e.activo IN (");
             for (int i = 0; i < estados.size(); i++) {
                 if (i > 0) {
-                    sql.append(" OR ");
+                    sql.append(", ");
                 }
-                sql.append("e.activo = ?");
+                sql.append("?");
                 switch (estados.get(i)) {
                     case "Vigentes" ->
                         params.add("A");
                     case "Finalizadas" ->
                         params.add("I");
                     case "Canceladas" ->
-                        params.add("E");
+                        params.add("C");
                     default ->
                         throw new IllegalArgumentException("Estado inválido: " + estados.get(i));
                 }
@@ -422,6 +427,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             for (int i = 0; i < params.size(); i++) {
                 pst.setObject(i + 1, params.get(i));
             }
+
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     Map<String, Object> detalleEntrada = new HashMap<>();
@@ -433,6 +439,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las entradas filtradas", e);
         }
+
         return listaDetalleEntradas;
     }
 }
