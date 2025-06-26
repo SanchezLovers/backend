@@ -140,7 +140,6 @@ public class EntradaWS {
         }
     }
 
-    //Metodo para listar el detalle de las entradas
     @WebMethod(operationName = "listarDetalleEntradasPorComprador")
     public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(@WebParam(name = "idComprador")int idComprador){
         try {
@@ -150,7 +149,17 @@ public class EntradaWS {
         }
     }
     
-    //Metodo para listar el detalle de las entradas
+    @WebMethod(operationName = "listarDetalleEntradasFiltradaPorComprador")
+    public List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(@WebParam(name = "idComprador")int idComprador,
+            @WebParam(name = "fechaInicio")String fechaInicio, @WebParam(name = "fechaFin")String fechaFin, 
+            @WebParam(name = "estados")List<String> estados){
+        try {
+            return entradaService.listarDetalleEntradasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
+        }  catch (Exception ex) {
+            throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
+        }
+    }
+    
     @WebMethod(operationName = "listarDetalleEntradas")
     public List<DetalleEntradaDTO> listarDetalleEntradas(){
         try {
@@ -177,10 +186,8 @@ public class EntradaWS {
             resultado= entradaService.buscarConstanciaEntrada(idConstancia);
             if(resultado!=null){
                 System.out.println("Se busco la constancia de la entrada correctamente");
-                return resultado;
-            }else{
-                throw new RuntimeException("Constancia de la entrada no encontrada");
             }
+            return resultado;
         } catch (Exception ex) {
             throw new WebServiceException("Error al buscar la constancia de la entrada: " + ex.getMessage());
         }
