@@ -366,9 +366,9 @@ public class EntradaServiceImpl implements IEntradaService{
                     listaDetalleEntradas.add(detalleEntradaDTO);
                 }
             }
-            return listaDetalleEntradas;
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
         }
+        return listaDetalleEntradas;
     }
 }
