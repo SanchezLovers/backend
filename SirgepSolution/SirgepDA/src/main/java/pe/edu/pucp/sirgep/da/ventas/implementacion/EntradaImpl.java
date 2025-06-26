@@ -427,7 +427,6 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             for (int i = 0; i < params.size(); i++) {
                 pst.setObject(i + 1, params.get(i));
             }
-
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     Map<String, Object> detalleEntrada = new HashMap<>();
@@ -439,7 +438,6 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las entradas filtradas", e);
         }
-
         return listaDetalleEntradas;
     }
 }

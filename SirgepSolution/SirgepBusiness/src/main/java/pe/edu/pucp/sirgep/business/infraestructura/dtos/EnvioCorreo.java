@@ -12,12 +12,14 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class EnvioCorreo {
-
-    //Atributos
-    private static String emailOrigen = "sirgep.oficial@gmail.com";//Esto debe estar en un archivo de configuracion
-    private static String passwordOrigen = "psqv xpfc zkus djee";//Esto debe estar en un archivo de configuracion
+    private static EnvioCorreo envioCorreo;
+    
+    private static String emailOrigen;
+    private static String passwordEmailOrigen;
     private Authenticator autenticador;
     private Properties properties;
     private Session session;
@@ -25,10 +27,25 @@ public class EnvioCorreo {
 //    private File[] adjuntos;
 //    private String nombresArchivos;
 
-    //Consructor
-    public EnvioCorreo() {
-        //nombresArchivos = "";
+    private EnvioCorreo() {
         properties = new Properties();
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                System.err.println("No se pudo abrir el archivo config.properties");
+                return;
+            }
+            properties.load(input);
+            definirPropiedades();
+        }
+        catch (IOException e) {
+            throw new RuntimeException("No se pudo cargar el archivo config.properties: ",e);
+        }
+    }
+    
+    private void definirPropiedades(){
+        emailOrigen = properties.getProperty("config.emailOrigen");
+        passwordEmailOrigen = properties.getProperty("config.passwordEmailOrigen");
+        
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
         properties.setProperty("mail.smtp.starttls.enable", "true");
@@ -38,11 +55,18 @@ public class EnvioCorreo {
         properties.setProperty("mail.smtp.auth", "true");
         autenticador = new Authenticator() {
             public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailOrigen, passwordOrigen);
+                return new PasswordAuthentication(emailOrigen, passwordEmailOrigen);
             }
         };
     }
 
+    public synchronized static EnvioCorreo getInstance()  {
+        if (envioCorreo == null) {
+            envioCorreo = new EnvioCorreo();
+        }
+        return envioCorreo;
+    }
+    
     public boolean enviarEmail(List<String> listaCorreosCompradores, String asunto, String contenidoHtml) {
         try {
             session = Session.getInstance(properties, autenticador);
@@ -54,7 +78,7 @@ public class EnvioCorreo {
             for (int i = 0; i < listaCorreosCompradores.size(); i++) {
                 destinatarios[i] = new InternetAddress(listaCorreosCompradores.get(i));
             }
-            correo.setRecipients(Message.RecipientType.TO, destinatarios);
+            correo.setRecipients(Message.RecipientType.BCC, destinatarios);
             correo.setSubject(asunto);
             correo.setSentDate(new java.util.Date());
             // Parte: Cuerpo HTML con imagen desde URL
