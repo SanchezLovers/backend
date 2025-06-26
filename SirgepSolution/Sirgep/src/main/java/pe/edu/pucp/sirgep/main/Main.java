@@ -8,16 +8,25 @@ import java.util.List;
 
 import pe.edu.pucp.sirgep.business.infraestructura.dtos.EnvioCorreo;
 import pe.edu.pucp.sirgep.business.usuarios.impl.CompradorServiceImpl;
-import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
-import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
+import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
 import pe.edu.pucp.sirgep.business.ventas.impl.ReservaServiceImpl;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
+import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 
 public class Main {
     public static void main(String[] args) throws Exception, SQLException, IOException {
         Connection con = DBManager.getInstance().getConnection();
-        boolean r=new CompradorServiceImpl().actualizarDistritoFavoritoPorIdComprador("fdf", 3);
+        List<String>estados=new ArrayList<>();
+        //estados.add("Vigentes");
+        estados.add("Finalizadas");
+        //estados.add("Canceladas");
+        String ini=null;
+        String fin=null;
+        //List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarDetalleEntradasFiltradaPorComprador(40, ini, fin, estados);
+        ///Falta:/List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(40, ini, fin, estados);
+        
         EnvioCorreo envioCorreo = new EnvioCorreo();
         List<String> listaCorreosCompradores = new ArrayList<>();
         String asunto = "¡Bienvenid@ al equipo de desarrollo de SIRGEP!";

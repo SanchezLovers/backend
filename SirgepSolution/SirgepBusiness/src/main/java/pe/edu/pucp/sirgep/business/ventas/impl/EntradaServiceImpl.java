@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -232,10 +233,9 @@ public class EntradaServiceImpl implements IEntradaService{
                     listaDetalleEntradas.add(detalleEntradaDTO);
                 }
             }
+            return listaDetalleEntradas;
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
-        } finally {
-            return listaDetalleEntradas;
         }
     }
 
@@ -344,10 +344,31 @@ public class EntradaServiceImpl implements IEntradaService{
                     listaDetalleEntradas.add(detalleEntradaDTO);
                 }
             }
+            return listaDetalleEntradas;
         } catch (Exception ex) {
             throw new RuntimeException("Error al buscar las entradas: " + ex.getMessage());
         } finally {
             return listaDetalleEntradas;
+        }
+    }
+    
+    @Override
+    public List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
+            String fechaFin, List<String> estados){
+        List<DetalleEntradaDTO> listaDetalleEntradas = null;
+        try {
+            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
+            if (lista != null) {
+                listaDetalleEntradas = new ArrayList<>();
+                for (Map<String, Object> detalle : lista) {
+                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
+                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
+                    listaDetalleEntradas.add(detalleEntradaDTO);
+                }
+            }
+            return listaDetalleEntradas;
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
         }
     }
 }

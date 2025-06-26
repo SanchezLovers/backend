@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -244,7 +245,6 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         }
     }
     
-    
     @Override
     public void llenarMapaDetalleEntrada(Map<String, Object>detalleEntrada,ResultSet rs){
         try{
@@ -370,5 +370,69 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             throw new RuntimeException("Error al obtener un espacio: ", e);
         }
         return entradas;
+    }
+
+    @Override
+    public List<Map<String, Object>> listarDetalleEntradasFiltradaPorComprador(int idComprador, String fechaInicio,
+            String fechaFin, List<String> estados) {
+        List<Map<String, Object>> listaDetalleEntradas = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("""
+        SELECT c.id_constancia, e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion,
+               d.nombre AS nombre_distrito, f.fecha AS fecha_funcion, f.hora_inicio,
+               f.hora_fin, e.activo
+        FROM Entrada e
+        JOIN Constancia c ON c.id_constancia = e.id_constancia_entrada
+        JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
+        JOIN Evento ev ON f.Evento_idEvento = ev.id_evento
+        JOIN Distrito d ON ev.Distrito_id_distrito = d.id_distrito
+        WHERE e.Persona_id_persona = ?
+    """);
+        List<Object> params = new ArrayList<>();
+        params.add(idComprador);
+        if (fechaInicio != null && !fechaInicio.isBlank()) {
+            sql.append(" AND f.fecha >= ?");
+            params.add(java.sql.Date.valueOf(fechaInicio));
+        }
+        if (fechaFin != null && !fechaFin.isBlank()) {
+            sql.append(" AND f.fecha <= ?");
+            params.add(java.sql.Date.valueOf(fechaFin));
+        }
+        if (estados != null && !estados.isEmpty()) {
+            sql.append(" AND (");
+            for (int i = 0; i < estados.size(); i++) {
+                if (i > 0) {
+                    sql.append(" OR ");
+                }
+                sql.append("e.activo = ?");
+                switch (estados.get(i)) {
+                    case "Vigentes" ->
+                        params.add("A");
+                    case "Finalizadas" ->
+                        params.add("I");
+                    case "Canceladas" ->
+                        params.add("E");
+                    default ->
+                        throw new IllegalArgumentException("Estado inválido: " + estados.get(i));
+                }
+            }
+            sql.append(")");
+        }
+        try (
+                Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                pst.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> detalleEntrada = new HashMap<>();
+                    this.llenarMapaDetalleEntrada(detalleEntrada, rs);
+                    listaDetalleEntradas.add(detalleEntrada);
+                }
+            }
+            System.out.println("Entradas filtradas correctamente.");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las entradas filtradas", e);
+        }
+        return listaDetalleEntradas;
     }
 }
