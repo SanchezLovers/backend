@@ -214,4 +214,15 @@ public class ReservaWS {
             throw new WebServiceException("Error al buscar la constancia de la reserva: " + ex.getMessage());
         }
     }
+    
+    @WebMethod(operationName = "listarDetalleReservasFiltradaPorComprador")
+    public List<DetalleReservaDTO> listarDetalleReservasFiltradaPorComprador(@WebParam(name = "idComprador")int idComprador,
+            @WebParam(name = "fechaInicio")String fechaInicio, @WebParam(name = "fechaFin")String fechaFin, 
+            @WebParam(name = "estados")List<String> estados){
+        try {
+            return reservaService.listarDetalleReservasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
+        }  catch (Exception ex) {
+            throw new RuntimeException("Error al listar el detalle de las reservas del comprador : " + ex.getMessage());
+        }
+    }
 }

@@ -370,4 +370,24 @@ public class ReservaServiceImpl implements IReservaService {
         
         return reservaDAO.listarPorMesYAnio(mes, anio);
     }
+
+    @Override
+    public List<DetalleReservaDTO> listarDetalleReservasFiltradaPorComprador(int idComprador, String fechaInicio, 
+            String fechaFin, List<String> estados) {
+        List<DetalleReservaDTO> listaDetalleReservas = null;
+        try {
+            List<Map<String, Object>> lista = reservaDAO.listarDetalleReservasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
+            if (lista != null) {
+                listaDetalleReservas = new ArrayList<>();
+                for (Map<String, Object> detalle : lista) {
+                    DetalleReservaDTO detalleReservaDTO = new DetalleReservaDTO();
+                    detalleReservaDTO.llenarDetalleReserva(detalle);
+                    listaDetalleReservas.add(detalleReservaDTO);
+                }
+            }
+            return listaDetalleReservas;
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las reservas: " + ex.getMessage());
+        }
+    }
 }
