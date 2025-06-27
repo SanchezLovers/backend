@@ -354,12 +354,11 @@ public class EntradaServiceImpl implements IEntradaService{
     
     @Override
     public List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
-            String fechaFin, List<String> estados){
-        List<DetalleEntradaDTO> listaDetalleEntradas = null;
+            String fechaFin, String estado){
+        List<DetalleEntradaDTO> listaDetalleEntradas = new ArrayList<>();
         try {
-            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
+            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estado);
             if (lista != null) {
-                listaDetalleEntradas = new ArrayList<>();
                 for (Map<String, Object> detalle : lista) {
                     DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
                     detalleEntradaDTO.llenarDetalleEntrada(detalle);

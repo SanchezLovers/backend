@@ -43,5 +43,5 @@ public interface IEntradaService {
     List<DetalleEntradaDTO> buscarPorTexto(String texto);
     
     List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
-            String fechaFin, List<String> estados);
+            String fechaFin, String estado);
 }
