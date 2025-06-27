@@ -165,12 +165,16 @@ public class EntradaWS {
     
     //Metodo para crear libro de Excel para las entradas
     @WebMethod(operationName = "crearLibroExcelEntradas")
-    public void crearLibroExcelEntradas(@WebParam(name = "idComprador")int idComprador, String fechaInicio, String fechaFin, String estado){
+    public boolean crearLibroExcelEntradas(@WebParam(name = "idComprador")int idComprador,
+            @WebParam(name = "fechaInicio") String fechaInicio, @WebParam(name = "fechaFin")String fechaFin, 
+            @WebParam(name = "estado")String estado){
+        boolean resultado=false;
         try {
-            entradaService.crearLibroExcelEntradas(idComprador,fechaInicio,fechaFin,estado);
+            resultado=entradaService.crearLibroExcelEntradas(idComprador,fechaInicio,fechaFin,estado);
         }  catch (Exception ex) {
-            throw new RuntimeException("Error al exportar el libro excel de las entradas: : " + ex.getMessage());
+            throw new RuntimeException("Error al generar el excel de la lista de entradas: "+ex.getMessage());
         }
+        return resultado;
     }
     
     @WebMethod(operationName = "buscarConstanciaEntrada")

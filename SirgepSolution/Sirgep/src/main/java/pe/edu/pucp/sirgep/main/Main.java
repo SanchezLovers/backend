@@ -21,11 +21,11 @@ public class Main {
         //String estado="Vigentes";
         //String estado="Finalizadas";
         String estado="Canceladas";
-        String ini="2025-05-12";
-        String fin="2025-10-03";
-        List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarPorComprador(40, ini, fin, estado);
+        String ini="2025-01-01";
+        String fin="2025-10-01";
+        String url = "https://upload.wikimedia.org/wikipedia/commons/4/43/Escudo_Regi%C3%B3n_Lima.png";//Cambiar la IP
         //List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(66, ini, fin, estado);
-        
+        new EntradaServiceImpl().crearLibroExcelEntradas(40, ini, fin, estado);
         List<String> listaCorreosCompradores = new ArrayList<>();
         String asunto = "¡Bienvenid@ al equipo de desarrollo de SIRGEP!";
         String contenido = """
@@ -80,7 +80,6 @@ public class Main {
         listaCorreosCompradores.add("a20206016@pucp.edu.pe");
         listaCorreosCompradores.add("a20206016@pucp.edu.pe");
         listaCorreosCompradores.add("a20220453@pucp.edu.pe");
-        */
         boolean resultado = EnvioCorreo.getInstance().enviarEmail(listaCorreosCompradores, asunto, contenido);
         if (resultado) {
             System.out.println("Correo enviado!");
@@ -89,5 +88,6 @@ public class Main {
         if (resultado) {
             System.out.println("Correo enviado!");
         }
+        */
     }
 }
