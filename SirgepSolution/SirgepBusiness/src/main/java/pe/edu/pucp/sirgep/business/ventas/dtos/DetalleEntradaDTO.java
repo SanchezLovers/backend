@@ -113,7 +113,7 @@ public class DetalleEntradaDTO {
                 this.setHoraFin(new Date(((java.sql.Time) detalle.get("horaFin")).getTime()));
             }
             if (detalle.get("estado") != null) {
-                this.setEstado((char) detalle.get("estado"));
+                this.setEstado(detalle.get("estado").toString().charAt(0));
             }
             if (detalle.get("fechaConstancia") != null) {
                 this.setFechaConstancia((Date) detalle.get("fechaConstancia"));

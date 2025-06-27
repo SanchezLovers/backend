@@ -144,7 +144,7 @@ public class DetalleReservaDTO {
                 this.setSuperficie((double) detalle.get("superficie"));
             }
             if (detalle.get("estado") != null) {
-                this.setEstado((char) detalle.get("estado"));
+                this.setEstado(detalle.get("estado").toString().charAt(0));
             }
         } catch (Exception ex) {
             throw new RuntimeException("Error al llenar el detalle de la reserva: " + ex.getMessage());
