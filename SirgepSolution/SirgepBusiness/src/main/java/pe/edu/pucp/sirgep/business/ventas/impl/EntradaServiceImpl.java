@@ -150,18 +150,18 @@ public class EntradaServiceImpl implements IEntradaService{
 
     //Metodos para crear libro de Excel para las entradas
     @Override
-    public void crearLibroExcelEntradas(int idComprador) {
+    public void crearLibroExcelEntradas(int idComprador, String fechaInicio, String fechaFin, String estado) {
         XSSFWorkbook libro=new XSSFWorkbook();//Archivo.xlsx
-        String nombreArchivo=crearHojalEntradas(libro,idComprador);
+        String nombreArchivo=crearHojalEntradas(libro,idComprador,fechaInicio,fechaFin,estado);
         exportarLibroEntradas(libro,nombreArchivo);
     }
     
     @Override
-    public String crearHojalEntradas(XSSFWorkbook libro,int idComprador) {
+    public String crearHojalEntradas(XSSFWorkbook libro,int idComprador, String fechaInicio, String fechaFin, String estado) {
         XSSFSheet hoja=libro.createSheet("Entradas");//Nombre
         try{
             String nombreArchivo=crearEncabezadoHojaEntradas(hoja,idComprador);
-            llenarTablaEntradas(hoja,idComprador);
+            llenarTablaEntradas(hoja,idComprador,fechaInicio,fechaFin,estado);
             return nombreArchivo;
         }catch(Exception ex){
             throw new RuntimeException("Error al llenar la hoja excel de las entradas: " + ex.getMessage());
@@ -221,27 +221,26 @@ public class EntradaServiceImpl implements IEntradaService{
     }
     
     @Override
-    public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(int idComprador) {
-        List<DetalleEntradaDTO> listaDetalleEntradas = null;
+    public List<DetalleEntradaDTO> listarPorComprador(int idComprador, String fechaInicio, String fechaFin, String estado) {
+        List<DetalleEntradaDTO> listaDetalleEntradas = new ArrayList<>();
         try {
-            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasPorComprador(idComprador);
+            List<Map<String, Object>> lista = entradaDAO.listarPorComprador(idComprador,fechaInicio,fechaFin,estado);
             if (lista != null) {
-                listaDetalleEntradas = new ArrayList<>();
                 for (Map<String, Object> detalle : lista) {
                     DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
                     detalleEntradaDTO.llenarDetalleEntrada(detalle);
                     listaDetalleEntradas.add(detalleEntradaDTO);
                 }
             }
-            return listaDetalleEntradas;
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
         }
+        return listaDetalleEntradas;
     }
 
     @Override
-    public void llenarTablaEntradas(XSSFSheet hoja,int idComprador) {
-        List<DetalleEntradaDTO> listaDetalleEntradas=listarDetalleEntradasPorComprador(idComprador);
+    public void llenarTablaEntradas(XSSFSheet hoja,int idComprador, String fechaInicio, String fechaFin, String estado) {
+        List<DetalleEntradaDTO> listaDetalleEntradas=listarPorComprador(idComprador,fechaInicio,fechaFin,estado);
         int posicion=3;
         for (DetalleEntradaDTO detalleEntrada: listaDetalleEntradas) {
             XSSFRow registro=hoja.createRow(posicion++);
@@ -350,24 +349,5 @@ public class EntradaServiceImpl implements IEntradaService{
         } finally {
             return listaDetalleEntradas;
         }
-    }
-    
-    @Override
-    public List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
-            String fechaFin, String estado){
-        List<DetalleEntradaDTO> listaDetalleEntradas = new ArrayList<>();
-        try {
-            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estado);
-            if (lista != null) {
-                for (Map<String, Object> detalle : lista) {
-                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
-                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
-                    listaDetalleEntradas.add(detalleEntradaDTO);
-                }
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
-        }
-        return listaDetalleEntradas;
     }
 }

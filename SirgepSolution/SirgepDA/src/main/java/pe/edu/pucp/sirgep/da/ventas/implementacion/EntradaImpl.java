@@ -223,31 +223,6 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO {
     }
 
     @Override
-    public List<Map<String, Object>> listarDetalleEntradasPorComprador(int IdComprador) {
-        List<Map<String, Object>> listaDetalleEntradas = null;
-        String sql = """
-                 SELECT c.id_constancia, e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion, d.nombre AS 
-                 nombre_distrito, f.fecha AS fecha_funcion, f.hora_inicio, f.hora_fin, e.activo FROM Entrada e JOIN Constancia c ON 
-                 c.id_constancia=e.id_constancia_entrada JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
-                 JOIN Evento ev ON f.Evento_idEvento = ev.id_evento JOIN Distrito d ON ev.Distrito_id_distrito = d.id_distrito
-                 WHERE e.Persona_id_persona = 
-                 """ + IdComprador;
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
-            listaDetalleEntradas = new ArrayList<>();
-            while (rs.next()) {
-                Map<String, Object> detalleEntrada = new HashMap<>();
-                this.llenarMapaDetalleEntrada(detalleEntrada, rs);
-                listaDetalleEntradas.add(detalleEntrada);
-            }
-            System.out.println("Se listo las entradas correctamente");
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar las entradas: ", e);
-        } finally {
-            return listaDetalleEntradas;
-        }
-    }
-
-    @Override
     public void llenarMapaDetalleEntrada(Map<String, Object> detalleEntrada, ResultSet rs) {
         try {
             if (rs.getString("id_constancia") != null) {
@@ -376,8 +351,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO {
     }
 
     @Override
-    public List<Map<String, Object>> listarDetalleEntradasFiltradaPorComprador(int idComprador, String fechaInicio,
-            String fechaFin, String estado) {
+    public List<Map<String, Object>> listarPorComprador(int idComprador, String fechaInicio,String fechaFin, String estado) {
         List<Map<String, Object>> listaDetalleEntradas = new ArrayList<>();
         StringBuilder sql = new StringBuilder("""
         SELECT c.id_constancia, e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion,
@@ -388,7 +362,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO {
         JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
         JOIN Evento ev ON f.Evento_idEvento = ev.id_evento
         JOIN Distrito d ON ev.Distrito_id_distrito = d.id_distrito
-        WHERE e.Persona_id_persona = ?
+        WHERE e.Persona_id_persona = ? AND f.fecha >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
     """);
         List<Object> params = new ArrayList<>();
         params.add(idComprador);
