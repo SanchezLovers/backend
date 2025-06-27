@@ -29,12 +29,11 @@ public interface IEntradaService {
     public Distrito buscarDistritoDeEntrada(int idEntrada);
     
     //Metodos para crear libro de Excel para las entradas
-    void crearLibroExcelEntradas(int idComprador);
-    String crearHojalEntradas(XSSFWorkbook libro,int idComprador);
+    void crearLibroExcelEntradas(int idComprador, String fechaInicio, String fechaFin, String estado);
+    String crearHojalEntradas(XSSFWorkbook libro,int idComprador, String fechaInicio, String fechaFin, String estado);
     String crearEncabezadoHojaEntradas(XSSFSheet hoja,int idComprador);
-    void llenarTablaEntradas(XSSFSheet hoja,int idComprador);
+    void llenarTablaEntradas(XSSFSheet hoja,int idComprador, String fechaInicio, String fechaFin, String estado);
     void llenarFilaDetalleEntrada(XSSFRow registro,DetalleEntradaDTO detalleEntrada);
-    List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(int idComprador);
     void exportarLibroEntradas(XSSFWorkbook libro,String nombreArchivo);
     
     ConstanciaEntradaDTO buscarConstanciaEntrada(int idConstancia);
@@ -42,6 +41,5 @@ public interface IEntradaService {
     List<DetalleEntradaDTO> listarDetalleEntradas();
     List<DetalleEntradaDTO> buscarPorTexto(String texto);
     
-    List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
-            String fechaFin, String estado);
+    List<DetalleEntradaDTO> listarPorComprador(int idComprador,String fechaInicio, String fechaFin, String estado);
 }

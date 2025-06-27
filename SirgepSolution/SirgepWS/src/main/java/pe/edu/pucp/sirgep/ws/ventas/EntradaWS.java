@@ -140,23 +140,14 @@ public class EntradaWS {
             throw new RuntimeException("Error al buscar el distrito de la entrada: " + ex.getMessage());
         }
     }
-
-    @WebMethod(operationName = "listarDetalleEntradasPorComprador")
-    public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(@WebParam(name = "idComprador")int idComprador){
-        try {
-            return entradaService.listarDetalleEntradasPorComprador(idComprador);
-        }  catch (Exception ex) {
-            throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
-        }
-    }
     
-    @WebMethod(operationName = "listarDetalleEntradasFiltradaPorComprador")
-    public List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(
-            @WebParam(name = "idComprador")int idComprador,@WebParam(name = "fechaInicio")String fechaInicio, 
-            @WebParam(name = "fechaFin")String fechaFin, @WebParam(name = "estado")String estado){
+    @WebMethod(operationName = "listarPorComprador")
+    public List<DetalleEntradaDTO> listarPorComprador(@WebParam(name = "idComprador")int idComprador,
+            @WebParam(name = "fechaInicio")String fechaInicio, @WebParam(name = "fechaFin")String fechaFin, 
+            @WebParam(name = "estado")String estado){
         List<DetalleEntradaDTO> lista=new ArrayList<>();
         try {
-            lista=entradaService.listarDetalleEntradasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estado);
+            lista=entradaService.listarPorComprador(idComprador,fechaInicio,fechaFin,estado);
         }  catch (Exception ex) {
             throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
         }
@@ -174,9 +165,9 @@ public class EntradaWS {
     
     //Metodo para crear libro de Excel para las entradas
     @WebMethod(operationName = "crearLibroExcelEntradas")
-    public void crearLibroExcelEntradas(@WebParam(name = "idComprador")int idComprador){
+    public void crearLibroExcelEntradas(@WebParam(name = "idComprador")int idComprador, String fechaInicio, String fechaFin, String estado){
         try {
-            entradaService.crearLibroExcelEntradas(idComprador);
+            entradaService.crearLibroExcelEntradas(idComprador,fechaInicio,fechaFin,estado);
         }  catch (Exception ex) {
             throw new RuntimeException("Error al exportar el libro excel de las entradas: : " + ex.getMessage());
         }

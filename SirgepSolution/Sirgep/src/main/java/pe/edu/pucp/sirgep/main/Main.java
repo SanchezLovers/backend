@@ -23,7 +23,7 @@ public class Main {
         String estado="Canceladas";
         String ini="2025-05-12";
         String fin="2025-10-03";
-        List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarDetalleEntradasFiltradaPorComprador(40, ini, fin, estado);
+        List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarPorComprador(40, ini, fin, estado);
         //List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(66, ini, fin, estado);
         
         List<String> listaCorreosCompradores = new ArrayList<>();
