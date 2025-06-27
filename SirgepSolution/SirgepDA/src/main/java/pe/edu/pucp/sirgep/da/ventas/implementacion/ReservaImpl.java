@@ -636,7 +636,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     @Override
     public List<Map<String, Object>> listarDetalleReservasFiltradaPorComprador(int idComprador, String fechaInicio,
             String fechaFin, List<String> estados) {
-        List<Map<String, Object>> listaDetalleReservas = new ArrayList<>();
+        List<Map<String, Object>> listaDetalleReservas = null;
         StringBuilder sql = new StringBuilder("""
         SELECT c.id_constancia, r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio,
                e.ubicacion, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio,
@@ -689,6 +689,9 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             }
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
+                    if(listaDetalleReservas==null){
+                        listaDetalleReservas = new ArrayList<>();
+                    }
                     Map<String, Object> detalleReserva = new HashMap<>();
                     this.llenarMapaDetalleReserva(detalleReserva, rs);
                     listaDetalleReservas.add(detalleReserva);

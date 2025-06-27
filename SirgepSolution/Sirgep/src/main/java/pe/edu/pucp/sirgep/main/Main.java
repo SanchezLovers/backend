@@ -18,14 +18,13 @@ import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 public class Main {
     public static void main(String[] args) throws Exception, SQLException, IOException {
         Connection con = DBManager.getInstance().getConnection();
-        List<String>estados=new ArrayList<>();
-        estados.add("Vigentes");
-        estados.add("Finalizadas");
-        estados.add("Canceladas");
-        String ini="2003-05-12";
-        String fin="2025-09-03";
-        //List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarDetalleEntradasFiltradaPorComprador(40, ini, fin, estados);
-        List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(66, ini, fin, estados);
+        //String estado="Vigentes";
+        //String estado="Finalizadas";
+        String estado="Canceladas";
+        String ini="2025-05-12";
+        String fin="2025-10-03";
+        List<DetalleEntradaDTO> dTOs=new EntradaServiceImpl().listarDetalleEntradasFiltradaPorComprador(40, ini, fin, estado);
+        //List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(66, ini, fin, estado);
         
         List<String> listaCorreosCompradores = new ArrayList<>();
         String asunto = "¡Bienvenid@ al equipo de desarrollo de SIRGEP!";
@@ -73,9 +72,6 @@ public class Main {
       </body>
     </html>
     """;
-        listaCorreosCompradores.add("a20206234@pucp.edu.pe");
-        listaCorreosCompradores.add("72954224@pronabec.edu.pe");
-        listaCorreosCompradores.add("josue12chamorro@gmail.com");
         /*
         listaCorreosCompradores.add("a20206234@pucp.edu.pe");
         listaCorreosCompradores.add("a20221299@pucp.edu.pe");

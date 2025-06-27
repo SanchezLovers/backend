@@ -1,6 +1,6 @@
 package pe.edu.pucp.sirgep.da.ventas.implementacion;
 
-import pe.edu.pucp.sirgep.dbmanager.DBManager; 
+import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.da.ventas.dao.EntradaDAO;
@@ -25,73 +25,74 @@ import java.util.logging.Logger;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
-public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
+public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO {
+
     private final ConstanciaDAO constanciaDAO;
-    
-    public EntradaImpl(){
+
+    public EntradaImpl() {
         this.constanciaDAO = new ConstanciaImpl();
     }
-    
+
     @Override
-    protected String getInsertQuery(){
+    protected String getInsertQuery() {
         String sql = "INSERT INTO Entrada(num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion,activo) "
-                   + "VALUES (?,?,?,?,'A')";
+                + "VALUES (?,?,?,?,'A')";
         return sql;
     }
-    
+
     @Override
-    protected String getSelectByIdQuery(){
+    protected String getSelectByIdQuery() {
         String sql = "SELECT id_constancia,fecha,metodo_pago,igv,total,detalle_pago,"
                 + "num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion "
                 + "FROM Constancia C, Entrada E "
                 + "WHERE C.id_constancia = E.id_constancia_entrada AND id_constancia_entrada=?";
         return sql;
     }
-    
+
     @Override
-    protected String getSelectAllQuery(){
+    protected String getSelectAllQuery() {
         String sql = "SELECT id_constancia,fecha,metodo_pago,igv,total,detalle_pago,"
                 + "num_entrada,Persona_id_persona,id_constancia_entrada,Funcion_id_funcion "
                 + "FROM Constancia C, Entrada E "
                 + "WHERE C.id_constancia = E.id_constancia_entrada AND E.activo='A'";
         return sql;
     }
-    
+
     @Override
-    protected String getUpdateQuery(){
+    protected String getUpdateQuery() {
         String sql = "UPDATE Entrada "
-                   + "SET Persona_id_persona=?, id_constancia_entrada=?, Funcion_id_funcion=? "
-                   + "WHERE num_entrada=?";
+                + "SET Persona_id_persona=?, id_constancia_entrada=?, Funcion_id_funcion=? "
+                + "WHERE num_entrada=?";
         return sql;
     }
-    
+
     @Override
-    protected String getDeleteLogicoQuery(){
+    protected String getDeleteLogicoQuery() {
         String sql = "UPDATE Entrada SET activo='E' WHERE num_entrada=?";
         return sql;
     }
-    
+
     @Override
-    protected String getDeleteFisicoQuery(){
+    protected String getDeleteFisicoQuery() {
         String query = "DELETE FROM Entrada WHERE num_entrada=?";
         return query;
     }
-    
+
     @Override
-    protected void setInsertParameters(PreparedStatement ps, Entrada entrada){
-        try{
+    protected void setInsertParameters(PreparedStatement ps, Entrada entrada) {
+        try {
             ps.setInt(1, entrada.getNumEntrada());
             ps.setInt(2, entrada.getPersona().getIdPersona());
             ps.setInt(3, entrada.getIdConstancia());
             ps.setInt(4, entrada.getFuncion().getIdFuncion());
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-    
+
     @Override
-    protected Entrada createFromResultSet(ResultSet rs){
-         try{
+    protected Entrada createFromResultSet(ResultSet rs) {
+        try {
             Entrada constancia = new Entrada();
             constancia.setIdConstancia(rs.getInt("id_constancia"));
             constancia.setFecha(rs.getDate("fecha"));
@@ -100,65 +101,66 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             constancia.setTotal(rs.getDouble("total"));
             constancia.setDetallePago(rs.getString("detalle_pago"));
             constancia.setNumEntrada(rs.getInt("num_entrada"));
-             Funcion f = new Funcion();
-             f.setIdFuncion(rs.getInt("Funcion_id_funcion"));
-             constancia.setFuncion(f);
-             Persona persona=new Persona();
-             persona.setIdPersona(rs.getInt("Persona_id_persona"));
-             constancia.setPersona(persona);
+            Funcion f = new Funcion();
+            f.setIdFuncion(rs.getInt("Funcion_id_funcion"));
+            constancia.setFuncion(f);
+            Persona persona = new Persona();
+            persona.setIdPersona(rs.getInt("Persona_id_persona"));
+            constancia.setPersona(persona);
             return constancia;
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-    
+
     @Override
-    protected void setUpdateParameters(PreparedStatement ps, Entrada entrada){
-        try{
+    protected void setUpdateParameters(PreparedStatement ps, Entrada entrada) {
+        try {
             ps.setInt(1, entrada.getPersona().getIdPersona());
             ps.setInt(2, entrada.getIdConstancia());
             ps.setInt(3, entrada.getFuncion().getIdFuncion());
             ps.setInt(4, entrada.getNumEntrada());
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-    
+
     @Override
-    protected void setId(Entrada entrada, int id){
+    protected void setId(Entrada entrada, int id) {
         entrada.setNumEntrada(id);
     }
-    
+
     @Override
-    public int insertar(Entrada entrada){
-        int idConstancia=-1, numEntrada=-1;
-        try(Connection con = DBManager.getInstance().getConnection()){
+    public int insertar(Entrada entrada) {
+        int idConstancia = -1, numEntrada = -1;
+        try (Connection con = DBManager.getInstance().getConnection()) {
             con.setAutoCommit(false);
-            idConstancia = constanciaDAO.insertar((Constancia)entrada);
+            idConstancia = constanciaDAO.insertar((Constancia) entrada);
             entrada.setIdConstancia(idConstancia);
             numEntrada = super.insertar(entrada);
             entrada.setNumEntrada(numEntrada);
-        }catch(SQLException e) {
-            throw new RuntimeException("Error al insertar "+entrada.getClass().getSimpleName()+" ", e);
-        }finally{
-            if(numEntrada>0)
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al insertar " + entrada.getClass().getSimpleName() + " ", e);
+        } finally {
+            if (numEntrada > 0) {
                 return idConstancia;
+            }
             return 0;
         }
     }
-    
+
     @Override
-    public boolean actualizar(Entrada entrada){
+    public boolean actualizar(Entrada entrada) {
         boolean resultado = false;
-        try(Connection con = DBManager.getInstance().getConnection()){
+        try (Connection con = DBManager.getInstance().getConnection()) {
             con.setAutoCommit(false);
             resultado = constanciaDAO.actualizar(entrada);
-            try(PreparedStatement ps = con.prepareStatement(this.getUpdateQuery())){
+            try (PreparedStatement ps = con.prepareStatement(this.getUpdateQuery())) {
                 this.setUpdateParameters(ps, entrada);
                 ps.executeUpdate();
                 con.commit();
                 System.out.println("Se actualizo un registro de " + entrada.getClass().getSimpleName());
-                resultado=true;
+                resultado = true;
             } catch (SQLException e) {
                 con.rollback();
                 throw new RuntimeException("Error al ejecutar el query de actualizado ", e);
@@ -167,14 +169,14 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al actualizar " + entrada.getClass().getSimpleName(), e);
-        }finally{
+        } finally {
             return resultado;
         }
     }
-    
+
     @Override
-    public boolean eliminarLogico(int id){
-        boolean resultado=false;
+    public boolean eliminarLogico(int id) {
+        boolean resultado = false;
         try (Connection conn = DBManager.getInstance().getConnection()) {
             conn.setAutoCommit(false);
             try (PreparedStatement ps = conn.prepareStatement(this.getDeleteLogicoQuery())) {
@@ -182,23 +184,23 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
                 ps.executeUpdate();
                 conn.commit();
                 System.out.println("Se elimino logicamente un registro con ID=" + id);
-                resultado=constanciaDAO.eliminarLogico(id);
+                resultado = constanciaDAO.eliminarLogico(id);
             } catch (SQLException e) {
                 conn.rollback();
-                throw new RuntimeException("Error al ejecutar el query de eliminado lógico " , e);
+                throw new RuntimeException("Error al ejecutar el query de eliminado lógico ", e);
             } finally {
                 conn.setAutoCommit(true);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar logicamente la entidad", e);
-        }finally{
+        } finally {
             return resultado;
         }
     }
-    
+
     @Override
     public boolean eliminarFisico(int id) {
-        boolean resultado=false;
+        boolean resultado = false;
         try (Connection conn = DBManager.getInstance().getConnection()) {
             conn.setAutoCommit(false);
             try (PreparedStatement ps = conn.prepareStatement(this.getDeleteFisicoQuery())) {
@@ -206,7 +208,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
                 ps.executeUpdate();
                 conn.commit();
                 System.out.println("Se elimino fisicamente un registro con ID=" + id);
-                resultado=constanciaDAO.eliminarFisico(id);
+                resultado = constanciaDAO.eliminarFisico(id);
             } catch (SQLException e) {
                 conn.rollback();
                 throw new RuntimeException("Error al ejecutar el query de eliminado físico ", e);
@@ -215,26 +217,26 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar fisicamente la entidad", e);
-        }finally{
+        } finally {
             return resultado;
         }
     }
 
     @Override
     public List<Map<String, Object>> listarDetalleEntradasPorComprador(int IdComprador) {
-    List<Map<String, Object>> listaDetalleEntradas = null;
-    String sql = """
+        List<Map<String, Object>> listaDetalleEntradas = null;
+        String sql = """
                  SELECT c.id_constancia, e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion, d.nombre AS 
                  nombre_distrito, f.fecha AS fecha_funcion, f.hora_inicio, f.hora_fin, e.activo FROM Entrada e JOIN Constancia c ON 
                  c.id_constancia=e.id_constancia_entrada JOIN Funcion f ON e.Funcion_id_funcion = f.id_funcion
                  JOIN Evento ev ON f.Evento_idEvento = ev.id_evento JOIN Distrito d ON ev.Distrito_id_distrito = d.id_distrito
                  WHERE e.Persona_id_persona = 
-                 """+IdComprador;
+                 """ + IdComprador;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
             listaDetalleEntradas = new ArrayList<>();
             while (rs.next()) {
                 Map<String, Object> detalleEntrada = new HashMap<>();
-                this.llenarMapaDetalleEntrada(detalleEntrada,rs);
+                this.llenarMapaDetalleEntrada(detalleEntrada, rs);
                 listaDetalleEntradas.add(detalleEntrada);
             }
             System.out.println("Se listo las entradas correctamente");
@@ -244,14 +246,14 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             return listaDetalleEntradas;
         }
     }
-    
+
     @Override
-    public void llenarMapaDetalleEntrada(Map<String, Object>detalleEntrada,ResultSet rs){
-        try{
-            if (rs.getString("id_constancia")!=null) {
+    public void llenarMapaDetalleEntrada(Map<String, Object> detalleEntrada, ResultSet rs) {
+        try {
+            if (rs.getString("id_constancia") != null) {
                 detalleEntrada.put("idConstancia", rs.getInt("id_constancia"));
             }
-            if (rs.getString("num_entrada")!=null){
+            if (rs.getString("num_entrada") != null) {
                 detalleEntrada.put("numEntrada", rs.getInt("num_entrada"));
             }
             if (rs.getString("nombre_evento") != null) {
@@ -279,19 +281,20 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             throw new RuntimeException("Error al llenar el mapa del detalle de la entrada: " + ex.getMessage());
         }
     }
-    
-    public void llenarMapaDetalleEntradaConFecha(Map<String, Object>detalleEntrada,ResultSet rs){
+
+    public void llenarMapaDetalleEntradaConFecha(Map<String, Object> detalleEntrada, ResultSet rs) {
         try {
             llenarMapaDetalleEntrada(detalleEntrada, rs);
-            if(rs.getDate("fecha_constancia") != null){
+            if (rs.getDate("fecha_constancia") != null) {
                 detalleEntrada.put("fechaConstancia", rs.getDate("fecha_constancia"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(EntradaImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     @Override
-    public Map<String, Object> buscarConstanciaEntrada(int idConstancia){
+    public Map<String, Object> buscarConstanciaEntrada(int idConstancia) {
         Map<String, Object> constanciaEntrada = null;
         String sql = """
                      SELECT c.id_constancia, en.num_entrada, ev.nombre AS nombre_evento, 
@@ -306,13 +309,13 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
                      WHERE en.id_constancia_entrada = 
                  """ + idConstancia;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
-            if(rs.next()){
+            if (rs.next()) {
                 constanciaEntrada = new HashMap<>();
-                this.llenarMapaDetalleEntradaConFecha(constanciaEntrada,rs);
-                constanciaDAO.llenarMapaDetalleConstancia(constanciaEntrada,rs);
+                this.llenarMapaDetalleEntradaConFecha(constanciaEntrada, rs);
+                constanciaDAO.llenarMapaDetalleConstancia(constanciaEntrada, rs);
                 System.out.println("Se busco la constancia de la entrada correctamente");
                 return constanciaEntrada;
-            }else{
+            } else {
                 throw new RuntimeException("Constancia de la entrada no encontrada");
             }
         } catch (SQLException ex) {
@@ -334,7 +337,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             listaDetalleEntradas = new ArrayList<>();
             while (rs.next()) {
                 Map<String, Object> detalleEntrada = new HashMap<>();
-                this.llenarMapaDetalleEntradaConFecha(detalleEntrada,rs);
+                this.llenarMapaDetalleEntradaConFecha(detalleEntrada, rs);
                 listaDetalleEntradas.add(detalleEntrada);
             }
             System.out.println("Se listo las entradas correctamente");
@@ -344,7 +347,8 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             return listaDetalleEntradas;
         }
     }
-    public String getBuscarPorTexto(){
+
+    public String getBuscarPorTexto() {
         return "{CALL BUSCAR_ENTRADA_POR_TEXTO(?)}";
     }
 
@@ -354,19 +358,18 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
         List<Map<String, Object>> entradas = new ArrayList<>();
 
         // Utilizaremos procedimientos almacenados
-        try (Connection conn = DBManager.getInstance().getConnection(); 
-             CallableStatement cs = conn.prepareCall(this.getBuscarPorTexto())) {
+        try (Connection conn = DBManager.getInstance().getConnection(); CallableStatement cs = conn.prepareCall(this.getBuscarPorTexto())) {
 
             cs.setString(1, texto); // asignamos el parámetro de texto
 
             try (ResultSet rs = cs.executeQuery()) {
                 while (rs.next()) {
                     Map<String, Object> detalleEntrada = new HashMap<>();
-                    this.llenarMapaDetalleEntradaConFecha(detalleEntrada,rs);
+                    this.llenarMapaDetalleEntradaConFecha(detalleEntrada, rs);
                     entradas.add(detalleEntrada);
                 }
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException("Error al obtener un espacio: ", e);
         }
         return entradas;
@@ -374,7 +377,7 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
 
     @Override
     public List<Map<String, Object>> listarDetalleEntradasFiltradaPorComprador(int idComprador, String fechaInicio,
-            String fechaFin, List<String> estados) {
+            String fechaFin, String estado) {
         List<Map<String, Object>> listaDetalleEntradas = new ArrayList<>();
         StringBuilder sql = new StringBuilder("""
         SELECT c.id_constancia, e.num_entrada, ev.nombre AS nombre_evento, ev.ubicacion,
@@ -389,9 +392,8 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
     """);
         List<Object> params = new ArrayList<>();
         params.add(idComprador);
-        // Fechas usando BETWEEN si ambas están presentes
         if (fechaInicio != null && !fechaInicio.isBlank() && fechaFin != null && !fechaFin.isBlank()) {
-            sql.append(" AND f.fecha BETWEEN ? AND ?");
+            sql.append(" AND (f.fecha BETWEEN ? AND ?)");
             params.add(java.sql.Date.valueOf(fechaInicio));
             params.add(java.sql.Date.valueOf(fechaFin));
         } else if (fechaInicio != null && !fechaInicio.isBlank()) {
@@ -401,29 +403,18 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO{
             sql.append(" AND f.fecha <= ?");
             params.add(java.sql.Date.valueOf(fechaFin));
         }
-        // Estado con IN
-        if (estados != null && !estados.isEmpty()) {
-            sql.append(" AND e.activo IN (");
-            for (int i = 0; i < estados.size(); i++) {
-                if (i > 0) {
-                    sql.append(", ");
-                }
-                sql.append("?");
-                switch (estados.get(i)) {
-                    case "Vigentes" ->
-                        params.add("A");
-                    case "Finalizadas" ->
-                        params.add("I");
-                    case "Canceladas" ->
-                        params.add("C");
-                    default ->
-                        throw new IllegalArgumentException("Estado inválido: " + estados.get(i));
-                }
+        if (estado != null && !estado.isBlank()) {
+            sql.append(" AND e.activo = ?");
+            switch (estado.trim()) {
+                case "Vigentes" ->
+                    params.add("A");
+                case "Finalizadas" ->
+                    params.add("I");
+                case "Canceladas" ->
+                    params.add("C");
             }
-            sql.append(")");
         }
-        try (
-                Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql.toString())) {
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 pst.setObject(i + 1, params.get(i));
             }

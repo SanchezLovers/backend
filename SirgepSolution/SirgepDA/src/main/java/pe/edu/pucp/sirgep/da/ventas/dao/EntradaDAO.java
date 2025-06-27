@@ -18,5 +18,5 @@ public interface EntradaDAO extends BaseDAO<Entrada>{
     List<Map<String, Object>> buscarPorTexto(String texto);
     
     List<Map<String, Object>> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
-            String fechaFin, List<String> estados);
+            String fechaFin, String estado);
 }
