@@ -293,7 +293,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         try(Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
         {
             String query = "UPDATE Reserva " +
-                    "SET  estado = C WHERE num_reserva = "+id;
+                    "SET  activo = 'C' WHERE num_reserva = "+id;
             con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
             try(PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
                 ps.executeUpdate();
@@ -357,32 +357,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             throw new RuntimeException("Error al listar las entidades", e);
         } finally {
             return listaReserva;
-        }
-    }
-
-    @Override
-    public List<Map<String, Object>> listarDetalleReservasPorComprador(int IdComprador) {
-        List<Map<String, Object>> listaDetalleReservas = null;
-        String sql = """
-                     SELECT c.id_constancia, r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS 
-                     categoria_espacio, e.ubicacion, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS 
-                     hora_inicio, r.horario_fin AS hora_fin, e.superficie, r.activo 
-                     FROM Reserva r JOIN Constancia c ON c.id_constancia=r.id_constancia_reserva JOIN Espacio e ON 
-                     r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito 
-                     WHERE r.Persona_id_persona = 
-                 """ + IdComprador;
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
-            listaDetalleReservas = new ArrayList<>();
-            while (rs.next()) {
-                Map<String, Object> detalleReserva = new HashMap<>();
-                this.llenarMapaDetalleReserva(detalleReserva,rs);
-                listaDetalleReservas.add(detalleReserva);
-            }
-            System.out.println("Se listo las entradas correctamente");
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar las entradas: ", e);
-        } finally {
-            return listaDetalleReservas;
         }
     }
 
@@ -629,14 +603,12 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     }
 
     @Override
-    public List<Map<String, Object>> listarDetalleReservasFiltradaPorComprador(int idComprador, String fechaInicio, 
-            String fechaFin, List<String> estados) {
+    public List<Map<String, Object>> listarPorComprador(int idComprador, String fechaInicio, String fechaFin, String estado) {
         List<Map<String, Object>> listaDetalleReservas = new ArrayList<>();
         List<Object> parametros = new ArrayList<>();
-        StringBuilder sql = construirSQLReservaFiltrada(idComprador, fechaInicio, fechaFin, estados, parametros);
+        StringBuilder sql = construirSQLReservaFiltrada(idComprador, fechaInicio, fechaFin, estado, parametros);
         try (
-                Connection conn = DBManager.getInstance().getConnection(); 
-                PreparedStatement pst = conn.prepareStatement(sql.toString())) {
+                Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql.toString())) {
             asignarParametros(pst, parametros);
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
@@ -652,12 +624,12 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         return listaDetalleReservas.isEmpty() ? null : listaDetalleReservas;
     }
 
-    private StringBuilder construirSQLReservaFiltrada(int idComprador, String fechaInicio, String fechaFin, 
-            List<String> estados, List<Object> params) {
+    private StringBuilder construirSQLReservaFiltrada(int idComprador, String fechaInicio, String fechaFin, String estado,
+            List<Object> params) {
         StringBuilder sql = construirQueryBaseDetalleReservas();
         params.add(idComprador);
         agregarFiltrosFechas(sql, fechaInicio, fechaFin, params);
-        agregarFiltrosEstado(sql, estados, params);
+        agregarFiltrosEstado(sql, estado, params);
         return sql;
     }
 
@@ -673,7 +645,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         WHERE r.Persona_id_persona = ?
     """);
     }
-    
+
     private void agregarFiltrosFechas(StringBuilder sql, String fechaInicio, String fechaFin, List<Object> params) {
         if (fechaInicio != null && !fechaInicio.isBlank() && fechaFin != null && !fechaFin.isBlank()) {
             sql.append(" AND r.fecha_reserva BETWEEN ? AND ?");
@@ -688,17 +660,20 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         }
     }
 
-    private void agregarFiltrosEstado(StringBuilder sql, List<String> estados, List<Object> params) {
-        if (estados == null || estados.isEmpty()) return;
+    private void agregarFiltrosEstado(StringBuilder sql, String estado, List<Object> params) {
+        if (estado == null || estado.isEmpty()) {
+            return;
+        }
         sql.append(" AND r.activo IN (");
-        for (int i = 0; i < estados.size(); i++) {
-            if (i > 0) sql.append(", ");
-            sql.append("?");
-            String estadoActual = estados.get(i);
-            if (estadoActual.equals("Vigentes")) params.add("A");
-            else if (estadoActual.equals("Finalizadas")) params.add("I");
-            else if (estadoActual.equals("Canceladas")) params.add("C");
-            else throw new IllegalArgumentException("Estado inválido: " + estadoActual);
+        sql.append("?");
+        if (estado.equals("Vigentes")) {
+            params.add("A");
+        } else if (estado.equals("Finalizadas")) {
+            params.add("I");
+        } else if (estado.equals("Canceladas")) {
+            params.add("C");
+        } else {
+            throw new IllegalArgumentException("Estado inválido: " + estado);
         }
         sql.append(")");
     }
