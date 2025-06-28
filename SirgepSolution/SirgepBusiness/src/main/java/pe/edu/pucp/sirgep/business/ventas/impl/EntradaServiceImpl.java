@@ -282,25 +282,7 @@ public class EntradaServiceImpl implements IEntradaService {
 
         return estilo;
     }
-
-    @Override
-    public List<DetalleEntradaDTO> listarPorComprador(int idComprador, String fechaInicio, String fechaFin, String estado) {
-        List<DetalleEntradaDTO> listaDetalleEntradas = new ArrayList<>();
-        try {
-            List<Map<String, Object>> lista = entradaDAO.listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
-            if (lista != null) {
-                for (Map<String, Object> detalle : lista) {
-                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
-                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
-                    listaDetalleEntradas.add(detalleEntradaDTO);
-                }
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
-        }
-        return listaDetalleEntradas;
-    }
-
+    
     public boolean llenarTablaEntradas(XSSFSheet hoja, int idComprador, String fechaInicio, String fechaFin, String estado) {
         List<DetalleEntradaDTO> listaDetalleEntradas = listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
         if (listaDetalleEntradas.isEmpty()) {
@@ -354,6 +336,25 @@ public class EntradaServiceImpl implements IEntradaService {
         } catch (Exception ex) {
             throw new RuntimeException("Error al exportar el libro excel de las entradas: " + ex.getMessage(), ex);
         }
+    }
+
+    @Override
+    public List<DetalleEntradaDTO> listarPorComprador(int idComprador, String fechaInicio, String fechaFin, String estado) {
+        List<DetalleEntradaDTO> listaDetalleEntradas = null;
+        try {
+            List<Map<String, Object>> lista = entradaDAO.listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
+            if (lista != null) {
+                listaDetalleEntradas = new ArrayList<>();
+                for (Map<String, Object> detalle : lista) {
+                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
+                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
+                    listaDetalleEntradas.add(detalleEntradaDTO);
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
+        }
+        return listaDetalleEntradas;
     }
 
     @Override
