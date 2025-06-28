@@ -6,6 +6,7 @@ import jakarta.jws.WebParam;
 import jakarta.xml.ws.WebServiceException;
 import java.util.ArrayList;
 import java.util.List;
+import pe.edu.pucp.sirgep.business.infraestructura.dtos.EventoDTO;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.EventoServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.impl.FuncionServiceImpl;
 import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
@@ -149,6 +150,17 @@ public class EventoWS {
         }
         catch(Exception ex){
             throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del evento: "+ ex.getMessage());
+        }
+    }
+    
+    //Adicionales
+    @WebMethod(operationName = "buscarEventoDTOporID")
+    public EventoDTO buscarEventoDTOporID(@WebParam(name = "idEvento") int idEvento) {
+        try{
+            return eventoService.listarEventosDTO(idEvento);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al listar los eventosDTO: "+ ex.getMessage());
         }
     }
 }

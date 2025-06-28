@@ -4,6 +4,8 @@
  */
 package pe.edu.pucp.sirgep.business.infraestructura.dtos;
 
+import java.util.Map;
+
 /**
  *
  * @author benny
@@ -168,6 +170,68 @@ public class EventoDTO {
 
     public void setNombreDist(String nombreDist) {
         this.nombreDist = nombreDist;
+    }
+
+    public void llenarEventoDTO(Map<String, Object> map) {
+        if(map.get("id_evento") != null){
+            this.idEvento = (int) map.get("id_evento");
+        }
+        if(map.get("nombre") != null){
+            this.nombre = (String) map.get("nombre");
+        }
+        if(map.get("fecha_inicio") != null){
+            Object fechaInicioObj = map.get("fecha_inicio");
+            if (fechaInicioObj instanceof java.sql.Date) {
+                this.fecha_inicio = fechaInicioObj.toString();
+            } else {
+                this.fecha_inicio = (String) fechaInicioObj;
+            }
+        }
+        if(map.get("fecha_fin") != null){
+            Object fechaFinObj = map.get("fecha_fin");
+            if (fechaFinObj instanceof java.sql.Date) {
+                this.fecha_fin = fechaFinObj.toString();
+            } else {
+                this.fecha_fin = (String) fechaFinObj;
+            }
+        }
+        if(map.get("ubicacion") != null){   
+            this.ubicacion = (String) map.get("ubicacion");
+        }
+        if(map.get("referencia") != null){
+            this.referencia = (String) map.get("referencia");
+        }
+        if(map.get("cant_entradas_dispo") != null){
+            this.cantEntradasDispo = (int) map.get("cant_entradas_dispo");
+        }
+        if(map.get("cant_entradas_vendidas") != null){
+            this.cantEntradasVendidas = (int) map.get("cant_entradas_vendidas");
+        }
+        if(map.get("precio_entradas") != null){
+            this.precioEntrada = (double) map.get("precio_entradas");
+        }
+        if(map.get("descripcion") != null){
+            this.descripcion = (String) map.get("descripcion");
+        }
+        if(map.get("id_distrito") != null){
+            this.idDist = (int) map.get("id_distrito");
+        }
+        if(map.get("nombre_distrito") != null){
+            this.nombreDist = (String) map.get("nombre_distrito");
+        }
+        if(map.get("id_provincia") != null){
+            this.idProv = (int) map.get("id_provincia");
+        }
+        if(map.get("nombre_provincia") != null){
+            this.nombreProv = (String) map.get("nombre_provincia");
+        }
+        if(map.get("id_departamento") != null){
+            this.idDepa = (int) map.get("id_departamento");
+        }
+        if(map.get("nombre_departamento") != null){
+            this.nombreDepa = (String) map.get("nombre_departamento");
+        }
+        /*Faltaría añadir la imagen, pero todavía no se ha implementado*/
     }
     
 }
