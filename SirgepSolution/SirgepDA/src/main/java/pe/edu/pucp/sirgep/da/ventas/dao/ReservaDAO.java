@@ -8,7 +8,6 @@ import pe.edu.pucp.sirgep.da.base.dao.BaseDAO;
 import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
 
 public interface ReservaDAO extends BaseDAO<Reserva>{
-    List<Map<String, Object>>listarDetalleReservasPorComprador(int IdComprador);
 
     public boolean cancelarReserva(int id) throws SQLException;
 
@@ -22,6 +21,5 @@ public interface ReservaDAO extends BaseDAO<Reserva>{
     void llenarMapaDetalleReserva(Map<String, Object>detalleReserva,ResultSet rs);
     Map<String, Object> buscarConstanciaReserva(int numReserva);
     
-    List<Map<String, Object>> listarDetalleReservasFiltradaPorComprador(int idComprador,String fechaInicio, 
-            String fechaFin, List<String> estados);
+    List<Map<String, Object>> listarPorComprador(int idComprador,String fechaInicio, String fechaFin, String estado);
 }

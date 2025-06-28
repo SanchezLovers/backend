@@ -192,45 +192,48 @@ public class ReservaServiceImpl implements IReservaService {
         return listaFinal;
     }
 
-    //Metodos para crear libro de Excel para las reservas
     @Override
-    public void crearLibroExcelReservas(int idComprador) {
-        XSSFWorkbook libro = new XSSFWorkbook();//Archivo.xlsx
-        String nombreArchivo = crearHojalReservas(libro, idComprador);
-        exportarLibroReservas(libro, nombreArchivo);
+    public boolean crearLibroExcelReservas(int idComprador, String fechaInicio, String fechaFin, String estado) {
+        boolean resultado = false;
+        try {
+            XSSFWorkbook libro = new XSSFWorkbook();
+            String nombreArchivo = crearHojalReservas(libro, idComprador, fechaInicio, fechaFin, estado);
+            if (nombreArchivo != null) {
+                resultado = exportarLibroReservas(libro, nombreArchivo);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar el excel de reservas: " + e.getMessage(), e);
+        }
+        return resultado;
     }
 
-    @Override
-    public String crearHojalReservas(XSSFWorkbook libro, int idComprador) {
-        XSSFSheet hoja = libro.createSheet("Reservas");//Nombre
+    private String crearHojalReservas(XSSFWorkbook libro, int idComprador, String fechaInicio, String fechaFin, String estado) {
+        XSSFSheet hoja = libro.createSheet("Reservas");
         try {
             String nombreArchivo = crearEncabezadoHojaReservas(hoja, idComprador);
-            llenarTablaReservas(hoja, idComprador);
+            escribirCabeceraTablaReservas(hoja, crearEstiloCabeceraTabla(hoja));
+            boolean resultado = llenarTablaReservas(hoja, idComprador, fechaInicio, fechaFin, estado);
+            if (!resultado) {
+                return null;
+            }
             return nombreArchivo;
         } catch (Exception ex) {
             throw new RuntimeException("Error al llenar la hoja excel de las reservas: " + ex.getMessage());
         }
     }
 
-    @Override
-    public String crearEncabezadoHojaReservas(XSSFSheet hoja, int idComprador) {
+    private String crearEncabezadoHojaReservas(XSSFSheet hoja, int idComprador) {
         Comprador comprador = compradorDAO.buscar(idComprador);
-        String nombreArchivo = "Lista_Reservas_" + comprador.getNombres() + ".xlsx";
-        //Configuracion de estilo
-        XSSFCellStyle estiloColorFondo = hoja.getWorkbook().createCellStyle();
-        XSSFFont fontBlanca = hoja.getWorkbook().createFont();
-        fontBlanca.setColor(IndexedColors.WHITE.getIndex());
-        fontBlanca.setBold(true);
-        estiloColorFondo.setFont(fontBlanca);
-        estiloColorFondo.setFillForegroundColor(IndexedColors.RED.getIndex());
-        estiloColorFondo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        estiloColorFondo.setAlignment(HorizontalAlignment.CENTER); //Centrado
-        //Configuracion de celda
+        if (comprador == null) {
+            return null;
+        }
+
+        String textoTitulo = "Lista de Reservas del Comprador " + comprador.getNombres() + " " + comprador.getSegundoApellido();
         XSSFRow fila = hoja.createRow(0);
         XSSFCell celda = fila.createCell(0);
-        celda.setCellValue("Lista de Reservas del Comprador " + comprador.getNombres() + " " + comprador.getSegundoApellido());
-        hoja.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));//Combinar celdas
-        // Estilo centrado + negrita
+        celda.setCellValue(textoTitulo);
+        hoja.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
+
         XSSFCellStyle estilo = hoja.getWorkbook().createCellStyle();
         XSSFFont fuente = hoja.getWorkbook().createFont();
         fuente.setBold(true);
@@ -238,58 +241,44 @@ public class ReservaServiceImpl implements IReservaService {
         estilo.setAlignment(HorizontalAlignment.CENTER);
         estilo.setVerticalAlignment(VerticalAlignment.CENTER);
         celda.setCellStyle(estilo);
-        //Tabla
-        fila = hoja.createRow(2);
-        celda = fila.createCell(0);
-        celda.setCellValue("Nro Reserva");
-        celda.setCellStyle(estiloColorFondo);
-        celda = fila.createCell(1);
-        celda.setCellValue("Espacio");
-        celda.setCellStyle(estiloColorFondo);
-        celda = fila.createCell(2);
-        celda.setCellValue("Categoria");
-        celda.setCellStyle(estiloColorFondo);
-        celda = fila.createCell(3);
-        celda.setCellValue("Ubicacion");
-        celda.setCellStyle(estiloColorFondo);
-        celda = fila.createCell(4);
-        celda.setCellValue("Distrito");
-        celda.setCellStyle(estiloColorFondo);
-        celda = fila.createCell(5);
-        celda.setCellValue("Fecha");
-        celda.setCellStyle(estiloColorFondo);
-        celda = fila.createCell(6);
-        celda.setCellValue("Hora Inicio");
-        celda.setCellStyle(estiloColorFondo);
-        celda = fila.createCell(7);
-        celda.setCellValue("Hora Fin");
-        celda.setCellStyle(estiloColorFondo);
-        return nombreArchivo;
+
+        return generarNombreArchivo(comprador);
     }
 
-    @Override
-    public List<DetalleReservaDTO> listarDetalleReservasPorComprador(int idComprador) {
-        List<DetalleReservaDTO> listaDetalleReservas = null;
-        try {
-            List<Map<String, Object>> lista = reservaDAO.listarDetalleReservasPorComprador(idComprador);
-            if (lista != null) {
-                listaDetalleReservas = new ArrayList<>();
-                for (Map<String, Object> detalle : lista) {
-                    DetalleReservaDTO detalleReservaDTO = new DetalleReservaDTO();
-                    detalleReservaDTO.llenarDetalleReserva(detalle);
-                    listaDetalleReservas.add(detalleReservaDTO);
-                }
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
-        } finally {
-            return listaDetalleReservas;
+    private String generarNombreArchivo(Comprador comprador) {
+        return "Lista_Reservas_" + comprador.getNombres() + ".xlsx";
+    }
+
+    private void escribirCabeceraTablaReservas(XSSFSheet hoja, XSSFCellStyle estiloColorFondo) {
+        XSSFRow fila = hoja.createRow(2);
+        String[] encabezados = {
+            "Nro Reserva", "Espacio", "Categoria", "Ubicacion",
+            "Distrito", "Fecha", "Hora Inicio", "Hora Fin"
+        };
+        for (int i = 0; i < encabezados.length; i++) {
+            XSSFCell celda = fila.createCell(i);
+            celda.setCellValue(encabezados[i]);
+            celda.setCellStyle(estiloColorFondo);
         }
     }
 
-    @Override
-    public void llenarTablaReservas(XSSFSheet hoja, int idComprador) {
-        List<DetalleReservaDTO> listaDetalleReservas = listarDetalleReservasPorComprador(idComprador);
+    private XSSFCellStyle crearEstiloCabeceraTabla(XSSFSheet hoja) {
+        XSSFCellStyle estilo = hoja.getWorkbook().createCellStyle();
+        XSSFFont font = hoja.getWorkbook().createFont();
+        font.setColor(IndexedColors.WHITE.getIndex());
+        font.setBold(true);
+        estilo.setFont(font);
+        estilo.setFillForegroundColor(IndexedColors.RED.getIndex());
+        estilo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        estilo.setAlignment(HorizontalAlignment.CENTER);
+        return estilo;
+    }
+
+    private boolean llenarTablaReservas(XSSFSheet hoja, int idComprador, String fechaInicio, String fechaFin, String estado) {
+        List<DetalleReservaDTO> listaDetalleReservas = listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
+        if (listaDetalleReservas.isEmpty()) {
+            return false;
+        }
         int posicion = 3;
         for (DetalleReservaDTO detalleReserva : listaDetalleReservas) {
             XSSFRow registro = hoja.createRow(posicion++);
@@ -298,10 +287,10 @@ public class ReservaServiceImpl implements IReservaService {
         for (int i = 0; i < 8; i++) {
             hoja.autoSizeColumn(i);
         }
+        return true;
     }
 
-    @Override
-    public void llenarFilaReserva(XSSFRow registro, DetalleReservaDTO detalleReserva) {
+    private void llenarFilaReserva(XSSFRow registro, DetalleReservaDTO detalleReserva) {
         XSSFCell celda = registro.createCell(0);
         celda.setCellValue(detalleReserva.getNumReserva());
         celda = registro.createCell(1);
@@ -320,29 +309,28 @@ public class ReservaServiceImpl implements IReservaService {
         celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleReserva.getHoraFin()));
     }
 
-    @Override
-    public void exportarLibroReservas(XSSFWorkbook libro, String nombreArchivo) {
+    private boolean exportarLibroReservas(XSSFWorkbook libro, String nombreArchivo) {
         try {
             String userHome = System.getProperty("user.home");
             File downloads = new File(userHome, "Downloads");
             File descargas = new File(userHome, "Descargas");
-            File carpetaDestino;
-            if (downloads.exists()) {
-                carpetaDestino = downloads;
-            } else if (descargas.exists()) {
-                carpetaDestino = descargas;
-            } else {
-                carpetaDestino = new File(userHome); // fallback: usa la carpeta del usuario
+            File carpetaDestino = downloads.exists() ? downloads : (descargas.exists() ? descargas : new File(userHome));
+            File archivoDestino = new File(carpetaDestino, nombreArchivo);
+            if (archivoDestino.exists()) {
+                String baseName = nombreArchivo.replace(".xlsx", "");
+                String nuevoNombre = baseName + "_" + System.currentTimeMillis() + ".xlsx";
+                archivoDestino = new File(carpetaDestino, nuevoNombre);
             }
-            nombreArchivo = new File(carpetaDestino, nombreArchivo).getAbsolutePath();
-            OutputStream output = new FileOutputStream(nombreArchivo);//Ruta y nombre
-            libro.write(output);//Exporto los bytes
-            libro.close();//Libero bytes
-            output.close();//Libero bytes
+            try (OutputStream output = new FileOutputStream(archivoDestino)) {
+                libro.write(output);
+            }
+            libro.close();
+            return true;
         } catch (Exception ex) {
-            throw new RuntimeException("Error al exportar el libro excel de las reservas: " + ex.getMessage());
+            throw new RuntimeException("Error al exportar el libro excel de las reservas: " + ex.getMessage(), ex);
         }
     }
+    
     //Metodos para buscar el detalle de la constancia de la reserva
     @Override
     public ConstanciaReservaDTO buscarConstanciaReserva(int idConstancia){
@@ -372,11 +360,10 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
-    public List<DetalleReservaDTO> listarDetalleReservasFiltradaPorComprador(int idComprador, String fechaInicio, 
-            String fechaFin, List<String> estados) {
+    public List<DetalleReservaDTO> listarPorComprador(int idComprador, String fechaInicio, String fechaFin, String estado) {
         List<DetalleReservaDTO> listaDetalleReservas = null;
         try {
-            List<Map<String, Object>> lista = reservaDAO.listarDetalleReservasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
+            List<Map<String, Object>> lista = reservaDAO.listarPorComprador(idComprador,fechaInicio,fechaFin,estado);
             if (lista != null) {
                 listaDetalleReservas = new ArrayList<>();
                 for (Map<String, Object> detalle : lista) {
