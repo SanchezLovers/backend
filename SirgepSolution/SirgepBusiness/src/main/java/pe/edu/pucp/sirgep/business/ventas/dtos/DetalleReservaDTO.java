@@ -111,43 +111,60 @@ public class DetalleReservaDTO {
 
     //Metodos
     public void llenarDetalleReserva(Map<String, Object> detalle) {
-        try{
-            int id = (int) detalle.get("idConstancia");
-            if (detalle.get("idConstancia") != null) {
-                this.setIdConstancia((int) detalle.get("idConstancia"));
-            }
-            if (detalle.get("numReserva") != null) {
-                this.setNumReserva((int) detalle.get("numReserva"));
-            }
-            if (detalle.get("nombreEspacio") != null) {
-                this.setNombreEspacio((String) detalle.get("nombreEspacio"));
-            }
-            if (detalle.get("categoria") != null) {
-                this.setCategoria((String) detalle.get("categoria"));
-            }
-            if (detalle.get("ubicacion") != null) {
-                this.setUbicacion((String) detalle.get("ubicacion"));
-            }
-            if (detalle.get("nombreDistrito") != null) {
-                this.setNombreDistrito((String) detalle.get("nombreDistrito"));
-            }
-            if (detalle.get("fecha_reserva") != null) {
-                this.setFecha((java.sql.Date) detalle.get("fecha_reserva"));
-            }
-            if (detalle.get("horaInicio") != null) {
-                this.setHoraInicio(new Date(((java.sql.Time) detalle.get("horaInicio")).getTime()));
-            }
-            if (detalle.get("horaFin") != null) {
-                this.setHoraFin(new Date(((java.sql.Time) detalle.get("horaFin")).getTime()));
-            }
-            if (detalle.get("superficie") != null) {
-                this.setSuperficie((double) detalle.get("superficie"));
-            }
-            if (detalle.get("estado") != null) {
-                this.setEstado(detalle.get("estado").toString().charAt(0));
-            }
+        try {
+            setIntSiExiste(detalle, "idConstancia", this::setIdConstancia);
+            setIntSiExiste(detalle, "numReserva", this::setNumReserva);
+            setStringSiExiste(detalle, "nombreEspacio", this::setNombreEspacio);
+            setStringSiExiste(detalle, "categoria", this::setCategoria);
+            setStringSiExiste(detalle, "ubicacion", this::setUbicacion);
+            setStringSiExiste(detalle, "nombreDistrito", this::setNombreDistrito);
+            setDateSiExiste(detalle, "fecha_reserva", this::setFecha);
+            setTimeSiExiste(detalle, "horaInicio", this::setHoraInicio);
+            setTimeSiExiste(detalle, "horaFin", this::setHoraFin);
+            setDoubleSiExiste(detalle, "superficie", this::setSuperficie);
+            setCharSiExiste(detalle, "estado", this::setEstado);
         } catch (Exception ex) {
-            throw new RuntimeException("Error al llenar el detalle de la reserva: " + ex.getMessage());
+            throw new RuntimeException("Error al llenar el detalle de la reserva: " + ex.getMessage(), ex);
+        }
+    }
+
+    private void setIntSiExiste(Map<String, Object> map, String key, java.util.function.IntConsumer setter) {
+        if (map.get(key) != null) {
+            setter.accept((int) map.get(key));
+        }
+    }
+
+    private void setStringSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<String> setter) {
+        if (map.get(key) != null) {
+            setter.accept((String) map.get(key));
+        }
+    }
+
+    private void setDateSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<java.sql.Date> setter) {
+        if (map.get(key) != null) {
+            setter.accept((java.sql.Date) map.get(key));
+        }
+    }
+
+    private void setTimeSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<Date> setter) {
+        if (map.get(key) != null) {
+            java.sql.Time time = (java.sql.Time) map.get(key);
+            setter.accept(new Date(time.getTime()));
+        }
+    }
+
+    private void setDoubleSiExiste(Map<String, Object> map, String key, java.util.function.DoubleConsumer setter) {
+        if (map.get(key) != null) {
+            setter.accept((double) map.get(key));
+        }
+    }
+
+    private void setCharSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<Character> setter) {
+        if (map.get(key) != null) {
+            String val = map.get(key).toString();
+            if (!val.isEmpty()) {
+                setter.accept(val.charAt(0));
+            }
         }
     }
 }

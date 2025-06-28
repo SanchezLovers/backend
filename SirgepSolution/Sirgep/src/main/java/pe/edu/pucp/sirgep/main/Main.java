@@ -13,7 +13,6 @@ import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.impl.EntradaServiceImpl;
 import pe.edu.pucp.sirgep.business.ventas.impl.ReservaServiceImpl;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
-import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 
 public class Main {
     public static void main(String[] args) throws Exception, SQLException, IOException {
@@ -23,9 +22,7 @@ public class Main {
         String estado="Canceladas";
         String ini="2025-01-01";
         String fin="2025-10-01";
-        String url = "https://upload.wikimedia.org/wikipedia/commons/4/43/Escudo_Regi%C3%B3n_Lima.png";//Cambiar la IP
-        //List<DetalleReservaDTO> dTOs=new ReservaServiceImpl().listarDetalleReservasFiltradaPorComprador(66, ini, fin, estado);
-        new EntradaServiceImpl().crearLibroExcelEntradas(40, ini, fin, estado);
+        //new ReservaServiceImpl().crearLibroExcelReservas(40, ini, fin, estado);
         List<String> listaCorreosCompradores = new ArrayList<>();
         String asunto = "¡Bienvenid@ al equipo de desarrollo de SIRGEP!";
         String contenido = """
