@@ -96,41 +96,57 @@ public class ConstanciaImpl extends BaseImpl<Constancia> implements ConstanciaDA
     }
     
     @Override
-    public void llenarMapaDetalleConstancia(Map<String, Object>detalleConstancia,ResultSet rs){
-        try{
-            if (rs.getString("id_constancia") != null) {
-                detalleConstancia.put("idConstancia", rs.getInt("id_constancia"));
-            }
-            if (rs.getString("nombres_comprador") != null) {
-                detalleConstancia.put("nombresComprador", rs.getString("nombres_comprador"));
-            }
-            if (rs.getString("primer_apellido") != null || rs.getString("segundo_apellido") != null) {
-                detalleConstancia.put("apellidosComprador", (rs.getString("primer_apellido") != null ? rs.getString("primer_apellido") : "")
-                        + " " + (rs.getString("segundo_apellido") != null ? rs.getString("segundo_apellido") : ""));
-            }
-            if (rs.getString("correo") != null) {
-                detalleConstancia.put("correo", rs.getString("correo"));
-            }
-            if (rs.getString("tipo_documento") != null) {
-                detalleConstancia.put("tipoDocumento", rs.getString("tipo_documento"));
-            }
-            if (rs.getString("num_documento") != null) {
-                detalleConstancia.put("numDocumento", rs.getString("num_documento"));
-            }
-            if (rs.getDate("fecha") != null) {
-                detalleConstancia.put("fechaConstancia", rs.getDate("fecha"));
-            }
-            if (rs.getString("metodo_pago") != null) {
-                detalleConstancia.put("metodoPago", rs.getString("metodo_pago"));
-            }
-            if (!rs.wasNull()) {
-                detalleConstancia.put("monto", rs.getDouble("total"));
-            }
-            if (rs.getString("detalle_pago") != null) {
-                detalleConstancia.put("detallePago", rs.getString("detalle_pago"));
-            }
+    public void llenarMapaDetalleConstancia(Map<String, Object> detalleConstancia, ResultSet rs) {
+        try {
+            agregarIntSiNoNulo(detalleConstancia, rs, "id_constancia", "idConstancia");
+            agregarStringSiNoNulo(detalleConstancia, rs, "nombres_comprador", "nombresComprador");
+            agregarApellidos(detalleConstancia, rs);
+            agregarStringSiNoNulo(detalleConstancia, rs, "correo", "correo");
+            agregarStringSiNoNulo(detalleConstancia, rs, "tipo_documento", "tipoDocumento");
+            agregarStringSiNoNulo(detalleConstancia, rs, "num_documento", "numDocumento");
+            agregarDateSiNoNulo(detalleConstancia, rs, "fecha", "fechaConstancia");
+            agregarStringSiNoNulo(detalleConstancia, rs, "metodo_pago", "metodoPago");
+            agregarMonto(detalleConstancia, rs);
+            agregarStringSiNoNulo(detalleConstancia, rs, "detalle_pago", "detallePago");
         } catch (SQLException ex) {
-            throw new RuntimeException("Error al llenar el mapa del detalle de la constancia: " + ex.getMessage());
+            throw new RuntimeException("Error al llenar el mapa del detalle de la constancia: " + ex.getMessage(), ex);
+        }
+    }
+
+    private void agregarIntSiNoNulo(Map<String, Object> mapa, ResultSet rs, String columna, String claveMapa) throws SQLException {
+        String temp = rs.getString(columna);
+        if (temp != null) {
+            mapa.put(claveMapa, rs.getInt(columna));
+        }
+    }
+
+    private void agregarStringSiNoNulo(Map<String, Object> mapa, ResultSet rs, String columna, String claveMapa) throws SQLException {
+        String valor = rs.getString(columna);
+        if (valor != null) {
+            mapa.put(claveMapa, valor);
+        }
+    }
+
+    private void agregarDateSiNoNulo(Map<String, Object> mapa, ResultSet rs, String columna, String claveMapa) throws SQLException {
+        java.sql.Date fecha = rs.getDate(columna);
+        if (fecha != null) {
+            mapa.put(claveMapa, fecha);
+        }
+    }
+
+    private void agregarApellidos(Map<String, Object> mapa, ResultSet rs) throws SQLException {
+        String primerApellido = rs.getString("primer_apellido");
+        String segundoApellido = rs.getString("segundo_apellido");
+        if (primerApellido != null || segundoApellido != null) {
+            mapa.put("apellidosComprador",
+                    (primerApellido != null ? primerApellido : "") + " "+ (segundoApellido != null ? segundoApellido : ""));
+        }
+    }
+
+    private void agregarMonto(Map<String, Object> mapa, ResultSet rs) throws SQLException {
+        double monto = rs.getDouble("total");
+        if (!rs.wasNull()) {
+            mapa.put("monto", monto);
         }
     }
 }
