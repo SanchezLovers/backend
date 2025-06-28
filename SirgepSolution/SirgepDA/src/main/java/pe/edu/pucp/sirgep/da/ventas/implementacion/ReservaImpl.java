@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
-import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
@@ -65,7 +64,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
     @Override
     protected String getDeleteLogicoQuery() {
-        return "UPDATE Reserva SET activo = 'I' WHERE num_reserva = ?";
+        return "UPDATE Reserva SET activo = 'E' WHERE num_reserva = ?";
     }
 
     @Override
@@ -401,6 +400,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
             JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
+            WHERE r.activo != 'E'
         """;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
             ResultSet rs = pst.executeQuery();
@@ -442,7 +442,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
             JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
-            WHERE r.fecha_reserva = ?
+            WHERE r.fecha_reserva = ? AND r.activo != 'E'
         """;
         }
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -489,7 +489,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
             JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
-            WHERE d.id_distrito = ?
+            WHERE d.id_distrito = ? AND r.activo != 'E'
         """;
         }
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
