@@ -84,40 +84,43 @@ public class DetalleConstanciaDTO {
     
     //Metodos
     public void llenarDetalleConstancia(Map<String, Object> detalle) {
-        try{
-            int id = (int) detalle.get("idConstancia");
-            if (detalle.get("idConstancia") != null) {
-                this.setIdConstancia((int) detalle.get("idConstancia"));
-            }
-            if (detalle.get("nombresComprador") != null) {
-                this.setNombresComprador((String) detalle.get("nombresComprador"));
-            }
-            if (detalle.get("apellidosComprador") != null) {
-                this.setApellidosComprador((String) detalle.get("apellidosComprador"));
-            }
-            if (detalle.get("correo") != null) {
-                this.setCorreo((String) detalle.get("correo"));
-            }
-            if (detalle.get("tipoDocumento") != null) {
-                this.setTipoDocumento((String) detalle.get("tipoDocumento"));
-            }
-            if (detalle.get("numDocumento") != null) {
-                this.setNumDocumento((String) detalle.get("numDocumento"));
-            }
-            if (detalle.get("fechaConstancia") != null) {
-                this.setFecha((Date) detalle.get("fechaConstancia"));
-            }
-            if (detalle.get("metodoPago") != null) {
-                this.setMetodoPago((String) detalle.get("metodoPago"));
-            }
-            if (detalle.get("monto") != null) {
-                this.setMonto((double) detalle.get("monto"));
-            }
-            if (detalle.get("detallePago") != null) {
-                this.setDetallePago((String) detalle.get("detallePago"));
-            }
+        try {
+            setIntSiExiste(detalle, "idConstancia", this::setIdConstancia);
+            setStringSiExiste(detalle, "nombresComprador", this::setNombresComprador);
+            setStringSiExiste(detalle, "apellidosComprador", this::setApellidosComprador);
+            setStringSiExiste(detalle, "correo", this::setCorreo);
+            setStringSiExiste(detalle, "tipoDocumento", this::setTipoDocumento);
+            setStringSiExiste(detalle, "numDocumento", this::setNumDocumento);
+            setDateUtilSiExiste(detalle, "fechaConstancia", this::setFecha);
+            setStringSiExiste(detalle, "metodoPago", this::setMetodoPago);
+            setDoubleSiExiste(detalle, "monto", this::setMonto);
+            setStringSiExiste(detalle, "detallePago", this::setDetallePago);
         } catch (Exception ex) {
-            throw new RuntimeException("Error al llenar el detalle de la constancia: " + ex.getMessage());
+            throw new RuntimeException("Error al llenar el detalle de la constancia: " + ex.getMessage(), ex);
+        }
+    }
+
+    private void setIntSiExiste(Map<String, Object> map, String key, java.util.function.IntConsumer setter) {
+        if (map.get(key) != null) {
+            setter.accept((int) map.get(key));
+        }
+    }
+
+    private void setStringSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<String> setter) {
+        if (map.get(key) != null) {
+            setter.accept((String) map.get(key));
+        }
+    }
+
+    private void setDateUtilSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<java.util.Date> setter) {
+        if (map.get(key) != null) {
+            setter.accept((java.util.Date) map.get(key));
+        }
+    }
+
+    private void setDoubleSiExiste(Map<String, Object> map, String key, java.util.function.DoubleConsumer setter) {
+        if (map.get(key) != null) {
+            setter.accept((double) map.get(key));
         }
     }
 }

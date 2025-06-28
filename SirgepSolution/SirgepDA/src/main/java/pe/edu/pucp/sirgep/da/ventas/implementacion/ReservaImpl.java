@@ -612,32 +612,57 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     public List<Reserva> listarPorMesYAnio(int mes, int anio) {
         List<Reserva> listaReserva = new ArrayList<>();
         String sql = "{CALL BUSCA_RESERVAS_POR_MES_Y_ANIO(?, ?)}";
-
         try (Connection conn = DBManager.getInstance().getConnection();
              CallableStatement pst = conn.prepareCall(sql)) {
-
             pst.setInt(1, mes);   // Ej: "06"
             pst.setInt(2, anio);  // Ej: "2025"
-
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 Reserva r = createFromResultSet(rs); // Este método debería mapear correctamente el ResultSet
                 listaReserva.add(r);
             }
-
             System.out.println("Se listaron las reservas por mes y año correctamente.");
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las reservas por mes y año", e);
         }
-
         return listaReserva;
     }
 
     @Override
-    public List<Map<String, Object>> listarDetalleReservasFiltradaPorComprador(int idComprador, String fechaInicio,
+    public List<Map<String, Object>> listarDetalleReservasFiltradaPorComprador(int idComprador, String fechaInicio, 
             String fechaFin, List<String> estados) {
-        List<Map<String, Object>> listaDetalleReservas = null;
-        StringBuilder sql = new StringBuilder("""
+        List<Map<String, Object>> listaDetalleReservas = new ArrayList<>();
+        List<Object> parametros = new ArrayList<>();
+        StringBuilder sql = construirSQLReservaFiltrada(idComprador, fechaInicio, fechaFin, estados, parametros);
+        try (
+                Connection conn = DBManager.getInstance().getConnection(); 
+                PreparedStatement pst = conn.prepareStatement(sql.toString())) {
+            asignarParametros(pst, parametros);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> detalleReserva = new HashMap<>();
+                    this.llenarMapaDetalleReserva(detalleReserva, rs);
+                    listaDetalleReservas.add(detalleReserva);
+                }
+            }
+            System.out.println("Reservas filtradas correctamente.");
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las reservas filtradas", e);
+        }
+        return listaDetalleReservas.isEmpty() ? null : listaDetalleReservas;
+    }
+
+    private StringBuilder construirSQLReservaFiltrada(int idComprador, String fechaInicio, String fechaFin, 
+            List<String> estados, List<Object> params) {
+        StringBuilder sql = construirQueryBaseDetalleReservas();
+        params.add(idComprador);
+        agregarFiltrosFechas(sql, fechaInicio, fechaFin, params);
+        agregarFiltrosEstado(sql, estados, params);
+        return sql;
+    }
+
+    private StringBuilder construirQueryBaseDetalleReservas() {
+        return new StringBuilder("""
         SELECT c.id_constancia, r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio,
                e.ubicacion, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio,
                r.horario_fin AS hora_fin, e.superficie, r.activo
@@ -647,9 +672,9 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
         WHERE r.Persona_id_persona = ?
     """);
-        List<Object> params = new ArrayList<>();
-        params.add(idComprador);
-        // Manejo de fechas
+    }
+    
+    private void agregarFiltrosFechas(StringBuilder sql, String fechaInicio, String fechaFin, List<Object> params) {
         if (fechaInicio != null && !fechaInicio.isBlank() && fechaFin != null && !fechaFin.isBlank()) {
             sql.append(" AND r.fecha_reserva BETWEEN ? AND ?");
             params.add(java.sql.Date.valueOf(fechaInicio));
@@ -661,46 +686,26 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             sql.append(" AND r.fecha_reserva <= ?");
             params.add(java.sql.Date.valueOf(fechaFin));
         }
-        // Manejo de estados con IN
-        if (estados != null && !estados.isEmpty()) {
-            sql.append(" AND r.activo IN (");
-            for (int i = 0; i < estados.size(); i++) {
-                if (i > 0) {
-                    sql.append(", ");
-                }
-                sql.append("?");
-                switch (estados.get(i)) {
-                    case "Vigentes" ->
-                        params.add("A");
-                    case "Finalizadas" ->
-                        params.add("I");
-                    case "Canceladas" ->
-                        params.add("C");
-                    default ->
-                        throw new IllegalArgumentException("Estado inválido: " + estados.get(i));
-                }
-            }
-            sql.append(")");
+    }
+
+    private void agregarFiltrosEstado(StringBuilder sql, List<String> estados, List<Object> params) {
+        if (estados == null || estados.isEmpty()) return;
+        sql.append(" AND r.activo IN (");
+        for (int i = 0; i < estados.size(); i++) {
+            if (i > 0) sql.append(", ");
+            sql.append("?");
+            String estadoActual = estados.get(i);
+            if (estadoActual.equals("Vigentes")) params.add("A");
+            else if (estadoActual.equals("Finalizadas")) params.add("I");
+            else if (estadoActual.equals("Canceladas")) params.add("C");
+            else throw new IllegalArgumentException("Estado inválido: " + estadoActual);
         }
-        try (
-                Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql.toString())) {
-            for (int i = 0; i < params.size(); i++) {
-                pst.setObject(i + 1, params.get(i));
-            }
-            try (ResultSet rs = pst.executeQuery()) {
-                while (rs.next()) {
-                    if(listaDetalleReservas==null){
-                        listaDetalleReservas = new ArrayList<>();
-                    }
-                    Map<String, Object> detalleReserva = new HashMap<>();
-                    this.llenarMapaDetalleReserva(detalleReserva, rs);
-                    listaDetalleReservas.add(detalleReserva);
-                }
-            }
-            System.out.println("Reservas filtradas correctamente.");
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar las reservas filtradas", e);
+        sql.append(")");
+    }
+
+    private void asignarParametros(PreparedStatement pst, List<Object> params) throws SQLException {
+        for (int i = 0; i < params.size(); i++) {
+            pst.setObject(i + 1, params.get(i));
         }
-        return listaDetalleReservas;
     }
 }
