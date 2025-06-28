@@ -9,7 +9,6 @@ import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 import pe.edu.pucp.sirgep.da.base.dao.BaseDAO;
 
 public interface EntradaDAO extends BaseDAO<Entrada>{
-    List<Map<String, Object>>listarDetalleEntradasPorComprador(int IdComprador);
     
     void llenarMapaDetalleEntrada(Map<String, Object>detalleEntrada,ResultSet rs);
     Map<String, Object> buscarConstanciaEntrada(int numEntrada);
@@ -17,6 +16,5 @@ public interface EntradaDAO extends BaseDAO<Entrada>{
     List<Map<String, Object>> listarDetalleEntradas();
     List<Map<String, Object>> buscarPorTexto(String texto);
     
-    List<Map<String, Object>> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
-            String fechaFin, List<String> estados);
+    List<Map<String, Object>> listarPorComprador(int idComprador,String fechaInicio, String fechaFin, String estado);
 }

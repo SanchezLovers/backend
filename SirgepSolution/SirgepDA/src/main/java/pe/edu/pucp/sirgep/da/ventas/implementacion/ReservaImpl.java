@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import pe.edu.pucp.sirgep.da.ventas.dao.ConstanciaDAO;
-import pe.edu.pucp.sirgep.da.ventas.implementacion.ConstanciaImpl;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
@@ -65,7 +64,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
     @Override
     protected String getDeleteLogicoQuery() {
-        return "UPDATE Reserva SET activo = 'I' WHERE num_reserva = ?";
+        return "UPDATE Reserva SET activo = 'E' WHERE num_reserva = ?";
     }
 
     @Override
@@ -293,7 +292,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         try(Connection con = DBManager.getInstance().getConnection()) // para que se cierre automáticamente al finalizar try
         {
             String query = "UPDATE Reserva " +
-                    "SET  estado = C WHERE num_reserva = "+id;
+                    "SET  activo = 'C' WHERE num_reserva = "+id;
             con.setAutoCommit(false); // no quiero que se guarde por si hay algo erróneo
             try(PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
                 ps.executeUpdate();
@@ -361,32 +360,6 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     }
 
     @Override
-    public List<Map<String, Object>> listarDetalleReservasPorComprador(int IdComprador) {
-        List<Map<String, Object>> listaDetalleReservas = null;
-        String sql = """
-                     SELECT c.id_constancia, r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS 
-                     categoria_espacio, e.ubicacion, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS 
-                     hora_inicio, r.horario_fin AS hora_fin, e.superficie, r.activo 
-                     FROM Reserva r JOIN Constancia c ON c.id_constancia=r.id_constancia_reserva JOIN Espacio e ON 
-                     r.Espacio_id_espacio = e.id_espacio JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito 
-                     WHERE r.Persona_id_persona = 
-                 """ + IdComprador;
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
-            listaDetalleReservas = new ArrayList<>();
-            while (rs.next()) {
-                Map<String, Object> detalleReserva = new HashMap<>();
-                this.llenarMapaDetalleReserva(detalleReserva,rs);
-                listaDetalleReservas.add(detalleReserva);
-            }
-            System.out.println("Se listo las entradas correctamente");
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar las entradas: ", e);
-        } finally {
-            return listaDetalleReservas;
-        }
-    }
-
-    @Override
     public List<Map<String, Object>> listarTodos() {
         List<Map<String, Object>> listaReservas = null;
         String sql;
@@ -401,6 +374,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
             JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
+            WHERE r.activo != 'E'
         """;
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
             ResultSet rs = pst.executeQuery();
@@ -442,7 +416,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
             JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
-            WHERE r.fecha_reserva = ?
+            WHERE r.fecha_reserva = ? AND r.activo != 'E'
         """;
         }
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -489,7 +463,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
             JOIN Persona p ON p.id_persona = r.Persona_id_persona
             JOIN Constancia c ON r.id_constancia_reserva = c.id_constancia
-            WHERE d.id_distrito = ?
+            WHERE d.id_distrito = ? AND r.activo != 'E'
         """;
         }
         try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -612,81 +586,30 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     public List<Reserva> listarPorMesYAnio(int mes, int anio) {
         List<Reserva> listaReserva = new ArrayList<>();
         String sql = "{CALL BUSCA_RESERVAS_POR_MES_Y_ANIO(?, ?)}";
-
         try (Connection conn = DBManager.getInstance().getConnection();
              CallableStatement pst = conn.prepareCall(sql)) {
-
             pst.setInt(1, mes);   // Ej: "06"
             pst.setInt(2, anio);  // Ej: "2025"
-
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 Reserva r = createFromResultSet(rs); // Este método debería mapear correctamente el ResultSet
                 listaReserva.add(r);
             }
-
             System.out.println("Se listaron las reservas por mes y año correctamente.");
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las reservas por mes y año", e);
         }
-
         return listaReserva;
     }
 
     @Override
-    public List<Map<String, Object>> listarDetalleReservasFiltradaPorComprador(int idComprador, String fechaInicio,
-            String fechaFin, List<String> estados) {
+    public List<Map<String, Object>> listarPorComprador(int idComprador, String fechaInicio, String fechaFin, String estado) {
         List<Map<String, Object>> listaDetalleReservas = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("""
-        SELECT c.id_constancia, r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio,
-               e.ubicacion, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio,
-               r.horario_fin AS hora_fin, e.superficie, r.activo
-        FROM Reserva r
-        JOIN Constancia c ON c.id_constancia = r.id_constancia_reserva
-        JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
-        JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
-        WHERE r.Persona_id_persona = ?
-    """);
-        List<Object> params = new ArrayList<>();
-        params.add(idComprador);
-        // Manejo de fechas
-        if (fechaInicio != null && !fechaInicio.isBlank() && fechaFin != null && !fechaFin.isBlank()) {
-            sql.append(" AND r.fecha_reserva BETWEEN ? AND ?");
-            params.add(java.sql.Date.valueOf(fechaInicio));
-            params.add(java.sql.Date.valueOf(fechaFin));
-        } else if (fechaInicio != null && !fechaInicio.isBlank()) {
-            sql.append(" AND r.fecha_reserva >= ?");
-            params.add(java.sql.Date.valueOf(fechaInicio));
-        } else if (fechaFin != null && !fechaFin.isBlank()) {
-            sql.append(" AND r.fecha_reserva <= ?");
-            params.add(java.sql.Date.valueOf(fechaFin));
-        }
-        // Manejo de estados con IN
-        if (estados != null && !estados.isEmpty()) {
-            sql.append(" AND r.activo IN (");
-            for (int i = 0; i < estados.size(); i++) {
-                if (i > 0) {
-                    sql.append(", ");
-                }
-                sql.append("?");
-                switch (estados.get(i)) {
-                    case "Vigentes" ->
-                        params.add("A");
-                    case "Finalizadas" ->
-                        params.add("I");
-                    case "Canceladas" ->
-                        params.add("C");
-                    default ->
-                        throw new IllegalArgumentException("Estado inválido: " + estados.get(i));
-                }
-            }
-            sql.append(")");
-        }
+        List<Object> parametros = new ArrayList<>();
+        StringBuilder sql = construirSQLReservaFiltrada(idComprador, fechaInicio, fechaFin, estado, parametros);
         try (
                 Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql.toString())) {
-            for (int i = 0; i < params.size(); i++) {
-                pst.setObject(i + 1, params.get(i));
-            }
+            asignarParametros(pst, parametros);
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     Map<String, Object> detalleReserva = new HashMap<>();
@@ -698,6 +621,66 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar las reservas filtradas", e);
         }
-        return listaDetalleReservas;
+        return listaDetalleReservas.isEmpty() ? null : listaDetalleReservas;
+    }
+
+    private StringBuilder construirSQLReservaFiltrada(int idComprador, String fechaInicio, String fechaFin, String estado,
+            List<Object> params) {
+        StringBuilder sql = construirQueryBaseDetalleReservas();
+        params.add(idComprador);
+        agregarFiltrosFechas(sql, fechaInicio, fechaFin, params);
+        agregarFiltrosEstado(sql, estado, params);
+        return sql;
+    }
+
+    private StringBuilder construirQueryBaseDetalleReservas() {
+        return new StringBuilder("""
+        SELECT c.id_constancia, r.num_reserva, e.nombre AS nombre_espacio, e.tipo_espacio AS categoria_espacio,
+               e.ubicacion, d.nombre AS nombre_distrito, r.fecha_reserva, r.horario_ini AS hora_inicio,
+               r.horario_fin AS hora_fin, e.superficie, r.activo
+        FROM Reserva r
+        JOIN Constancia c ON c.id_constancia = r.id_constancia_reserva
+        JOIN Espacio e ON r.Espacio_id_espacio = e.id_espacio
+        JOIN Distrito d ON e.Distrito_id_distrito = d.id_distrito
+        WHERE r.Persona_id_persona = ?
+    """);
+    }
+
+    private void agregarFiltrosFechas(StringBuilder sql, String fechaInicio, String fechaFin, List<Object> params) {
+        if (fechaInicio != null && !fechaInicio.isBlank() && fechaFin != null && !fechaFin.isBlank()) {
+            sql.append(" AND r.fecha_reserva BETWEEN ? AND ?");
+            params.add(java.sql.Date.valueOf(fechaInicio));
+            params.add(java.sql.Date.valueOf(fechaFin));
+        } else if (fechaInicio != null && !fechaInicio.isBlank()) {
+            sql.append(" AND r.fecha_reserva >= ?");
+            params.add(java.sql.Date.valueOf(fechaInicio));
+        } else if (fechaFin != null && !fechaFin.isBlank()) {
+            sql.append(" AND r.fecha_reserva <= ?");
+            params.add(java.sql.Date.valueOf(fechaFin));
+        }
+    }
+
+    private void agregarFiltrosEstado(StringBuilder sql, String estado, List<Object> params) {
+        if (estado == null || estado.isEmpty()) {
+            return;
+        }
+        sql.append(" AND r.activo IN (");
+        sql.append("?");
+        if (estado.equals("Vigentes")) {
+            params.add("A");
+        } else if (estado.equals("Finalizadas")) {
+            params.add("I");
+        } else if (estado.equals("Canceladas")) {
+            params.add("C");
+        } else {
+            throw new IllegalArgumentException("Estado inválido: " + estado);
+        }
+        sql.append(")");
+    }
+
+    private void asignarParametros(PreparedStatement pst, List<Object> params) throws SQLException {
+        for (int i = 0; i < params.size(); i++) {
+            pst.setObject(i + 1, params.get(i));
+        }
     }
 }

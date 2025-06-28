@@ -24,6 +24,15 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;//Para crear libro de Excel
 import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import javax.imageio.ImageIO;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.ClientAnchor.AnchorType;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.*;
 
 import pe.edu.pucp.sirgep.business.ventas.service.IEntradaService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EventoDAO;
@@ -42,23 +51,24 @@ import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
 
-public class EntradaServiceImpl implements IEntradaService{
+public class EntradaServiceImpl implements IEntradaService {
+
     //Atributos
     private final EntradaDAO entradaDAO;
     private final CompradorDAO compradorDAO;
     private final FuncionDAO funcionDAO;
     private final EventoDAO eventoDAO;
     private final DistritoDAO distritoDAO;
-    
+
     //Constructor
-    public EntradaServiceImpl(){
+    public EntradaServiceImpl() {
         entradaDAO = new EntradaImpl();
         compradorDAO = new CompradorImpl();
-        funcionDAO = new FuncionImpl() ;
+        funcionDAO = new FuncionImpl();
         eventoDAO = new EventoImpl();
         distritoDAO = new DistritoImpl();
     }
-    
+
     //Metodos del CRUD
     @Override
     public int insertar(Entrada entrada) {
@@ -76,17 +86,18 @@ public class EntradaServiceImpl implements IEntradaService{
     }
 
     public int cantidadDispo(int id, int cantEntradas) {
-        int cant=0;
+        int cant = 0;
         List<Entrada> entradas = entradaDAO.listar();
-        if (entradas.size()>0){
-            for(int i = 0; i < entradas.size(); i++) {
+        if (entradas.size() > 0) {
+            for (int i = 0; i < entradas.size(); i++) {
                 Entrada eAux = entradas.get(i);
-                if (eAux.getFuncion().getIdFuncion() == id)
+                if (eAux.getFuncion().getIdFuncion() == id) {
                     cant++;
+                }
             }
         }
 //        List<>
-        return cantEntradas-cant;
+        return cantEntradas - cant;
     }
 
     @Override
@@ -103,90 +114,151 @@ public class EntradaServiceImpl implements IEntradaService{
     public boolean eliminarFisico(int id) {
         return entradaDAO.eliminarFisico(id);
     }
-    
+
     //Metodos adicionales
     @Override
-    public Comprador buscarCompradorDeEntrada(int idComprador){
+    public Comprador buscarCompradorDeEntrada(int idComprador) {
         try {
             return compradorDAO.buscar(idComprador);
-        }  catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Error al buscar el comprador de la entrada: " + ex.getMessage());
         }
     }
-    
+
     @Override
-    public Funcion buscarFuncionDeEntrada(int idFuncion){
-        boolean resultado=false;
+    public Funcion buscarFuncionDeEntrada(int idFuncion) {
+        boolean resultado = false;
         try {
             return funcionDAO.buscar(idFuncion);
-        }  catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Error al buscar la funcion de la entrada: " + ex.getMessage());
         }
     }
-    
+
     @Override
-    public Evento buscarEventoDeEntrada(int idEntrada){
-        boolean resultado=false;
+    public Evento buscarEventoDeEntrada(int idEntrada) {
+        boolean resultado = false;
         try {
             return eventoDAO.buscar(idEntrada);
-        }  catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Error al buscar la funcion de la entrada: " + ex.getMessage());
         }
     }
-    
+
     @Override
-    public Distrito buscarDistritoDeEntrada(int idEntrada){
-        Distrito resultado=null;
+    public Distrito buscarDistritoDeEntrada(int idEntrada) {
+        Distrito resultado = null;
         try {
-            resultado=distritoDAO.buscar(idEntrada);
-            if(resultado==null){
+            resultado = distritoDAO.buscar(idEntrada);
+            if (resultado == null) {
                 throw new RuntimeException("Error al buscar el distrito de la entrada: ");
             }
             return resultado;
-        }  catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Error al buscar el distrito de la entrada: " + ex.getMessage());
         }
     }
 
     //Metodos para crear libro de Excel para las entradas
     @Override
-    public void crearLibroExcelEntradas(int idComprador) {
-        XSSFWorkbook libro=new XSSFWorkbook();//Archivo.xlsx
-        String nombreArchivo=crearHojalEntradas(libro,idComprador);
-        exportarLibroEntradas(libro,nombreArchivo);
+    public boolean crearLibroExcelEntradas(int idComprador, String fechaInicio, String fechaFin, String estado) {
+        boolean resultado = false;
+        try {
+            XSSFWorkbook libro = new XSSFWorkbook();//Archivo.xlsx
+            String nombreArchivo = crearHojalEntradas(libro, idComprador, fechaInicio, fechaFin, estado);
+            if (nombreArchivo != null) {
+                resultado = exportarLibroEntradas(libro, nombreArchivo);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar el excel de la lista de entradas: " + e.getMessage());
+        }
+        return resultado;
     }
-    
-    @Override
-    public String crearHojalEntradas(XSSFWorkbook libro,int idComprador) {
-        XSSFSheet hoja=libro.createSheet("Entradas");//Nombre
-        try{
-            String nombreArchivo=crearEncabezadoHojaEntradas(hoja,idComprador);
-            llenarTablaEntradas(hoja,idComprador);
+
+    private String crearHojalEntradas(XSSFWorkbook libro, int idComprador, String fechaInicio, String fechaFin, String estado) {
+        XSSFSheet hoja = libro.createSheet("Entradas");//Nombre
+        try {
+            String nombreArchivo = crearEncabezadoHojaEntradas(hoja, idComprador, fechaInicio, fechaFin, estado);
+            boolean resultado = llenarTablaEntradas(hoja, idComprador, fechaInicio, fechaFin, estado);
+            if (!resultado) {
+                nombreArchivo = null;
+            }
             return nombreArchivo;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             throw new RuntimeException("Error al llenar la hoja excel de las entradas: " + ex.getMessage());
         }
     }
+    
+    private void escribirFiltrosEnEncabezado(XSSFSheet hoja, String fechaInicio, String fechaFin, String estado) {
+        String textoFiltro = construirTextoFiltro(fechaInicio, fechaFin, estado);
+        XSSFRow fila = hoja.createRow(2);
+        XSSFCell celda = fila.createCell(0);
+        celda.setCellValue(textoFiltro);
+        hoja.addMergedRegion(new CellRangeAddress(2, 2, 0, 6));
+        XSSFCellStyle estilo = crearEstiloFiltro(hoja);
+        celda.setCellStyle(estilo);
+    }
 
-    @Override
-    public String crearEncabezadoHojaEntradas(XSSFSheet hoja,int idComprador) {
-        Comprador comprador=compradorDAO.buscar(idComprador);
-        String nombreArchivo="Lista_Entradas_"+comprador.getNombres()+".xlsx";
-        //Configuracion de estilo
-        XSSFCellStyle estiloColorFondo = hoja.getWorkbook().createCellStyle();
-        XSSFFont fontBlanca = hoja.getWorkbook().createFont();
-        fontBlanca.setColor(IndexedColors.WHITE.getIndex());
-        fontBlanca.setBold(true);
-        estiloColorFondo.setFont(fontBlanca);
-        estiloColorFondo.setFillForegroundColor(IndexedColors.RED.getIndex());
-        estiloColorFondo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        estiloColorFondo.setAlignment(HorizontalAlignment.CENTER); //Centrado
-        //Configuracion de celda
-        XSSFRow fila=hoja.createRow(0);
-        XSSFCell celda=fila.createCell(0);
-        celda.setCellValue("Lista de Entradas del Comprador "+comprador.getNombres()+" "+comprador.getSegundoApellido());
-        hoja.addMergedRegion(new CellRangeAddress(0, 0, 0, 6));//Combinar celdas
-        // Estilo centrado + negrita
+    private String construirTextoFiltro(String fechaInicio, String fechaFin, String estado) {
+        boolean tieneFechaInicio = fechaInicio != null && !fechaInicio.isBlank();
+        boolean tieneFechaFin = fechaFin != null && !fechaFin.isBlank();
+        boolean tieneEstado = estado != null && !estado.isBlank();
+        if (!tieneFechaInicio && !tieneFechaFin && !tieneEstado) return "Todas las entradas de hasta un año";
+        StringBuilder texto = new StringBuilder("Filtro aplicado a las entradas de hasta un año: ");
+        if (tieneFechaInicio && tieneFechaFin) {
+            texto.append("desde ").append(fechaInicio).append(" hasta ").append(fechaFin);
+        } else if (tieneFechaInicio) texto.append("desde ").append(fechaInicio);
+        else if (tieneFechaFin) texto.append("hasta ").append(fechaFin);
+        else texto.append("sin rango de fechas");
+        if (tieneEstado) texto.append(", estado: ").append(estado);
+        return texto.toString();
+    }
+
+    private XSSFCellStyle crearEstiloFiltro(XSSFSheet hoja) {
+        XSSFCellStyle estilo = hoja.getWorkbook().createCellStyle();
+        estilo.setAlignment(HorizontalAlignment.LEFT);
+        XSSFFont fuente = hoja.getWorkbook().createFont();
+        fuente.setItalic(true);
+        estilo.setFont(fuente);
+        return estilo;
+    }
+
+    private void escribirCabeceraTablaEntradas(XSSFSheet hoja, int filaIndex, XSSFCellStyle estiloColorFondo) {
+        XSSFRow fila = hoja.createRow(filaIndex);
+        String[] encabezados = {
+            "Nro Entrada", "Evento", "Ubicacion", "Distrito",
+            "Fecha", "Hora Inicio", "Hora Fin"
+        };
+        for (int i = 0; i < encabezados.length; i++) {
+            XSSFCell celda = fila.createCell(i);
+            celda.setCellValue(encabezados[i]);
+            celda.setCellStyle(estiloColorFondo);
+        }
+    }
+
+    private String crearEncabezadoHojaEntradas(XSSFSheet hoja, int idComprador, String fechaInicio, String fechaFin, String estado) {
+        Comprador comprador = compradorDAO.buscar(idComprador);
+        if (comprador == null) {
+            return null;
+        }
+        String nombreArchivo = generarNombreArchivo(comprador);
+        XSSFCellStyle estiloCabeceraTabla = crearEstiloCabeceraTabla(hoja);
+        escribirTituloPrincipal(hoja, comprador);
+        escribirFiltrosEnEncabezado(hoja, fechaInicio, fechaFin, estado);
+        escribirCabeceraTablaEntradas(hoja, 4, estiloCabeceraTabla);
+        return nombreArchivo;
+    }
+
+    private String generarNombreArchivo(Comprador comprador) {
+        return "Lista_Entradas_" + comprador.getNombres() + ".xlsx";
+    }
+
+    private void escribirTituloPrincipal(XSSFSheet hoja, Comprador comprador) {
+        XSSFRow fila = hoja.createRow(0);
+        XSSFCell celda = fila.createCell(0);
+        String texto = "Lista de Entradas del Comprador " + comprador.getNombres() + " " + comprador.getSegundoApellido();
+        celda.setCellValue(texto);
+        hoja.addMergedRegion(new CellRangeAddress(0, 0, 0, 6));
         XSSFCellStyle estilo = hoja.getWorkbook().createCellStyle();
         XSSFFont fuente = hoja.getWorkbook().createFont();
         fuente.setBold(true);
@@ -194,37 +266,83 @@ public class EntradaServiceImpl implements IEntradaService{
         estilo.setAlignment(HorizontalAlignment.CENTER);
         estilo.setVerticalAlignment(VerticalAlignment.CENTER);
         celda.setCellStyle(estilo);
-        //Tabla
-        fila=hoja.createRow(2);
-        celda=fila.createCell(0);
-        celda.setCellValue("Nro Entrada");
-        celda.setCellStyle(estiloColorFondo);
-        celda=fila.createCell(1);
-        celda.setCellValue("Evento");
-        celda.setCellStyle(estiloColorFondo);
-        celda=fila.createCell(2);
-        celda.setCellValue("Ubicacion");
-        celda.setCellStyle(estiloColorFondo);
-        celda=fila.createCell(3);
-        celda.setCellValue("Distrito");
-        celda.setCellStyle(estiloColorFondo);
-        celda=fila.createCell(4);
-        celda.setCellValue("Fecha");
-        celda.setCellStyle(estiloColorFondo);
-        celda=fila.createCell(5);
-        celda.setCellValue("Hora Inicio");
-        celda.setCellStyle(estiloColorFondo);
-        celda=fila.createCell(6);
-        celda.setCellValue("Hora Fin");
-        celda.setCellStyle(estiloColorFondo);
-        return nombreArchivo;
+    }
+
+    private XSSFCellStyle crearEstiloCabeceraTabla(XSSFSheet hoja) {
+        XSSFCellStyle estilo = hoja.getWorkbook().createCellStyle();
+
+        XSSFFont font = hoja.getWorkbook().createFont();
+        font.setColor(IndexedColors.WHITE.getIndex());
+        font.setBold(true);
+
+        estilo.setFont(font);
+        estilo.setFillForegroundColor(IndexedColors.RED.getIndex());
+        estilo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        estilo.setAlignment(HorizontalAlignment.CENTER);
+
+        return estilo;
     }
     
+    public boolean llenarTablaEntradas(XSSFSheet hoja, int idComprador, String fechaInicio, String fechaFin, String estado) {
+        List<DetalleEntradaDTO> listaDetalleEntradas = listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
+        if (listaDetalleEntradas.isEmpty()) {
+            return false;
+        }
+        int posicion = 5;
+        for (DetalleEntradaDTO detalleEntrada : listaDetalleEntradas) {
+            XSSFRow registro = hoja.createRow(posicion++);
+            llenarFilaDetalleEntrada(registro, detalleEntrada);
+        }
+        for (int i = 0; i < 7; i++) {
+            hoja.autoSizeColumn(i);
+        }
+        return true;
+    }
+
+    private void llenarFilaDetalleEntrada(XSSFRow registro, DetalleEntradaDTO detalleEntrada) {
+        XSSFCell celda = registro.createCell(0);
+        celda.setCellValue(detalleEntrada.getNumEntrada());
+        celda = registro.createCell(1);
+        celda.setCellValue(detalleEntrada.getNombreEvento());
+        celda = registro.createCell(2);
+        celda.setCellValue(detalleEntrada.getUbicacion());
+        celda = registro.createCell(3);
+        celda.setCellValue(detalleEntrada.getNombreDistrito());
+        celda = registro.createCell(4);
+        celda.setCellValue(new SimpleDateFormat("dd-MM-yyyy").format(detalleEntrada.getFechaFuncion()));
+        celda = registro.createCell(5);
+        celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleEntrada.getHoraInicio()));
+        celda = registro.createCell(6);
+        celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleEntrada.getHoraFin()));
+    }
+
+    private boolean exportarLibroEntradas(XSSFWorkbook libro, String nombreArchivo) {
+        try {
+            String userHome = System.getProperty("user.home");
+            File downloads = new File(userHome, "Downloads");
+            File descargas = new File(userHome, "Descargas");
+            File carpetaDestino = downloads.exists() ? downloads : (descargas.exists() ? descargas : new File(userHome));
+            File archivoDestino = new File(carpetaDestino, nombreArchivo);
+            if (archivoDestino.exists()) {// Si el archivo ya existe, intenta con otro nombre
+                String baseName = nombreArchivo.replace(".xlsx", "");
+                String nuevoNombre = baseName + "_" + System.currentTimeMillis() + ".xlsx";
+                archivoDestino = new File(carpetaDestino, nuevoNombre);
+            }
+            try (OutputStream output = new FileOutputStream(archivoDestino)) {// Escribe y cierra el archivo
+                libro.write(output);
+            }
+            libro.close();
+            return true;
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al exportar el libro excel de las entradas: " + ex.getMessage(), ex);
+        }
+    }
+
     @Override
-    public List<DetalleEntradaDTO> listarDetalleEntradasPorComprador(int idComprador) {
+    public List<DetalleEntradaDTO> listarPorComprador(int idComprador, String fechaInicio, String fechaFin, String estado) {
         List<DetalleEntradaDTO> listaDetalleEntradas = null;
         try {
-            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasPorComprador(idComprador);
+            List<Map<String, Object>> lista = entradaDAO.listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
             if (lista != null) {
                 listaDetalleEntradas = new ArrayList<>();
                 for (Map<String, Object> detalle : lista) {
@@ -233,77 +351,22 @@ public class EntradaServiceImpl implements IEntradaService{
                     listaDetalleEntradas.add(detalleEntradaDTO);
                 }
             }
-            return listaDetalleEntradas;
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
         }
+        return listaDetalleEntradas;
     }
 
     @Override
-    public void llenarTablaEntradas(XSSFSheet hoja,int idComprador) {
-        List<DetalleEntradaDTO> listaDetalleEntradas=listarDetalleEntradasPorComprador(idComprador);
-        int posicion=3;
-        for (DetalleEntradaDTO detalleEntrada: listaDetalleEntradas) {
-            XSSFRow registro=hoja.createRow(posicion++);
-            llenarFilaDetalleEntrada(registro,detalleEntrada);
-        }
-        for (int i = 0; i < 7; i++) {
-            hoja.autoSizeColumn(i);
-        }
-    }
-
-    @Override
-    public void llenarFilaDetalleEntrada(XSSFRow registro, DetalleEntradaDTO detalleEntrada) {
-        XSSFCell celda=registro.createCell(0);
-        celda.setCellValue(detalleEntrada.getNumEntrada());
-        celda=registro.createCell(1);
-        celda.setCellValue(detalleEntrada.getNombreEvento());
-        celda=registro.createCell(2);
-        celda.setCellValue(detalleEntrada.getUbicacion());
-        celda=registro.createCell(3);
-        celda.setCellValue(detalleEntrada.getNombreDistrito());
-        celda=registro.createCell(4);
-        celda.setCellValue(new SimpleDateFormat("dd-MM-yyyy").format(detalleEntrada.getFechaFuncion()));
-        celda=registro.createCell(5);
-        celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleEntrada.getHoraInicio()));
-        celda=registro.createCell(6);
-        celda.setCellValue(new SimpleDateFormat("HH:mm:ss").format(detalleEntrada.getHoraFin()));
-    }
-
-    @Override
-    public void exportarLibroEntradas(XSSFWorkbook libro,String nombreArchivo) {
-        try{
-            String userHome = System.getProperty("user.home");
-            File downloads = new File(userHome, "Downloads");
-            File descargas = new File(userHome, "Descargas");
-            File carpetaDestino;
-            if (downloads.exists()) {
-                carpetaDestino = downloads;
-            } else if (descargas.exists()) {
-                carpetaDestino = descargas;
-            } else {
-                carpetaDestino = new File(userHome); // fallback: usa la carpeta del usuario
-            }
-            nombreArchivo = new File(carpetaDestino, nombreArchivo).getAbsolutePath();
-            OutputStream output=new FileOutputStream(nombreArchivo);//Ruta y nombre
-            libro.write(output);//Exporto los bytes
-            libro.close();//Libero bytes
-            output.close();//Libero bytes
-        }catch(Exception ex){
-            throw new RuntimeException("Error al exportar el libro excel de las entradas: " + ex.getMessage());
-        }
-    }
-    
-    @Override
-    public ConstanciaEntradaDTO buscarConstanciaEntrada(int idConstancia){
-        ConstanciaEntradaDTO constanciaEntradaDTO=null;
+    public ConstanciaEntradaDTO buscarConstanciaEntrada(int idConstancia) {
+        ConstanciaEntradaDTO constanciaEntradaDTO = null;
         try {
-            Map<String, Object> detalle=entradaDAO.buscarConstanciaEntrada(idConstancia);
-            if(detalle!=null){
-                constanciaEntradaDTO=new ConstanciaEntradaDTO();
+            Map<String, Object> detalle = entradaDAO.buscarConstanciaEntrada(idConstancia);
+            if (detalle != null) {
+                constanciaEntradaDTO = new ConstanciaEntradaDTO();
                 constanciaEntradaDTO.llenarConstanciaEntrada(detalle);
                 return constanciaEntradaDTO;
-            }else{
+            } else {
                 throw new RuntimeException("Constancia de la entrada no encontrada");
             }
         } catch (Exception ex) {
@@ -349,26 +412,6 @@ public class EntradaServiceImpl implements IEntradaService{
             throw new RuntimeException("Error al buscar las entradas: " + ex.getMessage());
         } finally {
             return listaDetalleEntradas;
-        }
-    }
-    
-    @Override
-    public List<DetalleEntradaDTO> listarDetalleEntradasFiltradaPorComprador(int idComprador,String fechaInicio, 
-            String fechaFin, List<String> estados){
-        List<DetalleEntradaDTO> listaDetalleEntradas = null;
-        try {
-            List<Map<String, Object>> lista = entradaDAO.listarDetalleEntradasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
-            if (lista != null) {
-                listaDetalleEntradas = new ArrayList<>();
-                for (Map<String, Object> detalle : lista) {
-                    DetalleEntradaDTO detalleEntradaDTO = new DetalleEntradaDTO();
-                    detalleEntradaDTO.llenarDetalleEntrada(detalle);
-                    listaDetalleEntradas.add(detalleEntradaDTO);
-                }
-            }
-            return listaDetalleEntradas;
-        } catch (Exception ex) {
-            throw new RuntimeException("Error al listar las entradas: " + ex.getMessage());
         }
     }
 }

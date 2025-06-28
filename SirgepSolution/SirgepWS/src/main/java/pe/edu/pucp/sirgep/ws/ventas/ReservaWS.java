@@ -5,6 +5,7 @@ import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.xml.ws.WebServiceException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
@@ -46,16 +47,16 @@ public class ReservaWS {
             throw new WebServiceException("Error al buscar reserva: " + ex.getMessage());
         }
     }
-    
+
     @WebMethod(operationName = "listarPorMesYAnio")
-    public List<Reserva> listarPorMesYAnio(int mes, int anio){
+    public List<Reserva> listarPorMesYAnio(int mes, int anio) {
         try {
             return reservaService.listarPorMesYAnio(mes, anio);
         } catch (Exception ex) {
             throw new WebServiceException("Error al listar reserva: " + ex.getMessage());
         }
     }
-    
+
     @WebMethod(operationName = "listarReservas")
     public List<Reserva> listarReserva() {
         try {
@@ -140,22 +141,30 @@ public class ReservaWS {
 
     //Metodo para crear libro de Excel para las reservas
     @WebMethod(operationName = "crearLibroExcelReservas")
-    public void crearLibroExcelReservas(@WebParam(name = "idComprador") int idComprador) {
+    public boolean crearLibroExcelReservas(@WebParam(name = "idComprador") int idComprador,
+            @WebParam(name = "fechaInicio") String fechaInicio, @WebParam(name = "fechaFin") String fechaFin,
+            @WebParam(name = "estado") String estado) {
+        boolean resultado = false;
         try {
-            reservaService.crearLibroExcelReservas(idComprador);
+            resultado = reservaService.crearLibroExcelReservas(idComprador, fechaInicio, fechaFin, estado);
         } catch (Exception ex) {
             throw new RuntimeException("Error al exportar el libro excel de las reservas: : " + ex.getMessage());
         }
+        return resultado;
     }
 
     //Metodo para listar el detalle de las reservas
-    @WebMethod(operationName = "listarDetalleReservasPorComprador")
-    public List<DetalleReservaDTO> listarDetalleReservasPorComprador(@WebParam(name = "idComprador") int idComprador) {
+    @WebMethod(operationName = "listarReservasPorComprador")
+    public List<DetalleReservaDTO> listarReservasPorComprador(@WebParam(name = "idComprador") int idComprador,
+            @WebParam(name = "fechaInicio") String fechaInicio, @WebParam(name = "fechaFin") String fechaFin,
+            @WebParam(name = "estado") String estado) {
+        List<DetalleReservaDTO> lista = new ArrayList<>();
         try {
-            return reservaService.listarDetalleReservasPorComprador(idComprador);
+            lista = reservaService.listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
         } catch (Exception ex) {
             throw new RuntimeException("Error al listar el detalle de las entradas del comprador : " + ex.getMessage());
         }
+        return lista;
     }
 
     @WebMethod(operationName = "listarTodasReservas")
@@ -189,8 +198,9 @@ public class ReservaWS {
             throw new WebServiceException("Error al listar por distritos: " + ex.getMessage());
         }
     }
+
     @WebMethod(operationName = "cancelarReserva")
-    public boolean cancelarReserva(@WebParam(name = "idReserva")int id){
+    public boolean cancelarReserva(@WebParam(name = "idReserva") int id) {
         try {
             return reservaService.cancelarReserva(id);
         } catch (Exception ex) {
@@ -200,29 +210,18 @@ public class ReservaWS {
 
     //Metodos para buscar la constancia de una reserva
     @WebMethod(operationName = "buscarConstanciaReserva")
-    public ConstanciaReservaDTO buscarConstanciaReserva(@WebParam(name = "idConstancia") int idConstancia){
-        ConstanciaReservaDTO resultado=null;
+    public ConstanciaReservaDTO buscarConstanciaReserva(@WebParam(name = "idConstancia") int idConstancia) {
+        ConstanciaReservaDTO resultado = null;
         try {
-            resultado= reservaService.buscarConstanciaReserva(idConstancia);
-            if(resultado!=null){
+            resultado = reservaService.buscarConstanciaReserva(idConstancia);
+            if (resultado != null) {
                 System.out.println("Se busco la constancia de la reserva correctamente");
                 return resultado;
-            }else{
+            } else {
                 throw new RuntimeException("Constancia de la reserva no encontrada");
             }
         } catch (Exception ex) {
             throw new WebServiceException("Error al buscar la constancia de la reserva: " + ex.getMessage());
-        }
-    }
-    
-    @WebMethod(operationName = "listarDetalleReservasFiltradaPorComprador")
-    public List<DetalleReservaDTO> listarDetalleReservasFiltradaPorComprador(@WebParam(name = "idComprador")int idComprador,
-            @WebParam(name = "fechaInicio")String fechaInicio, @WebParam(name = "fechaFin")String fechaFin, 
-            @WebParam(name = "estados")List<String> estados){
-        try {
-            return reservaService.listarDetalleReservasFiltradaPorComprador(idComprador,fechaInicio,fechaFin,estados);
-        }  catch (Exception ex) {
-            throw new RuntimeException("Error al listar el detalle de las reservas del comprador : " + ex.getMessage());
         }
     }
 }

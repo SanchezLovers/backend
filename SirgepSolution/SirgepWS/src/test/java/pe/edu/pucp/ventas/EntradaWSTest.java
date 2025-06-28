@@ -1,4 +1,4 @@
-/*package pe.edu.pucp.ventas;
+//package pe.edu.pucp.ventas;
 //
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Order;
@@ -11,6 +11,7 @@
 //import java.util.List;
 //
 //import static org.junit.jupiter.api.Assertions.*;
+//import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
 //import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 //import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 //import pe.edu.pucp.sirgep.domain.ventas.enums.EMetodoPago;
@@ -24,69 +25,19 @@
 //
 //    @BeforeEach
 //    public void setUp() {
-//        this.entrada = new Entrada();
-//        this.entrada.setNumEntrada(1);
-//        this.entrada.setIdConstancia(1);
-//        this.entrada.setTotal(66);
-//        this.entrada.setDetallePago("Pagado completo");
-//        this.entrada.setFecha(new Date(2025,6,2));
-//        Funcion funcion=new Funcion();
-//        funcion.setIdFuncion(1);
-//        this.entrada.setFuncion(funcion);
-//        this.entrada.setMetodoPago(EMetodoPago.TARJETA);
-//        Persona persona=new Persona();
-//        persona.setIdPersona(1);
-//        this.entrada.setPersona(persona);
-//        
 //        this.entradaWS = new EntradaWS();
 //    }
 //
-//    @Test
-//    @Order(1)
-//    public void testInsertar() {
-//        System.out.println("Ejecutando test insertar...");
-//        int result = this.entradaWS.insertarEntrada(this.entrada);
-//        assertTrue(result != -1);
-//    }
-//
-//    @Test
-//    @Order(2)
-//    public void testBuscar() {
-//        System.out.println("Ejecutando test buscar...");
-//        Entrada result = this.entradaWS.buscarEntrada(1);
-//        assertNotNull(result);
-//    }
-//
-//    @Test
-//    @Order(3)
-//    public void testListar() {
-//        System.out.println("Ejecutando test listar...");
-//        List<Entrada> lista = this.entradaWS.listarEntrada();
-//        assertNotNull(lista);
-//    }
-//
-//    @Test
-//    @Order(4)
-//    public void testActualizar() {
-//        System.out.println("Ejecutando test actualizar...");
-//        boolean result = this.entradaWS.actualizarEntrada(this.entrada);
-//        assertTrue(result);
-//    }
-//
-//    @Test
-//    @Order(5)
-//    public void testEliminarLogico() {
-//        System.out.println("Ejecutando test eliminarLogico...");
-//        boolean result = this.entradaWS.eliminarLogicoEntrada(1);
-//        assertTrue(result);
-//    }
-//
-//    @Test
-//    @Order(6)
-//    public void testEliminarFisico() {
-//        System.out.println("Ejecutando test eliminarFisico...");
-//        //boolean result = entradaWS.eliminarFisicoEntrada(1);
-//        //assertTrue(result);
-//    }
+//@Test
+//@Order(1)
+//public void testInsertar() {
+//    System.out.println("Ejecutando test insertar...");
+//    String fechaInicio = "2025-05-12";
+//    String fechaFin = "2025-10-03";
+//    String estado="Canceladas";
+//    List<DetalleEntradaDTO> resultado = entradaWS.listarDetalleEntradasFiltradaPorComprador(40, fechaInicio, fechaFin, estado);
+//    assertNotNull(resultado, "La lista de resultados no debe ser null");
+//    System.out.println("Tamaño de resultado: " + resultado.size());
 //}
-*/
+//
+//}

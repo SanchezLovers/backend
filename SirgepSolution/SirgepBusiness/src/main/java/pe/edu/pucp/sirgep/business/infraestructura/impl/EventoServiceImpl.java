@@ -82,8 +82,7 @@ public class EventoServiceImpl implements IEventoService {
         try{
             List<String>listaCorreosCompradores=compradorDAO.listarPorDistritoFavorito(idDistrito);
             if (listaCorreosCompradores != null) {
-                EnvioCorreo correo=new EnvioCorreo();
-                boolean resultado=correo.enviarEmail(listaCorreosCompradores,asunto,contenido);
+                boolean resultado=EnvioCorreo.getInstance().enviarEmail(listaCorreosCompradores,asunto,contenido);
                 if (resultado) {
                     return true;
                 }else{

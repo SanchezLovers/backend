@@ -86,41 +86,59 @@ public class DetalleEntradaDTO {
     
     //Metodos
     public void llenarDetalleEntrada(Map<String, Object> detalle) {
-        try{
-            int id = (int) detalle.get("idConstancia");
-            if (detalle.get("idConstancia") != null) {
-                this.setIdConstancia((int) detalle.get("idConstancia"));
-            }
-            if (detalle.get("numEntrada") != null) {
-                this.setNumEntrada((int) detalle.get("numEntrada"));
-            }
-            if (detalle.get("nombreEvento") != null) {
-                this.setNombreEvento((String) detalle.get("nombreEvento"));
-            }
-            if (detalle.get("ubicacion") != null) {
-                this.setUbicacion((String) detalle.get("ubicacion"));
-            }
-            if (detalle.get("nombreDistrito") != null) {
-                this.setNombreDistrito((String) detalle.get("nombreDistrito"));
-            }
-            if (detalle.get("fechaFuncion") != null) {
-                this.setFechaFuncion((java.sql.Date) detalle.get("fechaFuncion"));
-            }
-            if (detalle.get("horaInicio") != null) {
-                this.setHoraInicio(new Date(((java.sql.Time) detalle.get("horaInicio")).getTime()));
-            }
-            if (detalle.get("horaFin") != null) {
-                this.setHoraFin(new Date(((java.sql.Time) detalle.get("horaFin")).getTime()));
-            }
-            if (detalle.get("estado") != null) {
-                this.setEstado((char) detalle.get("estado"));
-            }
-            if (detalle.get("fechaConstancia") != null) {
-                this.setFechaConstancia((Date) detalle.get("fechaConstancia"));
-            }
-            
+        try {
+            setIntSiExiste(detalle, "idConstancia", this::setIdConstancia);
+            setIntSiExiste(detalle, "numEntrada", this::setNumEntrada);
+            setStringSiExiste(detalle, "nombreEvento", this::setNombreEvento);
+            setStringSiExiste(detalle, "ubicacion", this::setUbicacion);
+            setStringSiExiste(detalle, "nombreDistrito", this::setNombreDistrito);
+            setDateSqlSiExiste(detalle, "fechaFuncion", this::setFechaFuncion);
+            setTimeSiExiste(detalle, "horaInicio", this::setHoraInicio);
+            setTimeSiExiste(detalle, "horaFin", this::setHoraFin);
+            setCharSiExiste(detalle, "estado", this::setEstado);
+            setDateUtilSiExiste(detalle, "fechaConstancia", this::setFechaConstancia);
         } catch (Exception ex) {
-            throw new RuntimeException("Error al llenar el detalle de la entrada: " + ex.getMessage());
+            throw new RuntimeException("Error al llenar el detalle de la entrada: " + ex.getMessage(), ex);
+        }
+    }
+
+    private void setIntSiExiste(Map<String, Object> map, String key, java.util.function.IntConsumer setter) {
+        if (map.get(key) != null) {
+            setter.accept((int) map.get(key));
+        }
+    }
+
+    private void setStringSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<String> setter) {
+        if (map.get(key) != null) {
+            setter.accept((String) map.get(key));
+        }
+    }
+
+    private void setDateSqlSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<java.sql.Date> setter) {
+        if (map.get(key) != null) {
+            setter.accept((java.sql.Date) map.get(key));
+        }
+    }
+
+    private void setDateUtilSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<java.util.Date> setter) {
+        if (map.get(key) != null) {
+            setter.accept((java.util.Date) map.get(key));
+        }
+    }
+
+    private void setTimeSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<java.util.Date> setter) {
+        if (map.get(key) != null) {
+            java.sql.Time time = (java.sql.Time) map.get(key);
+            setter.accept(new java.util.Date(time.getTime()));
+        }
+    }
+
+    private void setCharSiExiste(Map<String, Object> map, String key, java.util.function.Consumer<Character> setter) {
+        if (map.get(key) != null) {
+            String val = map.get(key).toString();
+            if (!val.isEmpty()) {
+                setter.accept(val.charAt(0));
+            }
         }
     }
 }

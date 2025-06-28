@@ -129,8 +129,7 @@ public class EspacioServiceImpl implements IEspacioService {
         try {
             List<String> listaCorreosCompradores = compradorDAO.listarPorDistritoFavorito(idDistrito);
             if (listaCorreosCompradores != null && !listaCorreosCompradores.isEmpty()) {
-                EnvioCorreo correo = new EnvioCorreo();
-                boolean resultado = correo.enviarEmail(listaCorreosCompradores, asunto, contenido);
+                boolean resultado = EnvioCorreo.getInstance().enviarEmail(listaCorreosCompradores, asunto, contenido);
                 if (!resultado) {
                     throw new RuntimeException("No se enviaron los correos a los compradores con el mismo distrito del evento");
                 }
