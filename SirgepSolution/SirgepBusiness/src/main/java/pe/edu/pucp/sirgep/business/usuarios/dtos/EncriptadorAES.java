@@ -8,18 +8,18 @@ import java.util.Properties;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-public class AES {
+public class EncriptadorAES {
     private static final String SECRET_KEY = loadSecretKey();
     // Leer la clave secreta desde el archivo token.properties
     private static String loadSecretKey() {
-        try (InputStream input = AES.class.getClassLoader().getResourceAsStream("token.properties")) {
+        try (InputStream input = EncriptadorAES.class.getClassLoader().getResourceAsStream("token.properties")) {
             if (input == null) {
                 System.err.println("No se encontró el archivo token.properties");
                 return null;
             }
             Properties prop = new Properties();
             prop.load(input);
-            return prop.getProperty("encryption.key");
+            return prop.getProperty("user.encriptacion.llave");
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -33,7 +33,7 @@ public class AES {
         byte[] keyBytes = myKey.getBytes(StandardCharsets.UTF_8);
         MessageDigest sha = MessageDigest.getInstance("SHA-256");
         keyBytes = sha.digest(keyBytes);
-        byte[] keyFinal = new byte[16]; // AES-128
+        byte[] keyFinal = new byte[16]; // EncriptadorAES-128
         System.arraycopy(keyBytes, 0, keyFinal, 0, 16);
         return new SecretKeySpec(keyFinal, "AES");
     }

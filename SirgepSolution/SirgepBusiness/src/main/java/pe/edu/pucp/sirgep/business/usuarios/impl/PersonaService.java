@@ -1,6 +1,6 @@
 package pe.edu.pucp.sirgep.business.usuarios.impl;
 
-import pe.edu.pucp.sirgep.business.usuarios.dtos.AES;
+import pe.edu.pucp.sirgep.business.usuarios.dtos.EncriptadorAES;
 import pe.edu.pucp.sirgep.business.usuarios.service.IPersonaService;
 import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
@@ -13,7 +13,7 @@ public class PersonaService implements IPersonaService{
     }
     
     public int validarCuenta(String correo, String password) {
-        String encrypted = AES.encrypt(password);
+        String encrypted = EncriptadorAES.encrypt(password);
         return pdao.validarCuenta(correo, encrypted);
     }
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import pe.edu.pucp.sirgep.business.usuarios.dtos.AES;
+import pe.edu.pucp.sirgep.business.usuarios.dtos.EncriptadorAES;
 import pe.edu.pucp.sirgep.business.usuarios.dtos.CompradorDTO;
 import pe.edu.pucp.sirgep.business.usuarios.dtos.DetalleComprador;
 import pe.edu.pucp.sirgep.business.usuarios.service.ICompradorService;
@@ -24,7 +24,7 @@ public class CompradorServiceImpl implements ICompradorService{
     @Override
     public int insertar(Comprador comprador) {
         String password=comprador.getContrasenia();
-        String encrypted = AES.encrypt(password);
+        String encrypted = EncriptadorAES.encrypt(password);
         comprador.setContrasenia(encrypted);
         return compradorDAO.insertar(comprador);
     }
@@ -74,7 +74,8 @@ public class CompradorServiceImpl implements ICompradorService{
                 detalle.setProvinciaFavorita((String) fila.get("provinciaFavorita"));
                 detalle.setDepartamentoFavorito((String) fila.get("departamentoFavorito"));
                 detalle.setCorreo((String) fila.get("correo"));
-                detalle.setContrasenia((String) fila.get("contrasenia"));
+                String decrypted = EncriptadorAES.decrypt((String) fila.get("contrasenia"));
+                detalle.setContrasenia(decrypted);
             }
         } catch (Exception ex) {
             throw new RuntimeException("Error al buscar el detalle del comprador: " + ex.getMessage());
