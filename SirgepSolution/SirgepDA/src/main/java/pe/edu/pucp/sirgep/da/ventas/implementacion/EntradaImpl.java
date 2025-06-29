@@ -281,9 +281,11 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO {
                      JOIN Funcion f ON f.id_funcion=en.Funcion_id_funcion JOIN Evento ev ON 
                      ev.id_evento = f.Evento_idEvento JOIN Distrito d ON d.id_distrito = 
                      ev.Distrito_id_distrito JOIN Persona p ON p.id_persona=en.Persona_id_persona 
-                     WHERE en.id_constancia_entrada = 
-                 """ + idConstancia;
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+                     WHERE en.id_constancia_entrada = ?
+                 """;
+        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1,idConstancia);
+            ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 constanciaEntrada = new HashMap<>();
                 this.llenarMapaDetalleEntradaConFecha(constanciaEntrada, rs);

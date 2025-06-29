@@ -98,6 +98,7 @@ public class EspacioServiceImpl implements IEspacioService {
         espDTO.setSuperficie(esp.getSuperficie());
         espDTO.setHoraInicio(esp.getHorarioInicioAtencion());
         espDTO.setHoraFin(esp.getHorarioFinAtencion());
+        espDTO.setFoto(esp.getFoto());
         espDTO.setDias(diaSemDAO.listarPorEspacio(esp.getIdEspacio()));
         /*Datos Departamento*/
         espDTO.setIdDepartamento(depa.getIdDepartamento());

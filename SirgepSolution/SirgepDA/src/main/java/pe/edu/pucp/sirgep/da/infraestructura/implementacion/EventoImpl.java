@@ -57,7 +57,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     @Override
     protected String getSelectByIdQuery(){
         String query = "SELECT e.*, d.id_distrito, d.nombre as nombre_distrito, "
-                + "d.Provincia_id_provincia, d.activo FROM Evento e JOIN Distrito d "
+                + "d.Provincia_id_provincia FROM Evento e JOIN Distrito d "
                 + "ON e.Distrito_id_distrito=d.id_distrito "
                 + "WHERE e.id_evento=?";
         
@@ -67,8 +67,8 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     @Override
     public String getSelectAllQuery(){
         String query = "SELECT e.*, d.id_distrito, d.nombre as nombre_distrito, "
-                + "d.Provincia_id_provincia, d.activo FROM Evento e JOIN Distrito d "
-                + "ON e.Distrito_id_distrito=d.id_distrito WHERE e.activo='A'";
+                + "d.Provincia_id_provincia FROM Evento e JOIN Distrito d "
+                + "ON e.Distrito_id_distrito=d.id_distrito";
         
         return query;
     }
@@ -184,6 +184,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             e.setDistrito(distrito);
             e.setDescripcion(rs.getString("descripcion"));
             e.setArchivoImagen(rs.getString("imagen"));
+            e.setActivo(rs.getString("activo").charAt(0));
             return e;
         }catch(SQLException e){
             throw new RuntimeException(e);
@@ -276,6 +277,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         eventoDTO.put("nombre_provincia", rs.getString("nombre_provincia"));
         eventoDTO.put("id_departamento", rs.getInt("id_departamento"));
         eventoDTO.put("nombre_departamento", rs.getString("nombre_departamento"));
+        eventoDTO.put("activo", rs.getString("activo").charAt(0));
     }
     
     @Override
@@ -283,7 +285,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         Map<String, Object> eventoDTO = new HashMap<>();
         String sql = """
                 SELECT e.id_evento, e.nombre, e.fecha_inicio, e.fecha_fin, e.ubicacion, e.referencia,
-                e.cant_entradas_dispo, e.cant_entradas_vendidas, e.precio_entradas, e.descripcion,
+                e.cant_entradas_dispo, e.cant_entradas_vendidas, e.precio_entradas, e.descripcion, e.activo,
                 e.imagen as url_imagen, d.id_distrito, d.nombre as nombre_distrito,
                 d.Provincia_id_provincia as id_provincia, p.nombre as nombre_provincia, depa.id_departamento as id_departamento, 
                 depa.nombre as nombre_departamento
@@ -294,7 +296,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
                 ON d.Provincia_id_provincia = p.id_provincia
                 JOIN Departamento depa
                 ON depa.id_departamento = p.Departamento_id_departamento
-                WHERE e.activo='A' AND e.id_evento = ?
+                WHERE e.id_evento = ?
                      """;
         try (Connection conn = DBManager.getInstance().getConnection(); 
              PreparedStatement ps = conn.prepareStatement(sql);
