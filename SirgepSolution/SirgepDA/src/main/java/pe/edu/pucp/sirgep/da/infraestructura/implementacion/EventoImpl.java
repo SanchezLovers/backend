@@ -182,6 +182,7 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             distrito.setIdDistrito(rs.getInt("Distrito_id_distrito"));
             e.setDistrito(distrito);
             e.setDescripcion(rs.getString("descripcion"));
+            e.setArchivoImagen(rs.getString("imagen"));
             return e;
         }catch(SQLException e){
             throw new RuntimeException(e);
