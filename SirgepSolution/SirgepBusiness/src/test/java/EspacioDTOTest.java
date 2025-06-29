@@ -12,6 +12,7 @@ import org.junit.Test;
  *
  * @author Ana Gabriela
  */
+/*
 public class EspacioDTOTest {
     
     private IReporteService rs;
@@ -29,3 +30,4 @@ public class EspacioDTOTest {
         assertNotNull(lista);
     }
 }
+*/

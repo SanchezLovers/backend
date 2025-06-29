@@ -22,6 +22,7 @@ public interface IReservaService {
     boolean actualizar(Reserva reserva);
     boolean eliminarLogico(int id);
     boolean eliminarFisico(int id);
+    boolean inactivar();
     
     //Metodos adicionales
     public Comprador buscarCompradorDeReserva(int idComprador);

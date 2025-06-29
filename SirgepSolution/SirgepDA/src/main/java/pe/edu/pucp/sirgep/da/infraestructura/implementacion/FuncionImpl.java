@@ -158,4 +158,33 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
         }
         return funciones;
     }
+    
+    public String getSetInactiveQuery(){
+        String query = "UPDATE Funcion SET activo = 'I' where fecha < curdate()";
+        return query;
+    }
+    
+    
+    @Override
+    public boolean inactivar() {
+        boolean resultado=false;
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(getSetInactiveQuery())) {
+                ps.executeUpdate();
+                conn.commit();
+//                System.out.println("Se actualizo un registro de " + entity.getClass().getSimpleName());
+                resultado=true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query de actualizado ", e);
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al actualizar ");
+        }finally{
+            return resultado;
+        }
+    }
 }
