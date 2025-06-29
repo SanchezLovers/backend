@@ -7,7 +7,6 @@ import pe.edu.pucp.sirgep.da.infraestructura.implementacion.FuncionImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 
 public class FuncionServiceImpl implements IFuncionService {
-    
     private final FuncionDAO funcionDAO;
 
     public FuncionServiceImpl(){

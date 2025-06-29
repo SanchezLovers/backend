@@ -26,7 +26,11 @@ import java.util.logging.Logger;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 
 public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
-
+    
+    public FuncionImpl(){
+        
+    }
+    
     @Override
     protected String getInsertQuery() {
         return "INSERT INTO Funcion(hora_inicio, hora_fin, Evento_idEvento, fecha, activo)"
