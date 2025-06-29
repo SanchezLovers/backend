@@ -668,15 +668,17 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
 
     private void agregarFiltrosEstado(StringBuilder sql, String estado, List<Object> params) {
         if (estado != null && !estado.isBlank()) {
-            sql.append(" AND r.activo IN (");
-            sql.append("?");
             if (estado.equals("Vigentes")) {
                 params.add("A");
             } else if (estado.equals("Finalizadas")) {
                 params.add("I");
             } else if (estado.equals("Canceladas")) {
                 params.add("C");
+            }else{
+                return;
             }
+            sql.append(" AND r.activo IN (");
+            sql.append("?");
             sql.append(")");
         }
     }
