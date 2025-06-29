@@ -35,18 +35,7 @@ public interface IReservaService {
     public List<ReservaDTO> listarTodos();
     public List<ReservaDTO> listarDetalleReservasPorFecha(Date fecha, boolean activo);
     public List<ReservaDTO> listarPorDistrito(int id_distrito, boolean activo);
-
-    //Metodos para crear libro de Excel para las entradas
-    public void crearLibroExcelReservas(int idComprador);
-    public String crearHojalReservas(XSSFWorkbook libro,int idComprador);
-    public String crearEncabezadoHojaReservas(XSSFSheet hoja,int idComprador);
-    public void llenarTablaReservas(XSSFSheet hoja,int idComprador);
-    public void llenarFilaReserva(XSSFRow registro,DetalleReservaDTO detalleReserva);
-    public List<DetalleReservaDTO> listarDetalleReservasPorComprador(int idComprador);
-    public void exportarLibroReservas(XSSFWorkbook libro,String nombreArchivo);
-    
-    //Metodos para buscar el detalle de la constancia de la reserva
+    public boolean crearLibroExcelReservas(int idComprador,String fechaInicio, String fechaFin, String estado);
     public ConstanciaReservaDTO buscarConstanciaReserva(int numReserva);
-    List<DetalleReservaDTO> listarDetalleReservasFiltradaPorComprador(int idComprador,String fechaInicio, 
-            String fechaFin, List<String> estados);
+    List<DetalleReservaDTO> listarPorComprador(int idComprador,String fechaInicio, String fechaFin, String estado);
 }
