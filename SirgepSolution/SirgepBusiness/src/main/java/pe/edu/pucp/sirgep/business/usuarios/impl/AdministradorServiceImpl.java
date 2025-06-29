@@ -6,7 +6,6 @@ import pe.edu.pucp.sirgep.da.usuarios.implementacion.AdministradorImpl;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Administrador;
 
 public class AdministradorServiceImpl implements IAdministradorService{
-
     private final AdministradorDAO administradorDAO;
 
     public AdministradorServiceImpl(){

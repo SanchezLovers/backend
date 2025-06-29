@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import pe.edu.pucp.sirgep.business.usuarios.dtos.AES;
 import pe.edu.pucp.sirgep.business.usuarios.dtos.CompradorDTO;
 import pe.edu.pucp.sirgep.business.usuarios.dtos.DetalleComprador;
 import pe.edu.pucp.sirgep.business.usuarios.service.ICompradorService;
@@ -22,6 +23,9 @@ public class CompradorServiceImpl implements ICompradorService{
     //Metodos CRUD
     @Override
     public int insertar(Comprador comprador) {
+        String password=comprador.getContrasenia();
+        String encrypted = AES.encrypt(password);
+        comprador.setContrasenia(encrypted);
         return compradorDAO.insertar(comprador);
     }
     @Override
@@ -93,12 +97,9 @@ public class CompradorServiceImpl implements ICompradorService{
     public List<CompradorDTO> listarCompradoresDTO() {
         List<CompradorDTO> resultado = new ArrayList<>();
         List<Map<String, Object>> datos = compradorDAO.listarCompradoresDTO();
-
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-
         for (Map<String, Object> fila : datos) {
             CompradorDTO dto = new CompradorDTO();
-
             dto.setIdComprador((int) fila.get("id"));
             dto.setNombres((String) fila.get("nombres"));
             dto.setPrimerApellido((String) fila.get("primerApellido"));
@@ -106,18 +107,14 @@ public class CompradorServiceImpl implements ICompradorService{
             dto.setTipoDocumento((String) fila.get("tipoDocumento"));
             dto.setNumeroDocumento((String) fila.get("numDocumento"));
             dto.setCorreo((String) fila.get("correo"));
-
-            // Obtener la fecha de última compra
             Date fechaCompra = (Date) fila.get("ultima_compra");
             if (fechaCompra != null) {
                 dto.setFechaUltimaCompra(formato.format(fechaCompra));
             } else {
                 dto.setFechaUltimaCompra("No ha comprado aún");
             }
-
             resultado.add(dto);
         }
-
         return resultado;
     }
 
