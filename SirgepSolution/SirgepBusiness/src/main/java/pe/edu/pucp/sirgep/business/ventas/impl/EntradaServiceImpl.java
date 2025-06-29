@@ -270,16 +270,13 @@ public class EntradaServiceImpl implements IEntradaService {
 
     private XSSFCellStyle crearEstiloCabeceraTabla(XSSFSheet hoja) {
         XSSFCellStyle estilo = hoja.getWorkbook().createCellStyle();
-
         XSSFFont font = hoja.getWorkbook().createFont();
         font.setColor(IndexedColors.WHITE.getIndex());
         font.setBold(true);
-
         estilo.setFont(font);
         estilo.setFillForegroundColor(IndexedColors.RED.getIndex());
         estilo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         estilo.setAlignment(HorizontalAlignment.CENTER);
-
         return estilo;
     }
     
@@ -294,9 +291,9 @@ public class EntradaServiceImpl implements IEntradaService {
             for (int i = 0; i < 7; i++) {
                 hoja.autoSizeColumn(i);
             }
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     private void llenarFilaDetalleEntrada(XSSFRow registro, DetalleEntradaDTO detalleEntrada) {
