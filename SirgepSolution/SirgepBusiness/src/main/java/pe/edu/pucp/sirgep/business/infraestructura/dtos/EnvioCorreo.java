@@ -68,6 +68,9 @@ public class EnvioCorreo {
     }
     
     public boolean enviarEmail(List<String> listaCorreosCompradores, String asunto, String contenidoHtml) {
+        if(listaCorreosCompradores.isEmpty()){
+            return false;
+        }
         try {
             session = Session.getInstance(properties, autenticador);
             correo = new MimeMessage(session);

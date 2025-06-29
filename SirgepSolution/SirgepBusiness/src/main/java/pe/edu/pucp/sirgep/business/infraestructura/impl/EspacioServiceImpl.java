@@ -134,9 +134,8 @@ public class EspacioServiceImpl implements IEspacioService {
                     throw new RuntimeException("No se enviaron los correos a los compradores con el mismo distrito del evento");
                 }
                 return true;
-            } else {
-                throw new RuntimeException("No hay compradores con el mismo distrito favorito (lista vacía o null)");
             }
+            return false;
         } catch (Exception ex) {
             ex.printStackTrace();  // ✅ Asegúrate que esto sí esté en el log del servidor
             throw new RuntimeException("Error técnico: " + ex.getClass().getName() + " - " + ex.getMessage(), ex);

@@ -81,16 +81,13 @@ public class EventoServiceImpl implements IEventoService {
     public boolean enviarCorreosCompradoresPorDistritoDeEvento(String asunto, String contenido,int idDistrito){
         try{
             List<String>listaCorreosCompradores=compradorDAO.listarPorDistritoFavorito(idDistrito);
-            if (listaCorreosCompradores != null) {
+            if (listaCorreosCompradores != null && !listaCorreosCompradores.isEmpty()) {
                 boolean resultado=EnvioCorreo.getInstance().enviarEmail(listaCorreosCompradores,asunto,contenido);
                 if (resultado) {
                     return true;
-                }else{
-                    throw new RuntimeException("No se enviaron los correos a los compradores con el mismo distrito del evento");
                 }
-            }else{
-                    throw new RuntimeException("No hay compradores con el mismo distrito favorito");
             }
+            return false;
         }catch(Exception ex){
             ex.printStackTrace();
             throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del evento: "+ ex.getMessage());
