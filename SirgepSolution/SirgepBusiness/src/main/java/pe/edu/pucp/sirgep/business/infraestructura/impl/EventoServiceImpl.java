@@ -29,6 +29,11 @@ public class EventoServiceImpl implements IEventoService {
     }
 
     @Override
+    public boolean inactivar() {
+        return eventoDAO.inactivar();
+    }
+
+    @Override
     public Evento buscar(int id) {
         return eventoDAO.buscar(id);
     }

@@ -47,12 +47,16 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         String query = "UPDATE Evento SET activo='E' WHERE id_evento=?";
         return query;
     }
+    
     @Override
     protected String getDeleteFisicoQuery() {
         String query = "DELETE FROM Evento WHERE id_espacio=?";
         return query;
     }
 
+    protected String getSetInactiveQuery() {
+        return "UPDATE Evento SET activo = 'I' where fecha_fin < curdate()";
+    }
 
     @Override
     protected String getSelectByIdQuery(){
@@ -309,4 +313,26 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
         return eventoDTO;
     }
 
+    @Override
+    public boolean inactivar() {
+        boolean resultado=false;
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(getSetInactiveQuery())) {
+                ps.executeUpdate();
+                conn.commit();
+//                System.out.println("Se actualizo un registro de " + entity.getClass().getSimpleName());
+                resultado=true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query de actualizado ", e);
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al actualizar inactivos");
+        }finally{
+            return resultado;
+        }
+    }
 }

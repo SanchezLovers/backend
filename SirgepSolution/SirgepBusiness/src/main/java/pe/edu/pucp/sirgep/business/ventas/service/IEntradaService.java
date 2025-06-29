@@ -23,6 +23,7 @@ public interface IEntradaService {
     boolean eliminarLogico(int id);
     boolean eliminarFisico(int id);
     
+    boolean inactivar();
     //Metodos adicionales
     public Comprador buscarCompradorDeEntrada(int idComprador);
     public Funcion buscarFuncionDeEntrada(int idFuncion);

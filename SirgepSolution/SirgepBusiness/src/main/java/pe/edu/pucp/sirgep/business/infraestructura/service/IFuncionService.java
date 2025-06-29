@@ -11,4 +11,5 @@ public interface IFuncionService {
     boolean actualizar(Funcion funcion);
     boolean eliminarLogico(int id);
     boolean eliminarFisico(int id);
+    boolean inactivar();
 }

@@ -10,4 +10,6 @@ public interface EventoDAO extends BaseDAO<Evento>{
     List<Evento> buscarPorTexto(String texto);
     List<Evento> buscarEventosPorFechas(String inicio, String fin);
     Map<String, Object> listarEventosDTO(int idEvento);
+    boolean inactivar();
+
 }

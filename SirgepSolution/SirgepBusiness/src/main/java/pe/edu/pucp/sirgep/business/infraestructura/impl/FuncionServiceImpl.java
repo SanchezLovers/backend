@@ -23,6 +23,11 @@ public class FuncionServiceImpl implements IFuncionService {
     public Funcion buscar(int id) {
         return funcionDAO.buscar(id);
     }
+    
+    @Override
+    public boolean inactivar() {
+        return funcionDAO.inactivar();
+    }
 
     @Override
     public List<Funcion> listar() {
