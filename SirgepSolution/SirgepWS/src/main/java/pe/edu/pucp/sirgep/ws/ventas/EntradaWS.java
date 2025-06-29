@@ -141,8 +141,8 @@ public class EntradaWS {
         }
     }
     
-    @WebMethod(operationName = "listarPorComprador")
-    public List<DetalleEntradaDTO> listarPorComprador(@WebParam(name = "idComprador")int idComprador,
+    @WebMethod(operationName = "listarEntradasPorComprador")
+    public List<DetalleEntradaDTO> listarEntradasPorComprador(@WebParam(name = "idComprador")int idComprador,
             @WebParam(name = "fechaInicio")String fechaInicio, @WebParam(name = "fechaFin")String fechaFin, 
             @WebParam(name = "estado")String estado){
         List<DetalleEntradaDTO> lista=new ArrayList<>();
