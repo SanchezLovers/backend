@@ -20,7 +20,7 @@ public class EventoDTO {
     private int cantEntradasDispo;
     private int cantEntradasVendidas;
     private double precioEntrada;
-    //private String urlImagen;
+    private String urlImagen;
     private String archivoImagen;
     private String descripcion;
     // Departamento
@@ -231,7 +231,9 @@ public class EventoDTO {
         if(map.get("nombre_departamento") != null){
             this.nombreDepa = (String) map.get("nombre_departamento");
         }
-        /*Faltaría añadir la imagen, pero todavía no se ha implementado*/
+        if(map.get("url_imagen") != null){
+            this.nombreDepa = (String) map.get("url_imagen");
+        }
     }
     
 }
