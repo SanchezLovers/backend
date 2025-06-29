@@ -21,21 +21,21 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
     @Override
     protected String getInsertQuery() {
         String query = "INSERT INTO Espacio(nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
-                + "ubicacion, superficie, precio_reserva, activo, Distrito_id_distrito) values(?, ?, ?, ?, ?, ?, ?, 'A', ?)";
+                + "ubicacion, superficie, precio_reserva, activo, Distrito_id_distrito, foto) values(?, ?, ?, ?, ?, ?, ?, 'A', ?, ?)";
         return query;
     }
 
     @Override
     protected String getSelectByIdQuery() {
         String sql = "SELECT id_espacio, nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
-                + "ubicacion, superficie, precio_reserva, Distrito_id_distrito FROM Espacio WHERE id_espacio=?";
+                + "ubicacion, superficie, precio_reserva, Distrito_id_distrito, foto FROM Espacio WHERE id_espacio=?";
         return sql;
     }
 
     @Override
     protected String getSelectAllQuery() {
         String query = "SELECT id_espacio, nombre, tipo_espacio, horario_inicio_atencion, horario_fin_atencion, "
-                + "ubicacion, superficie, precio_reserva, Distrito_id_distrito FROM Espacio WHERE activo = 'A' ";
+                + "ubicacion, superficie, precio_reserva, Distrito_id_distrito, foto FROM Espacio WHERE activo = 'A' ";
         return query;
     }
 
@@ -69,6 +69,7 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
             ps.setDouble(6, e.getSuperficie());
             ps.setDouble(7, e.getPrecioReserva());
             ps.setInt(8, e.getDistrito().getIdDistrito());
+            ps.setString(9, e.getFoto());
         }catch(SQLException ex){
             throw new RuntimeException(ex);
         }
@@ -106,6 +107,7 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
             e.setUbicacion(rs.getString("ubicacion"));
             e.setSuperficie(rs.getDouble("superficie"));
             e.setPrecioReserva(rs.getDouble("precio_reserva"));
+            e.setFoto(rs.getString("foto"));
             /* Necesario para realizar el filtro de Espacios mediante su Distrito */
             Distrito d = new Distrito();
             d.setIdDistrito(rs.getInt("Distrito_id_distrito"));

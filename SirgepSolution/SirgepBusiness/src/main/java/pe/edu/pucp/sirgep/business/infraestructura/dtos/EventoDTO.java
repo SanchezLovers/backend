@@ -20,7 +20,6 @@ public class EventoDTO {
     private int cantEntradasDispo;
     private int cantEntradasVendidas;
     private double precioEntrada;
-    //private String urlImagen;
     private String archivoImagen;
     private String descripcion;
     // Departamento
@@ -32,6 +31,8 @@ public class EventoDTO {
     // Distrito
     private int idDist;
     private String nombreDist;
+    
+    private char activo;
 
     public EventoDTO() {
     }
@@ -172,6 +173,14 @@ public class EventoDTO {
         this.nombreDist = nombreDist;
     }
 
+    public char getActivo() {
+        return activo;
+    }
+
+    public void setActivo(char activo) {
+        this.activo = activo;
+    }
+    
     public void llenarEventoDTO(Map<String, Object> map) {
         if(map.get("id_evento") != null){
             this.idEvento = (int) map.get("id_evento");
@@ -231,7 +240,12 @@ public class EventoDTO {
         if(map.get("nombre_departamento") != null){
             this.nombreDepa = (String) map.get("nombre_departamento");
         }
-        /*Faltaría añadir la imagen, pero todavía no se ha implementado*/
+        if(map.get("url_imagen") != null){
+            this.nombreDepa = (String) map.get("url_imagen");
+        }
+        if(map.get("activo") != null){
+            this.activo = (char) map.get("activo");
+        }
     }
     
 }

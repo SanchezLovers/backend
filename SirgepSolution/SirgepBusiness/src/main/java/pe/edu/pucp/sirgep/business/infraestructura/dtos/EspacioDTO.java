@@ -29,6 +29,8 @@ public class EspacioDTO {
     private String horaFin;
     private List<EspacioDiaSem> dias;
 
+    private String foto;
+    
     public EspacioDTO() {
     }
 
@@ -151,6 +153,12 @@ public class EspacioDTO {
     public void setDias(List<EspacioDiaSem> dias) {
         this.dias = dias;
     }
-    
-    
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 }
