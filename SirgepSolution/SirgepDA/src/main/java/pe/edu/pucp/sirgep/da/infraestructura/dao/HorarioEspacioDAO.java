@@ -14,4 +14,5 @@ import pe.edu.pucp.sirgep.domain.infraestructura.models.HorarioEspacio;
  */
 public interface HorarioEspacioDAO{
     public List<HorarioEspacio> listarHorasDisponibles(int idEspacio, Date dia);
+    boolean validarDia(Date dia, int idEspacio);
 }

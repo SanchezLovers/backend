@@ -15,4 +15,5 @@
 <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/CalificacionWS?wsdl"/>
 <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/CompradorWS?wsdl"/>
 <contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/EspacioDiaSemWS?wsdl"/>
+<contractRef xmlns="http://schemas.xmlsoap.org/disco/scl/" ref="http://localhost:8080/SirgepWS/ReporteWS?wsdl"/>
 </discovery>
