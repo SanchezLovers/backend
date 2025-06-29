@@ -285,16 +285,16 @@ public class EntradaServiceImpl implements IEntradaService {
     
     public boolean llenarTablaEntradas(XSSFSheet hoja, int idComprador, String fechaInicio, String fechaFin, String estado) {
         List<DetalleEntradaDTO> listaDetalleEntradas = listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
-        if (listaDetalleEntradas.isEmpty()) {
+        if (listaDetalleEntradas!=null && !listaDetalleEntradas.isEmpty()) {
+            int posicion = 5;
+            for (DetalleEntradaDTO detalleEntrada : listaDetalleEntradas) {
+                XSSFRow registro = hoja.createRow(posicion++);
+                llenarFilaDetalleEntrada(registro, detalleEntrada);
+            }
+            for (int i = 0; i < 7; i++) {
+                hoja.autoSizeColumn(i);
+            }
             return false;
-        }
-        int posicion = 5;
-        for (DetalleEntradaDTO detalleEntrada : listaDetalleEntradas) {
-            XSSFRow registro = hoja.createRow(posicion++);
-            llenarFilaDetalleEntrada(registro, detalleEntrada);
-        }
-        for (int i = 0; i < 7; i++) {
-            hoja.autoSizeColumn(i);
         }
         return true;
     }

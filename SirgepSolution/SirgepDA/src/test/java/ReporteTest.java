@@ -1,4 +1,4 @@
-
+    /*
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,16 +11,6 @@ import pe.edu.pucp.sirgep.da.infraestructura.implementacion.HorarioEspacioImpl;
 import pe.edu.pucp.sirgep.da.ventas.dao.ReporteDAO;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ReporteImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.HorarioEspacio;
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Ana Gabriela
- */
 
 public class ReporteTest {
     private ReporteDAO es;
@@ -39,7 +29,6 @@ public class ReporteTest {
         assertNotNull(lista);
     }
     
-    /*
     public void testEspacios() throws ParseException {
         this.es = new ReporteImpl();
         System.out.println("Ejecutando test Espacios más reservados del mes...");
@@ -70,5 +59,6 @@ public class ReporteTest {
         }
 
         assertNotNull(mapa);
-    }*/
+    }
 }
+*/
