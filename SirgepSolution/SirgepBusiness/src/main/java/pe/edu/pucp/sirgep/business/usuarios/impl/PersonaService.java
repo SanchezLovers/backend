@@ -1,27 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.edu.pucp.sirgep.business.usuarios.impl;
 
+import pe.edu.pucp.sirgep.business.usuarios.dtos.AES;
 import pe.edu.pucp.sirgep.business.usuarios.service.IPersonaService;
 import pe.edu.pucp.sirgep.da.usuarios.dao.PersonaDAO;
 import pe.edu.pucp.sirgep.da.usuarios.implementacion.PersonaImpl;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
-/**
- *
- * @author Ana Gabriela
- */
 public class PersonaService implements IPersonaService{
     PersonaDAO pdao;
     public PersonaService(){
         pdao = new PersonaImpl();
     }
     
-    public int validarCuenta(String correo, String passcode) {
-        return pdao.validarCuenta(correo, passcode);
+    public int validarCuenta(String correo, String password) {
+        String encrypted = AES.encrypt(password);
+        return pdao.validarCuenta(correo, encrypted);
     }
 
     @Override
@@ -31,5 +24,4 @@ public class PersonaService implements IPersonaService{
             return  persona.getUsuario();
         return null;
     }
-
 }

@@ -17,6 +17,8 @@ import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -252,6 +254,59 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             Logger.getLogger(EventoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return espacios;
+    }
+    
+    private void mapearEventoDTO(Map<String, Object> eventoDTO, ResultSet rs) throws SQLException {
+        eventoDTO.put("id_evento", rs.getInt("id_evento"));
+        eventoDTO.put("nombre", rs.getString("nombre"));
+        eventoDTO.put("fecha_inicio", rs.getDate("fecha_inicio"));
+        eventoDTO.put("fecha_fin", rs.getDate("fecha_fin"));
+        eventoDTO.put("ubicacion", rs.getString("ubicacion"));
+        eventoDTO.put("referencia", rs.getString("referencia"));
+        eventoDTO.put("cant_entradas_dispo", rs.getInt("cant_entradas_dispo"));
+        eventoDTO.put("cant_entradas_vendidas", rs.getInt("cant_entradas_vendidas"));
+        eventoDTO.put("precio_entradas", rs.getDouble("precio_entradas"));
+        eventoDTO.put("descripcion", rs.getString("descripcion"));
+        eventoDTO.put("imagen", rs.getString("imagen"));
+        eventoDTO.put("id_distrito", rs.getInt("id_distrito"));
+        eventoDTO.put("nombre_distrito", rs.getString("nombre_distrito"));
+        eventoDTO.put("id_provincia", rs.getInt("id_provincia"));
+        eventoDTO.put("nombre_provincia", rs.getString("nombre_provincia"));
+        eventoDTO.put("id_departamento", rs.getInt("id_departamento"));
+        eventoDTO.put("nombre_departamento", rs.getString("nombre_departamento"));
+        
+    }
+    
+    @Override
+    public Map<String, Object> listarEventosDTO(int idEvento){
+        Map<String, Object> eventoDTO = new HashMap<>();
+        String sql = """
+                SELECT e.id_evento, e.nombre, e.fecha_inicio, e.fecha_fin, e.ubicacion, e.referencia,
+                e.cant_entradas_dispo, e.cant_entradas_vendidas, e.precio_entradas, e.descripcion,
+                e.imagen, d.id_distrito, d.nombre as nombre_distrito,
+                d.Provincia_id_provincia as id_provincia, p.nombre as nombre_provincia, depa.id_departamento as id_departamento, 
+                depa.nombre as nombre_departamento
+                FROM Evento e 
+                JOIN Distrito d 
+                ON e.Distrito_id_distrito=d.id_distrito
+                JOIN Provincia p
+                ON d.Provincia_id_provincia = p.id_provincia
+                JOIN Departamento depa
+                ON depa.id_departamento = p.Departamento_id_departamento
+                WHERE e.activo='A' AND e.id_evento = ?
+                     """;
+        try (Connection conn = DBManager.getInstance().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ) {
+            ps.setInt(1, idEvento);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                mapearEventoDTO(eventoDTO, rs);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al obtener eventos DTO: ", e);
+        }
+        return eventoDTO;
     }
 
 }
