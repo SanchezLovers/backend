@@ -149,6 +149,29 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
         }
         return espacios;
     }
+    
+    @Override
+    public List<String> ListarDias(int idEspacio) {
+        List<String> dias = new ArrayList<>();
+
+        String sql = "SELECT eDiaSemana_dia_semana FROM Espacio_has_eDiaSemana WHERE Espacio_id_espacio = ?";
+
+        try (Connection con = DBManager.getInstance().getConnection(); 
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idEspacio);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    dias.add(rs.getString("eDiaSemana_dia_semana"));
+                }
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+        return dias;
+    }
+
 
     @Override
     public List<Espacio> buscarPorDistrito(int idDist) {
@@ -169,6 +192,8 @@ public class EspacioImpl extends BaseImpl<Espacio> implements EspacioDAO {
             throw new RuntimeException("Error al listar espacios con el filtro de Categoria: " + ex.getMessage());
         }
     }
+    
+    
 
     @Override
     public List<Espacio> buscarPorCategoria(String categ) {

@@ -5,6 +5,11 @@
 
 package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import pe.edu.pucp.sirgep.domain.infraestructura.enums.EDiaSemana;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -22,6 +27,7 @@ import pe.edu.pucp.sirgep.da.infraestructura.dao.EspacioDAO;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.HorarioEspacioDAO;
 import pe.edu.pucp.sirgep.da.ventas.dao.ReservaDAO;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ReservaImpl;
+import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.HorarioEspacio;
 import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
@@ -41,8 +47,38 @@ public class HorarioEspacioImpl implements HorarioEspacioDAO{
     }
     
     @Override
+    public boolean validarDia(Date dia, int idEspacio){
+        String[] dias = {"DOMINGO", "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"};
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dia);
+        String diaSemana = dias[cal.get(Calendar.DAY_OF_WEEK) - 1];
+        
+        boolean esValido = false;
+        String sql = "SELECT COUNT(*) FROM Espacio_has_eDiaSemana WHERE Espacio_id_espacio = ? AND eDiaSemana_dia_semana = ?";
+
+        try (Connection con = DBManager.getInstance().getConnection(); 
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idEspacio);
+            ps.setString(2, diaSemana);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    esValido = rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            return false;
+        }
+
+        return esValido;
+}
+    
+    @Override
     public List<HorarioEspacio> listarHorasDisponibles(int idEspacio, Date dia) {
         Espacio espacio = eDao.buscar(idEspacio);
+        
+        if (!validarDia(dia, idEspacio)) return null;
         //con eso ya tenemos los datos que necesito del espacio
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss"); // HH: formato 24 h
         List<HorarioEspacio> listaHorarios = new ArrayList<>();
