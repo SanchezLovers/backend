@@ -2,8 +2,10 @@ package pe.edu.pucp.sirgep.business.infraestructura.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import pe.edu.pucp.sirgep.business.infraestructura.dtos.EnvioCorreo;
+import pe.edu.pucp.sirgep.business.infraestructura.dtos.EventoDTO;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEventoService;
 import pe.edu.pucp.sirgep.da.infraestructura.dao.EventoDAO;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EventoImpl;
@@ -93,5 +95,13 @@ public class EventoServiceImpl implements IEventoService {
             ex.printStackTrace();
             throw new RuntimeException("Error al enviar correos a compradores con el mismo distrito del evento: "+ ex.getMessage());
         }
+    }
+    // listado de DTOS
+    @Override
+    public EventoDTO listarEventosDTO(int idEvento){
+        Map<String, Object> mapaEventoDTO = eventoDAO.listarEventosDTO(idEvento);
+        EventoDTO e = new EventoDTO();
+        e.llenarEventoDTO(mapaEventoDTO); // el primero
+        return e;
     }
 }
