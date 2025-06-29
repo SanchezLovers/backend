@@ -15,6 +15,8 @@ import jakarta.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.io.InputStream;
 
+import pe.edu.pucp.sirgep.dbmanager.EncriptadorChaCha20;
+
 public class EnvioCorreo {
     private static EnvioCorreo envioCorreo;
     
@@ -44,7 +46,8 @@ public class EnvioCorreo {
     
     private void definirPropiedades(){
         emailOrigen = properties.getProperty("config.emailOrigen");
-        passwordEmailOrigen = properties.getProperty("config.passwordEmailOrigen");
+        String cifrado = properties.getProperty("config.passwordEmailOrigen");
+        passwordEmailOrigen = EncriptadorChaCha20.desencripta(cifrado, "mail");
         
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");

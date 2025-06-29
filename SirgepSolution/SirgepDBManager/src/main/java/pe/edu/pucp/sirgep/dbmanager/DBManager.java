@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import static pe.edu.pucp.sirgep.dbmanager.EncriptadorChaCha20.desencripta;
 public class DBManager {
     private static DBManager dbManager;
     
@@ -66,7 +66,8 @@ public class DBManager {
             puerto = Integer.parseInt(properties.getProperty("config.puerto"));
             esquema = properties.getProperty("config.esquema");
             usuario = properties.getProperty("config.usuario");
-            password = properties.getProperty("config.password");
+            String cifrado = properties.getProperty("config.password");
+            password = desencripta(cifrado,"db");
         }
         catch (IOException e) {
             System.err.println("No se pudo cargar el archivo config.properties");
