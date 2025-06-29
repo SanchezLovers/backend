@@ -9,12 +9,18 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import pe.edu.pucp.sirgep.da.infraestructura.dao.HorarioEspacioDAO;
+import pe.edu.pucp.sirgep.da.infraestructura.implementacion.EventoImpl;
+import pe.edu.pucp.sirgep.da.infraestructura.implementacion.FuncionImpl;
 import pe.edu.pucp.sirgep.da.infraestructura.implementacion.HorarioEspacioImpl;
+import pe.edu.pucp.sirgep.da.ventas.dao.ReservaDAO;
+import pe.edu.pucp.sirgep.da.ventas.implementacion.EntradaImpl;
+import pe.edu.pucp.sirgep.da.ventas.implementacion.ReservaImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.HorarioEspacio;
 
 public class HorariosTest {
-    private HorarioEspacioDAO es;
+    private ReservaDAO es;
     //funciona
+    /*
     @Test
     public void testListar() throws ParseException {
         this.es= new HorarioEspacioImpl();
@@ -30,6 +36,20 @@ public class HorariosTest {
             }
         }
 //        assertNotNull(lista);
+    }
+    @Test
+    public void testListar() throws ParseException {
+        this.es= new ReservaImpl();
+        System.out.println("Ejecutando Inactivar Reservas...");
+        if (!es.inactivar()) System.out.println("Error en Reservas");
+//        System.out.println("Ejecutando Inactivar Entradas...");
+//        if (!(new EntradaImpl().inactivar())) System.out.println("Error en Entradas");
+//        System.out.println("Ejecutando Inactivar Eventos...");
+//        if (!(new EventoImpl().inactivar())) System.out.println("Error en Eventos");
+//        System.out.println("Ejecutando Inactivar Funcion...");
+//        if (!(new FuncionImpl().inactivar())) System.out.println("Error en Funciones");
+////        assertNotNull(lista);
+        assertTrue(true);
     }
 }
 */

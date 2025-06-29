@@ -461,4 +461,33 @@ public class EntradaImpl extends BaseImpl<Entrada> implements EntradaDAO {
             pst.setObject(i + 1, params.get(i));
         }
     }
+    
+    public String getSetInactiveQuery(){
+        String query = "UPDATE Entrada e Join Funcion f on e.Funcion_id_funcion"
+                + " = f.id_funcion set e.activo = 'I' where f.fecha<curdate()";
+        return query;
+    }
+    
+    @Override
+    public boolean inactivar() {
+        boolean resultado=false;
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(getSetInactiveQuery())) {
+                ps.executeUpdate();
+                conn.commit();
+//                System.out.println("Se actualizo un registro de " + entity.getClass().getSimpleName());
+                resultado=true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query de actualizado ", e);
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al actualizar ");
+        }finally{
+            return resultado;
+        }
+    }
 }

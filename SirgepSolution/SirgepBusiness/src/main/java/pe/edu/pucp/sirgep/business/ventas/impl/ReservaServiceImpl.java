@@ -69,6 +69,11 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
+    public boolean inactivar() {
+        return reservaDAO.inactivar();
+    }
+    
+    @Override
     public List<Reserva> listar() {
         return reservaDAO.listar();
     }

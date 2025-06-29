@@ -74,6 +74,11 @@ public class EntradaServiceImpl implements IEntradaService {
     public int insertar(Entrada entrada) {
         return entradaDAO.insertar(entrada);
     }
+    
+    @Override
+    public boolean inactivar() {
+        return entradaDAO.inactivar();
+    }
 
     @Override
     public Entrada buscar(int id) {
