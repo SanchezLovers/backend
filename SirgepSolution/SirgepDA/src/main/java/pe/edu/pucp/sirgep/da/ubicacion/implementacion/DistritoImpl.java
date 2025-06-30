@@ -1,6 +1,5 @@
 package pe.edu.pucp.sirgep.da.ubicacion.implementacion;
 
-import java.io.IOException;
 import pe.edu.pucp.sirgep.da.ubicacion.dao.DistritoDAO;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 
@@ -69,19 +68,17 @@ public class DistritoImpl extends BaseImpl<Distrito> implements  DistritoDAO{
 
     @Override
     protected Distrito createFromResultSet(ResultSet rs) {
-        try{
-        Distrito distrito= new Distrito();
-        distrito.setIdDistrito(rs.getInt("id_distrito"));
-        distrito.setNombre(rs.getString("nombre"));
-        
-        Provincia provincia = new Provincia();
-        provincia.setIdProvincia(rs.getInt("Provincia_id_provincia"));
-        distrito.setProvincia(provincia);
-        return distrito;
-        }catch(SQLException e){
+        try {
+            Distrito distrito = new Distrito();
+            distrito.setIdDistrito(rs.getInt("id_distrito"));
+            distrito.setNombre(rs.getString("nombre"));
+            Provincia provincia = new Provincia();
+            provincia.setIdProvincia(rs.getInt("Provincia_id_provincia"));
+            distrito.setProvincia(provincia);
+            return distrito;
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        
     }
 
     @Override
@@ -92,7 +89,6 @@ public class DistritoImpl extends BaseImpl<Distrito> implements  DistritoDAO{
         } catch (SQLException e) {
             throw new RuntimeException(e);        
         }
-
     }
 
     @Override
@@ -102,7 +98,6 @@ public class DistritoImpl extends BaseImpl<Distrito> implements  DistritoDAO{
 
     @Override
     public int insertar(Distrito entity) {
-        
         try (Connection conn = DBManager.getInstance().getConnection()){
             conn.setAutoCommit(false);
             try(PreparedStatement pst=conn.prepareStatement(this.getInsertQuery())){
@@ -155,7 +150,6 @@ public class DistritoImpl extends BaseImpl<Distrito> implements  DistritoDAO{
                 "INNER JOIN Provincia p ON d.Provincia_id_provincia = p.id_provincia " +
                 "INNER JOIN Departamento dep ON p.Departamento_id_departamento = dep.id_departamento " +
                 "WHERE d.id_distrito = ? AND d.activo = 'A'";
-
         try (Connection conn = DBManager.getInstance().getConnection();
              PreparedStatement pst = conn.prepareStatement(query)) {
             pst.setInt(1, idDistrito);
@@ -164,15 +158,12 @@ public class DistritoImpl extends BaseImpl<Distrito> implements  DistritoDAO{
                 distrito = new Distrito();
                 distrito.setIdDistrito(rs.getInt("id_distrito"));
                 distrito.setNombre(rs.getString("nombre_distrito"));
-
                 Provincia provincia = new Provincia();
                 provincia.setIdProvincia(rs.getInt("id_provincia"));
                 provincia.setNombre(rs.getString("nombre_provincia"));
-
                 Departamento departamento = new Departamento();
                 departamento.setIdDepartamento(rs.getInt("id_departamento"));
                 departamento.setNombre(rs.getString("nombre_departamento"));
-
                 provincia.setDepartamento(departamento);
                 distrito.setProvincia(provincia);
             }

@@ -17,6 +17,7 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Persona;
 
 public class Main {
     public static void main(String[] args) throws Exception, SQLException, IOException {
+        /*
         Connection con = DBManager.getInstance().getConnection();
         KeyGenerator keyGen = KeyGenerator.getInstance("ChaCha20");
         keyGen.init(256); // 256 bits
@@ -29,5 +30,6 @@ public class Main {
         System.out.println("Texto cifrado: " + cifrado);
         String descifrado = desencripta(cifrado,"mail");
         System.out.println("Texto descifrado: " + descifrado);
+        */
     }
 }

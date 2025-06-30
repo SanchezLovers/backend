@@ -1,6 +1,5 @@
 package pe.edu.pucp.sirgep.da.ubicacion.implementacion;
 
-import java.io.IOException;
 import pe.edu.pucp.sirgep.da.ubicacion.dao.ProvinciaDAO;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Provincia;
 
