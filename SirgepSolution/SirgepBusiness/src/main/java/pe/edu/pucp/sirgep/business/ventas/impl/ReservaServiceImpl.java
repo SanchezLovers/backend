@@ -69,6 +69,11 @@ public class ReservaServiceImpl implements IReservaService {
     }
 
     @Override
+    public boolean inactivar() {
+        return reservaDAO.inactivar();
+    }
+    
+    @Override
     public List<Reserva> listar() {
         return reservaDAO.listar();
     }
@@ -276,18 +281,18 @@ public class ReservaServiceImpl implements IReservaService {
 
     private boolean llenarTablaReservas(XSSFSheet hoja, int idComprador, String fechaInicio, String fechaFin, String estado) {
         List<DetalleReservaDTO> listaDetalleReservas = listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
-        if (listaDetalleReservas.isEmpty()) {
-            return false;
+        if (listaDetalleReservas!=null && !listaDetalleReservas.isEmpty()) {
+            int posicion = 3;
+            for (DetalleReservaDTO detalleReserva : listaDetalleReservas) {
+                XSSFRow registro = hoja.createRow(posicion++);
+                llenarFilaReserva(registro, detalleReserva);
+            }
+            for (int i = 0; i < 8; i++) {
+                hoja.autoSizeColumn(i);
+            }
+            return true;
         }
-        int posicion = 3;
-        for (DetalleReservaDTO detalleReserva : listaDetalleReservas) {
-            XSSFRow registro = hoja.createRow(posicion++);
-            llenarFilaReserva(registro, detalleReserva);
-        }
-        for (int i = 0; i < 8; i++) {
-            hoja.autoSizeColumn(i);
-        }
-        return true;
+        return false;
     }
 
     private void llenarFilaReserva(XSSFRow registro, DetalleReservaDTO detalleReserva) {

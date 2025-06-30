@@ -74,6 +74,11 @@ public class EntradaServiceImpl implements IEntradaService {
     public int insertar(Entrada entrada) {
         return entradaDAO.insertar(entrada);
     }
+    
+    @Override
+    public boolean inactivar() {
+        return entradaDAO.inactivar();
+    }
 
     @Override
     public Entrada buscar(int id) {
@@ -270,33 +275,30 @@ public class EntradaServiceImpl implements IEntradaService {
 
     private XSSFCellStyle crearEstiloCabeceraTabla(XSSFSheet hoja) {
         XSSFCellStyle estilo = hoja.getWorkbook().createCellStyle();
-
         XSSFFont font = hoja.getWorkbook().createFont();
         font.setColor(IndexedColors.WHITE.getIndex());
         font.setBold(true);
-
         estilo.setFont(font);
         estilo.setFillForegroundColor(IndexedColors.RED.getIndex());
         estilo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         estilo.setAlignment(HorizontalAlignment.CENTER);
-
         return estilo;
     }
     
     public boolean llenarTablaEntradas(XSSFSheet hoja, int idComprador, String fechaInicio, String fechaFin, String estado) {
         List<DetalleEntradaDTO> listaDetalleEntradas = listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
-        if (listaDetalleEntradas.isEmpty()) {
-            return false;
+        if (listaDetalleEntradas!=null && !listaDetalleEntradas.isEmpty()) {
+            int posicion = 5;
+            for (DetalleEntradaDTO detalleEntrada : listaDetalleEntradas) {
+                XSSFRow registro = hoja.createRow(posicion++);
+                llenarFilaDetalleEntrada(registro, detalleEntrada);
+            }
+            for (int i = 0; i < 7; i++) {
+                hoja.autoSizeColumn(i);
+            }
+            return true;
         }
-        int posicion = 5;
-        for (DetalleEntradaDTO detalleEntrada : listaDetalleEntradas) {
-            XSSFRow registro = hoja.createRow(posicion++);
-            llenarFilaDetalleEntrada(registro, detalleEntrada);
-        }
-        for (int i = 0; i < 7; i++) {
-            hoja.autoSizeColumn(i);
-        }
-        return true;
+        return false;
     }
 
     private void llenarFilaDetalleEntrada(XSSFRow registro, DetalleEntradaDTO detalleEntrada) {

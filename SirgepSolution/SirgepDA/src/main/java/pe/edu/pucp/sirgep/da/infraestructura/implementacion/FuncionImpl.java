@@ -26,7 +26,11 @@ import java.util.logging.Logger;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 
 public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
-
+    
+    public FuncionImpl(){
+        
+    }
+    
     @Override
     protected String getInsertQuery() {
         return "INSERT INTO Funcion(hora_inicio, hora_fin, Evento_idEvento, fecha, activo)"
@@ -135,7 +139,7 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
     }
 
     public String getListarPorIdEvento(){
-        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento, fecha FROM Funcion WHERE Evento_idEvento=? AND activo='A'";
+        return "SELECT id_funcion, hora_inicio, hora_fin, Evento_idEvento, fecha FROM Funcion WHERE Evento_idEvento=?";
     }
 
     @Override
@@ -157,5 +161,34 @@ public class FuncionImpl extends BaseImpl<Funcion> implements FuncionDAO {
             throw new RuntimeException("ERROR al obtener FUNCIONES por idEvento: ", e);
         }
         return funciones;
+    }
+    
+    public String getSetInactiveQuery(){
+        String query = "UPDATE Funcion SET activo = 'I' where fecha < curdate()";
+        return query;
+    }
+    
+    
+    @Override
+    public boolean inactivar() {
+        boolean resultado=false;
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(getSetInactiveQuery())) {
+                ps.executeUpdate();
+                conn.commit();
+//                System.out.println("Se actualizo un registro de " + entity.getClass().getSimpleName());
+                resultado=true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException("Error al ejecutar el query de actualizado ", e);
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al actualizar ");
+        }finally{
+            return resultado;
+        }
     }
 }

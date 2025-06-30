@@ -15,7 +15,7 @@ public abstract class BaseImpl<T> implements BaseDAO<T> {
     protected abstract String getUpdateQuery();
     protected abstract String getDeleteLogicoQuery();
     protected abstract String getDeleteFisicoQuery();
-    
+
     protected abstract void setInsertParameters(PreparedStatement ps, T entity);
     protected abstract T createFromResultSet(ResultSet rs);
     protected abstract void setUpdateParameters(PreparedStatement ps, T entity);
@@ -86,8 +86,6 @@ public abstract class BaseImpl<T> implements BaseDAO<T> {
             return entities;
         }
     }
-
-    
     
     @Override
     public boolean actualizar(T entity) {

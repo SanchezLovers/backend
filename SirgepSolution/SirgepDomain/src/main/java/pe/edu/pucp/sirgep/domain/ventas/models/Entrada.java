@@ -24,7 +24,7 @@ public class Entrada extends Constancia{
     public void setNumEntrada(int numEntrada) {
         this.numEntrada = numEntrada;
     }
-
+    
     // Getter y Setter para funcion
     public Funcion getFuncion() {
         return this.funcion;

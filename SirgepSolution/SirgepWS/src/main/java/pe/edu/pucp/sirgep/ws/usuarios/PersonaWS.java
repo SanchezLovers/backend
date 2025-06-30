@@ -54,4 +54,15 @@ public class PersonaWS {
     public String obtenerNombreUsuario(@WebParam(name = "id") int id){
         return personaService.obtenerNombreUsuario(id);
     }
+    
+    @WebMethod(operationName = "enviarCorreoRecuperacion")
+    public boolean enviarCorreoRecuperacion(@WebParam(name = "asunto")String asunto, 
+            @WebParam(name = "contenido")String contenido) {
+        try{
+            return personaService.enviarCorreoRecuperacion(asunto,contenido);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al enviar correo de recuperación: "+ ex.getMessage());
+        }
+    }
 }
