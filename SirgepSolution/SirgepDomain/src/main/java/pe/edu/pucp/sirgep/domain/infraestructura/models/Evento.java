@@ -15,6 +15,7 @@ public class Evento {
 //    private String urlImagen;
     private String archivoImagen;
     private String descripcion;
+    private char activo;
     
 //momentaneamente no implementado
     public String getArchivoImagen() {
@@ -122,6 +123,14 @@ public class Evento {
         this.distrito = distrito;
     }
 
+    public char getActivo() {
+        return activo;
+    }
+
+    public void setActivo(char activo) {
+        this.activo = activo;
+    }
+    
     @Override
     public String toString() {
         return "Evento{" + "idEvento=" + idEvento + ", nombre=" + nombre + ", fecha_inicio=" + fecha_inicio + ", fecha_fin=" + fecha_fin + ", ubicacion=" + ubicacion + ", referencia=" + referencia + ", cantEntradasDispo=" + cantEntradasDispo + ", cantEntradasVendidas=" + cantEntradasVendidas + ", precioEntrada=" + precioEntrada + ", descripcion=" + descripcion + ", distrito=" + distrito.getIdDistrito() + '}';
