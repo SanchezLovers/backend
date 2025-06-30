@@ -16,6 +16,7 @@ import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.da.ventas.dao.ReservaDAO;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Espacio;
+import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 
 public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
     private ConstanciaDAO constanciaDAO;
@@ -88,6 +89,21 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
         }
     }
 
+    protected Reserva createReservaSimple(ResultSet rs){
+        try {
+            Reserva reserva = construirReserva(rs);
+            Espacio e = new Espacio();
+            e.setIdEspacio(rs.getInt("Espacio_id_espacio"));
+            reserva.setEspacio(e);
+            Persona p = new Comprador();
+            p.setIdPersona(rs.getInt("Persona_id_persona"));
+            return reserva;
+        } catch (SQLException e) {
+            System.out.println("Se encontró un error al crear Reserva desde RS: " + e.getMessage());
+            return null;
+        }
+    }
+    
     @Override
     protected Reserva createFromResultSet(ResultSet rs) {
         try {
@@ -332,7 +348,7 @@ public class ReservaImpl extends BaseImpl<Reserva> implements ReservaDAO {
             pst.setDate(2, sqlDate);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                Reserva r = createFromResultSet(rs);
+                Reserva r = createReservaSimple(rs);
                 listaReserva.add(r);
             }
             System.out.println("Se listo las entradas correctamente");
