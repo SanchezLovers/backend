@@ -1,9 +1,7 @@
 package pe.edu.pucp.sirgep.domain.infraestructura.models;
 
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Funcion{
     //Atributos

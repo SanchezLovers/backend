@@ -1,6 +1,5 @@
 package pe.edu.pucp.sirgep.da.ubicacion.implementacion;
 
-import java.io.IOException;
 import pe.edu.pucp.sirgep.da.ubicacion.dao.DepartamentoDAO;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 
@@ -98,7 +97,6 @@ public class DepartamentoImpl extends BaseImpl<Departamento> implements Departam
     //Sobrecarga necesaria debido a que el departamento no es autogenerado
     @Override
     public int insertar(Departamento departamento) {
-        
         try(Connection con = DBManager.getInstance().getConnection()){
             con.setAutoCommit(false);
             try(PreparedStatement ps=con.prepareStatement(this.getInsertQuery())){

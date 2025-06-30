@@ -1,10 +1,5 @@
 package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import pe.edu.pucp.sirgep.da.infraestructura.dao.EventoDAO;
-import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,15 +7,19 @@ import java.util.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
-import pe.edu.pucp.sirgep.dbmanager.DBManager;
-import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
-import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+
+import pe.edu.pucp.sirgep.da.infraestructura.dao.EventoDAO;
+import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
+import pe.edu.pucp.sirgep.dbmanager.DBManager;
+import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
+import pe.edu.pucp.sirgep.domain.ubicacion.models.Distrito;
 
 public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     //añadiendo activo
@@ -80,21 +79,15 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
                 + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
                 + "precio_entradas=?, Distrito_id_distrito=?, descripcion=?, WHERE id_evento=?";*/
     @Override
-    protected void setInsertParameters(PreparedStatement ps, Evento e){
-        try{
-            // Antes se utilizaba para insertar correctamente: (estoy probando si es que se puede sin esto)
+    protected void setInsertParameters(PreparedStatement ps, Evento e) {
+        try {
             String fechaIniEvento = e.getFecha_inicio();
             String fechaFinEvento = e.getFecha_fin();
-
-            // Parsear la fecha desde dd/MM/yyyy
             SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy");
             Date fechaIniUtil = formatoEntrada.parse(fechaIniEvento); // java.util.Date
             Date fechaFinUtil = formatoEntrada.parse(fechaFinEvento); // java.util.Date
-
-            // Convertir a java.sql.Date
             java.sql.Date fechaIniSql = new java.sql.Date(fechaIniUtil.getTime());
             java.sql.Date fechaFinSql = new java.sql.Date(fechaFinUtil.getTime());
-            
             ps.setString(1, e.getNombre());
             ps.setDate(2, fechaIniSql);
             ps.setDate(3, fechaFinSql);
@@ -106,43 +99,27 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             ps.setInt(9, e.getDistrito().getIdDistrito());
             ps.setString(10, e.getDescripcion());
             ps.setString(11, e.getArchivoImagen());
-        }
-        catch(SQLException ex){
+        } catch (SQLException ex) {
             throw new RuntimeException(ex);
-        }
-        catch (ParseException ex) {
+        } catch (ParseException ex) {
             Logger.getLogger(EventoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-/*SET nombre=?, fecha=?, descripcion=?, ubicacion=?, "
-                + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
-                + "precio_entradas=?, Distrito_id_distrito=?, url_imagen=?
     
-    UPDATE Evento SET nombre=?, fecha_inicio=?, fecha_fin=?, ubicacion=?, "
-                + "referencia=?, cant_entradas_dispo=?, cant_entradas_vendidas=?, "
-                + "precio_entradas=?, Distrito_id_distrito=?, descripcion=? WHERE id_evento=?*/
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Evento e){
         try{
-            // Antes se utilizaba para insertar correctamente: (estoy probando si es que se puede sin esto)
             String fechaIniEvento = e.getFecha_inicio();
             String fechaFinEvento = e.getFecha_fin();
-
-            // Parsear la fecha desde dd/MM/yyyy
             SimpleDateFormat formatoEntrada = null;
-            
             if(fechaFinEvento.charAt(4) == '-'){
                 formatoEntrada = new SimpleDateFormat("yyyy-MM-dd");
             }
             else formatoEntrada = new SimpleDateFormat("dd/MM/yyyy");
-            
             Date fechaIniUtil = formatoEntrada.parse(fechaIniEvento); // java.util.Date
             Date fechaFinUtil = formatoEntrada.parse(fechaFinEvento); // java.util.Date
-
-            // Convertir a java.sql.Date
             java.sql.Date fechaIniSql = new java.sql.Date(fechaIniUtil.getTime());
             java.sql.Date fechaFinSql = new java.sql.Date(fechaFinUtil.getTime());
-            
             ps.setString(1, e.getNombre());
             ps.setDate(2, fechaIniSql);
             ps.setDate(3, fechaFinSql);
@@ -171,12 +148,9 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
             e.setNombre(rs.getString("nombre"));
             java.sql.Date fechaInicioSql = rs.getDate("fecha_inicio");
             java.sql.Date fechaFinSql = rs.getDate("fecha_fin");
-
             SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-            
             Date iniUtilDate = new Date(fechaInicioSql.getTime());
             Date finUtilDate = new Date(fechaFinSql.getTime());
-            
             e.setFecha_inicio(fechaInicioSql != null ? formato.format(iniUtilDate) : null);
             e.setFecha_fin(fechaFinSql != null ? formato.format(finUtilDate) : null);
             e.setUbicacion(rs.getString("ubicacion"));
@@ -232,24 +206,15 @@ public class EventoImpl extends BaseImpl<Evento> implements EventoDAO{
     @Override
     public List<Evento> buscarEventosPorFechas(String inicio, String fin){
         List<Evento> espacios = new ArrayList<>();
-
-        // Utilizaremos procedimientos almacenados
         try (Connection conn = DBManager.getInstance().getConnection(); 
              CallableStatement cs = conn.prepareCall(this.getBuscarPorFechas())) {
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            // Convertimos a java.util.Date primero
             java.util.Date fechaInicioUtil = sdf.parse(inicio);
             java.util.Date fechaFinUtil = sdf.parse(fin);
-
-            // Luego a java.sql.Date
             java.sql.Date fechaInicioSQL = new java.sql.Date(fechaInicioUtil.getTime());
             java.sql.Date fechaFinSQL = new java.sql.Date(fechaFinUtil.getTime());
-
-            // Asignamos como DATE y no como String
             cs.setDate(1, fechaInicioSQL);
             cs.setDate(2, fechaFinSQL);
-
             try (ResultSet rs = cs.executeQuery()) {
                 while (rs.next()) {
                     espacios.add(createFromResultSet(rs));

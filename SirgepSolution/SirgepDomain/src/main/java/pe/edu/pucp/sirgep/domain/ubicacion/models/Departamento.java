@@ -5,10 +5,7 @@ public class Departamento{
     //Atributos
     private int idDepartamento;
     private String nombre;
-
-    //Relaciones
-//    private ArrayList<Provincia> provincias;
-
+    
     //Constructor
     public Departamento(){
 //        this.provincias = new ArrayList<Provincia>();
@@ -30,15 +27,7 @@ public class Departamento{
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-/*
-    // Getter y Setter para provincias
-    public ArrayList<Provincia> getProvincias() {
-        return new ArrayList<Provincia>(this.provincias);
-    }
-    public void setProvincias(ArrayList<Provincia> provincias) {
-        this.provincias = new ArrayList<Provincia>(provincias);
-    }
-    */
+    
     //Metodos
     @Override
     public String toString() {

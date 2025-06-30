@@ -1,6 +1,5 @@
 package pe.edu.pucp.sirgep.business.ventas.dtos;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.Map;
 

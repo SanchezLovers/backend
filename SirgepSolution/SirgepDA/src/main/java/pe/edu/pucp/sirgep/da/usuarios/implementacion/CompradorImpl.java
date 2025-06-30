@@ -5,7 +5,6 @@ import pe.edu.pucp.sirgep.da.usuarios.dao.CompradorDAO;
 import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoDocumento;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,11 +123,9 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         try (Connection conn = DBManager.getInstance().getConnection()) {
             conn.setAutoCommit(false);
             id = personaDAO.insertar(entity);//Insercion inicial de la persona
-
             if (entity.getMonto() == 0) {
                 entity.setMonto(0);
             }
-
             try (PreparedStatement pst = conn.prepareStatement(this.getInsertQuery(), Statement.RETURN_GENERATED_KEYS)) {
                 this.setInsertParameters(pst, entity);
                 pst.executeUpdate();
@@ -232,9 +229,7 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                 + "FROM   Persona   p "
                 + "JOIN   Comprador c ON c.id_persona_comprador = p.id_persona "
                 + "WHERE  p.num_documento = ?";
-
         try (Connection con = DBManager.getInstance().getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setString(1, dni);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -249,11 +244,8 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
                     comprador.setContrasenia(rs.getString("contrasenia"));
                     String td = rs.getString("tipo_documento");
                     if (td != null) {
-                        comprador.setTipoDocumento(
-                                ETipoDocumento.valueOf(td.toUpperCase())
-                        );
+                        comprador.setTipoDocumento(ETipoDocumento.valueOf(td.toUpperCase()));
                     }
-
                     comprador.setRegistrado(rs.getBoolean("es_registrado") ? 1 : 0);
                     comprador.setMonto(rs.getDouble("monto_billetera"));   // ahora sí existe
                 }
@@ -263,78 +255,114 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         }
         return comprador;
     }
-    
+
     @Override
-    public List<String> listarPorDistritoFavorito(int idDistrito){
-        List<String>listaCompradores=null;
-        String sql = "SELECT P.correo FROM Comprador C JOIN Persona P ON C.id_persona_comprador=P.id_persona "
-                + "WHERE id_distrito_favorito="+idDistrito;
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
-            listaCompradores=new ArrayList<>();
+    public List<String> listarPorDistritoFavorito(int idDistrito) {
+        List<String> listaCompradores = null;
+        String sql = obtenerQueryCorreosPorDistrito();
+
+        try (
+                Connection conn = obtenerConexion(); PreparedStatement pst = prepararStatementCorreosPorDistrito(conn, sql, idDistrito); ResultSet rs = pst.executeQuery()) {
+            listaCompradores = new ArrayList<>();
             while (rs.next()) {
                 listaCompradores.add(rs.getString("correo"));
             }
-            System.out.println("Se listo los correos de los compradores por distrito favorito");
-        }catch(Exception ex){
-            throw new RuntimeException("Error al listar los correos de los compradores por distrito favorito: "+ ex.getMessage());
-        }finally{
-            return listaCompradores;
+            System.out.println("Se listó los correos de los compradores por distrito favorito");
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error al listar los correos de los compradores por distrito favorito: " + ex.getMessage());
         }
+
+        return listaCompradores;
     }
+
+    private String obtenerQueryCorreosPorDistrito() {
+        return """
+        SELECT P.correo 
+        FROM Comprador C 
+        JOIN Persona P ON C.id_persona_comprador = P.id_persona 
+        WHERE C.id_distrito_favorito = ?
+    """;
+    }
+
+    private Connection obtenerConexion() throws SQLException {
+        return DBManager.getInstance().getConnection();
+    }
+
+    private PreparedStatement prepararStatementCorreosPorDistrito(Connection conn, String sql, int idDistrito) throws SQLException {
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setInt(1, idDistrito);
+        return pst;
+    }
+
     
     //Metodos para el Perfil del Comprador
     @Override
     public Map<String, Object> buscarDetalleCompradorPorId(int idComprador) {
         Map<String, Object> detalleComprador = null;
-        String sql = """
-                     SELECT 
-                         C.id_persona_comprador,
-                         P.tipo_documento,
-                         P.num_documento,
-                         C.monto_billetera,
-                         P.nombres,
-                         P.primer_apellido,
-                         P.segundo_apellido,
-                         D.nombre AS distrito_favorito,
-                         PR.nombre AS provincia_favorita,
-                         DEP.nombre AS departamento_favorito,
-                         P.correo,
-                         P.contrasenia
-                     FROM 
-                         Comprador C
-                     INNER JOIN 
-                         Persona P ON C.id_persona_comprador = P.id_persona
-                     LEFT JOIN 
-                         Distrito D ON C.id_distrito_favorito = D.id_distrito
-                     LEFT JOIN 
-                         Provincia PR ON D.Provincia_id_provincia = PR.id_provincia
-                     LEFT JOIN 
-                         Departamento DEP ON PR.Departamento_id_departamento = DEP.id_departamento
-                     WHERE 
-                         P.activo = 'A' AND C.id_persona_comprador = 
-                 """ + idComprador;
-        try (Connection conn = DBManager.getInstance().getConnection(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+        String sql = obtenerQueryDetalleComprador();
+        try (
+                Connection conn = obtenerConexion(); PreparedStatement pst = prepararStatementDetalle(conn, sql, idComprador); ResultSet rs = pst.executeQuery()) {
             if (rs.next()) {
-                detalleComprador = new HashMap<>();
-                detalleComprador.put("idComprador", rs.getInt("id_persona_comprador"));
-                detalleComprador.put("tipoDocumento", rs.getString("tipo_documento"));
-                detalleComprador.put("numeroDocumento", rs.getString("num_documento"));
-                detalleComprador.put("montoBilletera", rs.getDouble("monto_billetera"));
-                detalleComprador.put("nombres", rs.getString("nombres"));
-                detalleComprador.put("primerApellido", rs.getString("primer_apellido"));
-                detalleComprador.put("segundoApellido", rs.getString("segundo_apellido"));
-                detalleComprador.put("distritoFavorito", rs.getString("distrito_favorito"));
-                detalleComprador.put("provinciaFavorita", rs.getString("provincia_favorita"));
-                detalleComprador.put("departamentoFavorito", rs.getString("departamento_favorito"));
-                detalleComprador.put("correo", rs.getString("correo"));
-                detalleComprador.put("contrasenia", rs.getString("contrasenia"));
-                System.out.println("Se busco el detalle del comprador correctamente");
+                detalleComprador = construirDetalleComprador(rs);
+                System.out.println("Se buscó el detalle del comprador correctamente");
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al buscar el detalle del comprador: ", e);
-        } finally {
-            return detalleComprador;
         }
+        return detalleComprador;
+    }
+
+    private String obtenerQueryDetalleComprador() {
+        return """
+        SELECT 
+            C.id_persona_comprador,
+            P.tipo_documento,
+            P.num_documento,
+            C.monto_billetera,
+            P.nombres,
+            P.primer_apellido,
+            P.segundo_apellido,
+            D.nombre AS distrito_favorito,
+            PR.nombre AS provincia_favorita,
+            DEP.nombre AS departamento_favorito,
+            P.correo,
+            P.contrasenia
+        FROM 
+            Comprador C
+        INNER JOIN 
+            Persona P ON C.id_persona_comprador = P.id_persona
+        LEFT JOIN 
+            Distrito D ON C.id_distrito_favorito = D.id_distrito
+        LEFT JOIN 
+            Provincia PR ON D.Provincia_id_provincia = PR.id_provincia
+        LEFT JOIN 
+            Departamento DEP ON PR.Departamento_id_departamento = DEP.id_departamento
+        WHERE 
+            P.activo = 'A' AND C.id_persona_comprador = ?
+    """;
+    }
+
+    private PreparedStatement prepararStatementDetalle(Connection conn, String sql, int idComprador) throws SQLException {
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setInt(1, idComprador);
+        return pst;
+    }
+
+    private Map<String, Object> construirDetalleComprador(ResultSet rs) throws SQLException {
+        Map<String, Object> detalle = new HashMap<>();
+        detalle.put("idComprador", rs.getInt("id_persona_comprador"));
+        detalle.put("tipoDocumento", rs.getString("tipo_documento"));
+        detalle.put("numeroDocumento", rs.getString("num_documento"));
+        detalle.put("montoBilletera", rs.getDouble("monto_billetera"));
+        detalle.put("nombres", rs.getString("nombres"));
+        detalle.put("primerApellido", rs.getString("primer_apellido"));
+        detalle.put("segundoApellido", rs.getString("segundo_apellido"));
+        detalle.put("distritoFavorito", rs.getString("distrito_favorito"));
+        detalle.put("provinciaFavorita", rs.getString("provincia_favorita"));
+        detalle.put("departamentoFavorito", rs.getString("departamento_favorito"));
+        detalle.put("correo", rs.getString("correo"));
+        detalle.put("contrasenia", rs.getString("contrasenia"));
+        return detalle;
     }
 
     @Override
@@ -396,7 +424,6 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
     @Override
     public List<Map<String, Object>> listarCompradoresDTO() {
         List<Map<String, Object>> lista = new ArrayList<>();
-
         String sql = """
             SELECT P.id_persona, P.nombres, P.primer_apellido, P.segundo_apellido,
                    P.tipo_documento, P.num_documento, P.correo,
@@ -409,12 +436,8 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             JOIN Comprador C ON P.id_persona = C.id_persona_comprador
             WHERE P.activo = 'A'
         """;
-
-        try (
-            Connection conn = DBManager.getInstance().getConnection();
-            PreparedStatement pst = conn.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery()
-        ) {
+        try (Connection conn = DBManager.getInstance().getConnection();PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 Map<String, Object> fila = new HashMap<>();
                 fila.put("id", rs.getInt("id_persona"));
@@ -430,7 +453,6 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Error al listar compradores DTO", e);
         }
-
         return lista;
     }
 
@@ -441,11 +463,8 @@ public class CompradorImpl extends BaseImpl<Comprador> implements CompradorDAO {
             conn.setAutoCommit(false);
             try(CallableStatement pst=conn.prepareCall("{Call validar_correo_comprador(?,?)}")){
                 pst.setString(1, correo);
-//                pst.setBoolean(2, devolver);
-                
                 pst.registerOutParameter(2, Types.BOOLEAN);
                 pst.execute();
-                
                 devolver=pst.getBoolean(2);
             }catch (SQLException e) {
                 conn.rollback();
