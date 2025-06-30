@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.edu.pucp.sirgep.da.infraestructura.implementacion;
 
 import java.sql.Connection;
@@ -10,14 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import pe.edu.pucp.sirgep.dbmanager.DBManager;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Calificacion;
 
-/**
- *
- * @author Ana Gabriela
- */
 public class CalificacionImpl {
     protected String getInsertQuery(){
         String cadena = "Insert into Calificacion (puntaje, servicio,"
@@ -31,8 +21,6 @@ public class CalificacionImpl {
     protected void setInsertParameters(PreparedStatement ps, Calificacion c){
         try{
             ps.setInt(1, c.getPuntaje());
-//            ps.set(1, c.getServicio());
-            
             ps.setString(2, String.valueOf(c.getServicio()));
             ps.setString(3, c.getTexto());
         }catch(SQLException ex){

@@ -1,14 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.edu.pucp.sirgep.domain.infraestructura.models;
 
-/**
- *
- * @author Ana Gabriela
- */
 public class Calificacion {
     private int id;
     private int puntaje;
@@ -45,7 +36,5 @@ public class Calificacion {
 
     public void setTexto(String texto) {
         this.texto = texto;
-    }
-    
-    
+    }   
 }

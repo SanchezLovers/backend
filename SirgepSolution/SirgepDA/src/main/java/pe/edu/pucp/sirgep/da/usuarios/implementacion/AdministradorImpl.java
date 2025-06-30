@@ -5,10 +5,7 @@ import pe.edu.pucp.sirgep.da.usuarios.dao.AdministradorDAO;
 import pe.edu.pucp.sirgep.domain.usuarios.enums.ETipoDocumento;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Administrador;
 
-import java.io.IOException;
 import java.sql.*;
-import jdk.jshell.spi.ExecutionControl;
-import jdk.jshell.spi.ExecutionControl.NotImplementedException;
 import pe.edu.pucp.sirgep.da.base.implementacion.BaseImpl;
 
 public class AdministradorImpl extends BaseImpl<Administrador> implements AdministradorDAO {

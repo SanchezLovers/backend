@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package pe.edu.pucp.sirgep.business.usuarios.dtos;
 
-/**
- *
- * @author 51915
- */
 public class CompradorDTO {
     private int idComprador;
     private String tipoDocumento;

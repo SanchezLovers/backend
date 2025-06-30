@@ -1,4 +1,3 @@
-
 package pe.edu.pucp.sirgep.ws.ventas;
 
 import jakarta.jws.WebService;
@@ -13,30 +12,19 @@ import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;
 import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 import pe.edu.pucp.sirgep.domain.ventas.models.Constancia;
 
-/**
- *
- * @author anac
- */
-
 @WebService(serviceName = "CompraWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class CompraWS {
-
-    //private IEntradaService iEntradaService;
-    //private IReservaService iReservaService;
     private IConstanciaService iConstanciaService;
     private IEventoService iEventoService;
     private ICompradorService iCompradorService;
+    
     public CompraWS(){
-        //iEntradaService = new EntradaServiceImpl();
-        //iReservaService = new ReservaServiceImpl();
         iConstanciaService = new ConstanciaServiceImpl();
         iEventoService = new EventoServiceImpl();
         iCompradorService = new CompradorServiceImpl();
         
     }
     
-    //actualiza o insertar buscar compr
-    //insertar constancia
     @WebMethod(operationName = "buscarEventos")
     public Evento buscarEventos(int id) {
         return iEventoService.buscar(id);

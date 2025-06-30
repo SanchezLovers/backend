@@ -1,11 +1,6 @@
 package pe.edu.pucp.sirgep.business.ventas.service;
 
-import java.time.LocalDate;
 import java.util.List;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaEntradaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleEntradaDTO;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Evento;

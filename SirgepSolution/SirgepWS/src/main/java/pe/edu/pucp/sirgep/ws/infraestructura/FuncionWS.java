@@ -8,11 +8,6 @@ import pe.edu.pucp.sirgep.business.infraestructura.impl.FuncionServiceImpl;
 import pe.edu.pucp.sirgep.business.infraestructura.service.IFuncionService;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Funcion;
 
-/**
- *
-<<<<<<< HEAD
- * @author benny
- */
 @WebService(serviceName = "FuncionWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class FuncionWS {
     private final IFuncionService funcionService;

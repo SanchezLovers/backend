@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.edu.pucp.sirgep.ws.usuarios;
 
 import jakarta.jws.WebService;
@@ -11,10 +6,6 @@ import jakarta.jws.WebParam;
 import pe.edu.pucp.sirgep.business.usuarios.impl.PersonaService;
 import pe.edu.pucp.sirgep.business.usuarios.service.IPersonaService;
 
-/**
- *
- * @author LEGION
- */
 @WebService(serviceName = "PersonaWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class PersonaWS {
     IPersonaService personaService;
@@ -53,5 +44,16 @@ public class PersonaWS {
     @WebMethod(operationName = "obtenerNombreUsuario")
     public String obtenerNombreUsuario(@WebParam(name = "id") int id){
         return personaService.obtenerNombreUsuario(id);
+    }
+    
+    @WebMethod(operationName = "enviarCorreoRecuperacion")
+    public boolean enviarCorreoRecuperacion(@WebParam(name = "asunto")String asunto, 
+            @WebParam(name = "contenido")String contenido) {
+        try{
+            return personaService.enviarCorreoRecuperacion(asunto,contenido);
+        }
+        catch(Exception ex){
+            throw new RuntimeException("Error al enviar correo de recuperación: "+ ex.getMessage());
+        }
     }
 }

@@ -18,7 +18,6 @@ public class EspacioWS {
     public EspacioWS(){
         espacioService = new EspacioServiceImpl();
     }
-
     
     //CRUD
     @WebMethod(operationName = "insertarEspacio")

@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.edu.pucp.sirgep.business.ventas.impl;
 
 import java.util.ArrayList;
@@ -13,13 +8,7 @@ import pe.edu.pucp.sirgep.business.ventas.service.IReporteService;
 import pe.edu.pucp.sirgep.da.ventas.dao.ReporteDAO;
 import pe.edu.pucp.sirgep.da.ventas.implementacion.ReporteImpl;
 
-/**
- *
- * @author Ana Gabriela
- */
 public class ReporteServiceImpl implements IReporteService{
-
-    
     private ReporteDAO rDao;
     public ReporteServiceImpl() {
         rDao = new ReporteImpl();
@@ -55,12 +44,10 @@ public class ReporteServiceImpl implements IReporteService{
         List<EspacioRepDTO> eventos = new ArrayList<>();
         Map<String, Integer> mapita = rDao.EventosFavMes();
         EspacioRepDTO e;
-        
         for (Map.Entry<String, Integer> entry: mapita.entrySet()) {
             e = new EspacioRepDTO(entry.getKey(), entry.getValue());
             eventos.add(e);
         }
         return eventos;
     }
-    
 }

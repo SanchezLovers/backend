@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.edu.pucp.sirgep.ws.ubicacion;
 
 import jakarta.jws.WebMethod;
@@ -13,7 +8,6 @@ import java.util.List;
 import pe.edu.pucp.sirgep.business.ubicacion.service.DepartamentoServiceImpl;
 import pe.edu.pucp.sirgep.domain.ubicacion.models.Departamento;
 
-/**esto ya funciona y todo ubicación tmb**/
 @WebService(serviceName = "DepartamentoWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class DepartamentoWS {
     private DepartamentoServiceImpl departamentoService;
@@ -21,11 +15,7 @@ public class DepartamentoWS {
     public DepartamentoWS(){
         departamentoService = new DepartamentoServiceImpl();
     }
-    
-    /**
-     *
-     * @return
-     */
+
     @WebMethod(operationName = "listarDepas")
     public List<Departamento> listarDepas() {
         try {
@@ -35,8 +25,8 @@ public class DepartamentoWS {
             throw new WebServiceException("Error al listar depas: " + ex.getMessage());
         }
     }
-	
-	@WebMethod(operationName = "buscarDepaPorId")
+
+    @WebMethod(operationName = "buscarDepaPorId")
     public Departamento buscarDepaPorId(@WebParam(name = "idDepartamento") int idDepartamento) {
         try {
             Departamento departamento = departamentoService.buscar(idDepartamento); 
