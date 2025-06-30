@@ -1,7 +1,6 @@
 package pe.edu.pucp.sirgep.da.ventas.dao;
 
 import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import pe.edu.pucp.sirgep.domain.ventas.models.Entrada;

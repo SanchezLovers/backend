@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.edu.pucp.sirgep.ws.usuarios;
 
 import jakarta.jws.WebService;
@@ -11,10 +6,6 @@ import jakarta.jws.WebParam;
 import pe.edu.pucp.sirgep.business.usuarios.impl.PersonaService;
 import pe.edu.pucp.sirgep.business.usuarios.service.IPersonaService;
 
-/**
- *
- * @author LEGION
- */
 @WebService(serviceName = "PersonaWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class PersonaWS {
     IPersonaService personaService;

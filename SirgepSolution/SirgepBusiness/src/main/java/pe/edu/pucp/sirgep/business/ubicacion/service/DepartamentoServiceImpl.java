@@ -1,5 +1,3 @@
-
-
 package pe.edu.pucp.sirgep.business.ubicacion.service;
 
 import java.util.List;

@@ -37,6 +37,7 @@ public class EncriptadorAES {
         System.arraycopy(keyBytes, 0, keyFinal, 0, 16);
         return new SecretKeySpec(keyFinal, "AES");
     }
+    
     public static String encrypt(String strToEncrypt) {
         try {
             SecretKeySpec secretKey = createKey(SECRET_KEY);
