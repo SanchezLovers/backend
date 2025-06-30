@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,7 +40,6 @@ import pe.edu.pucp.sirgep.domain.usuarios.models.Comprador;
 import pe.edu.pucp.sirgep.domain.ventas.models.Reserva;
 
 public class ReservaServiceImpl implements IReservaService {
-
     private final ReservaDAO reservaDAO;
     private final CompradorDAO compradorDAO;
     private final EspacioDAO espacioDAO;
@@ -68,6 +65,11 @@ public class ReservaServiceImpl implements IReservaService {
         return reservaDAO.buscar(id);
     }
 
+    @Override
+    public boolean inactivar() {
+        return reservaDAO.inactivar();
+    }
+    
     @Override
     public List<Reserva> listar() {
         return reservaDAO.listar();
@@ -276,18 +278,18 @@ public class ReservaServiceImpl implements IReservaService {
 
     private boolean llenarTablaReservas(XSSFSheet hoja, int idComprador, String fechaInicio, String fechaFin, String estado) {
         List<DetalleReservaDTO> listaDetalleReservas = listarPorComprador(idComprador, fechaInicio, fechaFin, estado);
-        if (listaDetalleReservas.isEmpty()) {
-            return false;
+        if (listaDetalleReservas!=null && !listaDetalleReservas.isEmpty()) {
+            int posicion = 3;
+            for (DetalleReservaDTO detalleReserva : listaDetalleReservas) {
+                XSSFRow registro = hoja.createRow(posicion++);
+                llenarFilaReserva(registro, detalleReserva);
+            }
+            for (int i = 0; i < 8; i++) {
+                hoja.autoSizeColumn(i);
+            }
+            return true;
         }
-        int posicion = 3;
-        for (DetalleReservaDTO detalleReserva : listaDetalleReservas) {
-            XSSFRow registro = hoja.createRow(posicion++);
-            llenarFilaReserva(registro, detalleReserva);
-        }
-        for (int i = 0; i < 8; i++) {
-            hoja.autoSizeColumn(i);
-        }
-        return true;
+        return false;
     }
 
     private void llenarFilaReserva(XSSFRow registro, DetalleReservaDTO detalleReserva) {

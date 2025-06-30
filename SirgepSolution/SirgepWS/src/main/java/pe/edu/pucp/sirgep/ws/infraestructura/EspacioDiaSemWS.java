@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package pe.edu.pucp.sirgep.ws.infraestructura;
 
 import jakarta.jws.WebMethod;
@@ -12,10 +8,6 @@ import pe.edu.pucp.sirgep.business.infraestructura.impl.EspacioDiaSemServiceImpl
 import pe.edu.pucp.sirgep.business.infraestructura.service.IEspacioDiaSemService;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.EspacioDiaSem;
 
-/**
- *
- * @author benny
- */
 @WebService(serviceName = "EspacioDiaSemWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class EspacioDiaSemWS {
     private final IEspacioDiaSemService diaService;
@@ -53,6 +45,4 @@ public class EspacioDiaSemWS {
             throw new RuntimeException("ERROR AL INSERTAR UN DIA DE LA SEMANA" + ex.getMessage());
         }
     }
-    
-    
 }

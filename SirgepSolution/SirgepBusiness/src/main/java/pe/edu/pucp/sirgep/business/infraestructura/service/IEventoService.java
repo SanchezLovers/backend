@@ -10,6 +10,7 @@ public interface IEventoService{
     Evento buscar(int id);
     List<Evento> listar();
     boolean actualizar(Evento evento);
+    boolean inactivar();
     boolean eliminarLogico(int id);
     boolean eliminarFisico(int id);
     List<Evento> listarPorDistrito(int id);

@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.edu.pucp.sirgep.ws.infraestructura;
 
 import jakarta.jws.WebMethod;
@@ -10,11 +5,6 @@ import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import pe.edu.pucp.sirgep.business.ventas.impl.CalificacionServiceImpl;
 import pe.edu.pucp.sirgep.domain.infraestructura.models.Calificacion;
-
-/**
- *
- * @author Ana Gabriela
- */
 
 @WebService(serviceName = "CalificacionWS", targetNamespace = "pe.edu.pucp.sirgep")
 public class CalificacionWS {

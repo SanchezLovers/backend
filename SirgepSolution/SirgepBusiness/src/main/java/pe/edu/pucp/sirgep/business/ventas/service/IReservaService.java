@@ -3,9 +3,6 @@ package pe.edu.pucp.sirgep.business.ventas.service;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ConstanciaReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.DetalleReservaDTO;
 import pe.edu.pucp.sirgep.business.ventas.dtos.ReservaDTO;
@@ -22,6 +19,7 @@ public interface IReservaService {
     boolean actualizar(Reserva reserva);
     boolean eliminarLogico(int id);
     boolean eliminarFisico(int id);
+    boolean inactivar();
     
     //Metodos adicionales
     public Comprador buscarCompradorDeReserva(int idComprador);
